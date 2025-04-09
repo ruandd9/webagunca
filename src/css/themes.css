@@ -1,0 +1,95 @@
+/* Tema Escuro (Padrão) */
+:root[data-theme="dark"] {
+    --bg-primary: #111827;
+    --bg-secondary: #1F2937;
+    --bg-tertiary: #374151;
+    --text-primary: #FFFFFF;
+    --text-secondary: #9CA3AF;
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --border: #374151;
+}
+
+/* Tema Claro */
+:root[data-theme="light"] {
+    --bg-primary: #F3F4F6;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #E5E7EB;
+    --text-primary: #111827;
+    --text-secondary: #4B5563;
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --border: #D1D5DB;
+}
+
+/* Tema Colorido */
+:root[data-theme="colorful"] {
+    --bg-primary: #1A1C2C;
+    --bg-secondary: #2D1B69;
+    --bg-tertiary: #4C1D95;
+    --text-primary: #FFFFFF;
+    --text-secondary: #E9D5FF;
+    --accent: #8B5CF6;
+    --accent-hover: #7C3AED;
+    --border: #6D28D9;
+}
+
+/* Aplicação dos temas */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.bg-gray-900 {
+    background-color: var(--bg-primary) !important;
+}
+
+.bg-gray-800 {
+    background-color: var(--bg-secondary) !important;
+}
+
+.bg-gray-700 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.text-white {
+    color: var(--text-primary) !important;
+}
+
+.text-gray-400 {
+    color: var(--text-secondary) !important;
+}
+
+.border-gray-700 {
+    border-color: var(--border) !important;
+}
+
+.bg-blue-500, .bg-blue-600 {
+    background-color: var(--accent) !important;
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+.hover\:bg-gray-700:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+input, select, textarea {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+.dropdown-content {
+    background-color: var(--bg-secondary) !important;
+}
+
+.dropdown-content a {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--bg-tertiary) !important;
+}

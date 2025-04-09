@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+    <style>
+        /* Estilos para drag & drop */
+        .dragging-over {
+            background-color: rgba(55, 65, 81, 0.5);
+            border: 2px dashed #4B5563;
+            border-radius: 0.5rem;
+            min-height: 100px;
+        }
+        
+        .card {
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Estilos para a lixeira */
+        #trash {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #trash.dragging-over {
+            transform: scale(1.2);
+            background-color: #DC2626;
+            border: none;
+        }
+
+        .delete-list-btn {
+            opacity: 0.6;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .delete-list-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 p-4">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="#" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header -->
+            <header class="py-4 mb-6">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <h1 class="text-2xl font-bold">Projeto Website</h1>
+                        <button class="text-gray-400 hover:text-white">
+                            <i class="fas fa-star"></i>
+                        </button>
+                        <div class="flex -space-x-2">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                            <img src="https://ui-avatars.com/api/?name=Jane+Smith" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                            <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800">
+                                <i class="fas fa-plus text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Barra de ferramentas -->
+                        <div class="mb-6 flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <!-- Filtros -->
+                                <div class="relative" id="filter-dropdown">
+                                    <button class="px-4 py-2 bg-gray-700 rounded-lg text-sm flex items-center space-x-2 hover:bg-gray-600">
+                                        <i class="fas fa-filter"></i>
+                                        <span>Filtrar</span>
+                                    </button>
+                                    <div class="hidden absolute top-full left-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg p-4 z-10">
+                                        <h3 class="text-sm font-medium mb-3">Filtrar por etiquetas</h3>
+                                        <div class="space-y-2" id="label-filters">
+                                        </div>
+                                        <div class="mt-4">
+                                            <button class="w-full px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm" id="apply-filters">
+                                                Aplicar filtros
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pesquisa -->
+                                <div class="relative flex-1">
+                                    <input type="text" 
+                                           id="search-input"
+                                           class="w-64 px-4 py-2 bg-gray-700 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           placeholder="Pesquisar cartões...">
+                                    <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 flex items-center space-x-2" id="clear-filters" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                    <span>Limpar filtros</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Board -->
+            <div class="flex space-x-6">
+                <!-- Para Fazer -->
+                <div id="para-fazer" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Para Fazer</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4 flex-1">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Fazendo -->
+                <div id="fazendo" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Fazendo</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4 flex-1">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Concluído -->
+                <div id="concluido" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Concluído</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4 flex-1">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Botão de adicionar lista -->
+                <button class="add-list-btn w-80 bg-gray-800 bg-opacity-50 rounded-lg p-4 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Adicionar lista
+                </button>
+
+                <!-- Lixeira -->
+                <div id="trash" class="fixed bottom-6 right-6 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash-alt text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Estado global do quadro
+        window.boardState = {
+            lists: {
+                'para-fazer': [],
+                'fazendo': [],
+                'concluido': []
+            }
+        };
+
+        // Configuração das etiquetas
+        window.labels = {
+            design: { text: 'Design', color: 'bg-blue-500' },
+            frontend: { text: 'Frontend', color: 'bg-purple-500' },
+            backend: { text: 'Backend', color: 'bg-yellow-500' },
+            feature: { text: 'Feature', color: 'bg-green-500' },
+            urgent: { text: 'Urgente', color: 'bg-red-500' },
+            uiux: { text: 'UI/UX', color: 'bg-indigo-500' }
+        };
+
+        // Carregar tema e estado do quadro
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar tema
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+            }
+
+            // Carregar estado do quadro
+            const savedState = localStorage.getItem('boardState');
+            if (savedState) {
+                window.boardState = JSON.parse(savedState);
+            }
+
+            // Renderizar o quadro inicial
+            if (typeof window.renderBoard === 'function') {
+                window.renderBoard();
+            }
+
+            // Inicializar botões
+            const addListButton = document.querySelector('.add-list-btn');
+            if (addListButton) {
+                addListButton.addEventListener('click', () => {
+                    if (typeof window.showAddListModal === 'function') {
+                        window.showAddListModal();
+                    }
+                });
+            }
+
+            const addCardButtons = document.querySelectorAll('.add-card-btn');
+            addCardButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const listId = button.closest('.list').id;
+                    if (typeof window.showAddCardModal === 'function') {
+                        window.showAddCardModal(listId);
+                    }
+                });
+            });
+
+            // Renderizar os filtros de etiquetas
+            const labelFiltersContainer = document.getElementById('label-filters');
+            if (labelFiltersContainer) {
+                Object.entries(window.labels).forEach(([key, label]) => {
+                    const labelFilter = document.createElement('label');
+                    labelFilter.className = 'flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer';
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = key;
+                    checkbox.className = 'filter-label';
+                    const labelColor = document.createElement('span');
+                    labelColor.className = `w-8 h-2 rounded ${label.color}`;
+                    const labelText = document.createElement('span');
+                    labelText.textContent = label.text;
+                    labelFilter.appendChild(checkbox);
+                    labelFilter.appendChild(labelColor);
+                    labelFilter.appendChild(labelText);
+                    labelFiltersContainer.appendChild(labelFilter);
+                });
+            }
+        });
+    </script>
+    <script src="js/board.js"></script>
+    <script src="js/modals.js"></script>
+</body>
+
+</html>

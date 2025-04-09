@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="#" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-11 mt-16 md:mt-0">
+            <!-- Header -->
+            <header class="py-2 mb-5">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div class="flex items-center space-x-4 md:space-x-11">
+                        <div class="nav-dropdown relative">
+                            <a href="#" class="text-white text-lg flex items-center space-x-2">
+                                <i class="fas fa-cog"></i>
+                                <span>Configurações</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 relative">
+                        <div class="dropdown">
+                            <div class="bg-blue-500 text-white p-2 rounded-full cursor-pointer" style="width: 40px; height: 40px; text-align: center;">YF</div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="../index.html">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <hr class="mb-10">
+
+            <!-- Profile Section -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:space-x-8">
+                        <div class="relative">
+                            <img src="../src/img/image.png" alt="Profile picture" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover">
+                            <button class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 w-full">
+                            <h2 class="text-xl md:text-2xl font-bold mb-4 text-center md:text-left">Informações do Perfil</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Nome</label>
+                                        <input type="text" value="Yan Felipe" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Nome de usuário</label>
+                                        <input type="text" value="Beta" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Email</label>
+                                        <input type="email" value="yan@example.com" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Telefone</label>
+                                        <input type="tel" value="+00 4002-8922" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Section -->
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold mb-6">Preferências</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Notificações</h3>
+                            <div class="space-y-4">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Notificações por email</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Notificações do navegador</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Sons de notificação</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Privacidade</h3>
+                            <div class="space-y-4">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Perfil público</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Mostrar atividade online</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Section -->
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold mb-6">Tema</h2>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="theme-button w-12 h-12 rounded-full bg-gray-900 ring-2 ring-blue-500" data-theme="dark" onclick="changeTheme('dark')">
+                            <span class="sr-only">Tema Escuro</span>
+                        </button>
+                        <button class="theme-button w-12 h-12 rounded-full bg-white" data-theme="light" onclick="changeTheme('light')">
+                            <span class="sr-only">Tema Claro</span>
+                        </button>
+                        <button class="theme-button w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" data-theme="colorful" onclick="changeTheme('colorful')">
+                            <span class="sr-only">Tema Colorido</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col md:flex-row gap-4 justify-end">
+                    <button class="px-6 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors w-full md:w-auto">
+                        Cancelar
+                    </button>
+                    <button class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-full md:w-auto">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Função para salvar as alterações
+        function saveChanges() {
+            const formData = {
+                name: document.querySelector('input[value="Yan Felipe"]').value,
+                username: document.querySelector('input[value="Beta"]').value,
+                email: document.querySelector('input[type="email"]').value,
+                phone: document.querySelector('input[type="tel"]').value,
+                notifications: {
+                    email: document.querySelector('input[type="checkbox"]:nth-of-type(1)').checked,
+                    browser: document.querySelector('input[type="checkbox"]:nth-of-type(2)').checked,
+                    sound: document.querySelector('input[type="checkbox"]:nth-of-type(3)').checked
+                },
+                privacy: {
+                    publicProfile: document.querySelector('input[type="checkbox"]:nth-of-type(4)').checked,
+                    showOnline: document.querySelector('input[type="checkbox"]:nth-of-type(5)').checked
+                },
+                theme: document.documentElement.getAttribute('data-theme') || 'dark'
+            };
+
+            // Salvar no localStorage
+            localStorage.setItem('userSettings', JSON.stringify(formData));
+            alert('Configurações salvas com sucesso!');
+        }
+
+        // Função para mudar o tema
+        function changeTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Atualizar visual dos botões de tema
+            document.querySelectorAll('.theme-button').forEach(button => {
+                if (button.getAttribute('data-theme') === theme) {
+                    button.classList.add('ring-2', 'ring-blue-500');
+                } else {
+                    button.classList.remove('ring-2', 'ring-blue-500');
+                }
+            });
+
+            // Salvar o tema no localStorage
+            const settings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+            settings.theme = theme;
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+        }
+
+        // Carregar configurações salvas
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                // Aplicar configurações aos campos
+                document.querySelector('input[value="Yan Felipe"]').value = settings.name;
+                document.querySelector('input[value="Beta"]').value = settings.username;
+                document.querySelector('input[type="email"]').value = settings.email;
+                document.querySelector('input[type="tel"]').value = settings.phone;
+                // Aplicar checkboxes
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes[0].checked = settings.notifications?.email ?? true;
+                checkboxes[1].checked = settings.notifications?.browser ?? true;
+                checkboxes[2].checked = settings.notifications?.sound ?? false;
+                checkboxes[3].checked = settings.privacy?.publicProfile ?? true;
+                checkboxes[4].checked = settings.privacy?.showOnline ?? false;
+                
+                // Aplicar tema
+                if (settings.theme) {
+                    changeTheme(settings.theme);
+                }
+            }
+        }
+
+        // Adicionar event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            document.querySelector('button.bg-blue-500').addEventListener('click', saveChanges);
+        });
+    </script>
+</body>
+</html>
