@@ -1,34 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 body {
-  background: url('../img/background-index.svg');
+  background: url('../img/background-index.svg')no-repeat center center fixed;
   background-size: cover;
   color: white;
   font-family: "Inter", sans-serif;
+  min-height: 100vh;
 }
 
 header {
-  margin: 50px;
+  margin: 2rem 1rem; /* Reduzir margens em mobile */
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  flex-wrap: wrap; /* Permite que os itens quebrem linha */
 }
 
 #logo-header {
   width: 55px;
   height: auto;
-  margin: 0 150px;
+  margin: 0 1rem; /* Reduzir margens */
 }
 
 .header-home {
-  padding: 0px 185px;
+  padding: 0 1rem;
   font-size: 13px;
-  color: #cfcfcf;
+}
 
-  display: flex;
-  align-items: center;
-
+.header-home ul {
+  gap: 1.5rem; /* Reduzir espaçamento */
+  flex-wrap: wrap; /* Permite que os links quebrem linha */
 }
 
 .header-home ul,
@@ -40,8 +41,6 @@ a {
   display: flex;
   color: #cfcfcf;
   text-decoration: none;
-
-
 }
 
 .text-content-homepage {
@@ -377,3 +376,100 @@ footer {
 .btn:hover {
   border: 1px solid #2d79f3;
 }
+
+/* responsividade da index */
+
+/* conteúdo principal */
+.text-content-homepage {
+  margin-top: 10vh; /* Reduzir em mobile */
+  padding: 0 1rem; /* Adicionar padding lateral */
+}
+
+.text-content-homepage h1 {
+  font-size: 8rem; /* Reduzir drasticamente em mobile */
+  line-height: 1;
+  margin-bottom: 50px;
+}
+
+.text-content-homepage h2 {
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+}
+
+.text-content-homepage p {
+  margin: 0 auto;
+  max-width: 800px; /* Limitar largura máxima */
+  padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+  .text-content-homepage h1 {
+    font-size: 50px;
+  }
+  
+  .text-content-homepage p {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+/* footer */
+footer .container {
+  padding: 2rem 1rem !important; /* Reduzir padding */
+}
+
+footer .flex {
+  flex-direction: column; /* Empilhar colunas */
+  gap: 2rem;
+}
+
+footer > div > div {
+  width: 100% !important; /* Forçar largura total */
+  margin: 0 !important;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  footer .flex {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  footer > div > div {
+    width: 50% !important; /* 2 colunas em tablets */
+  }
+}
+
+/* geral */
+@media (min-width: 1024px) {
+  footer .flex {
+    flex-wrap: nowrap;
+  }
+  
+  footer > div > div {
+    width: auto !important;
+    flex: 1;
+  }
+}
+
+.modal-dialog {
+  max-width: 95%; /* Limitar largura máxima */
+  margin: 1rem auto;
+}
+
+.form {
+  width: 100%;
+  max-width: 450px; /* Manter máximo mas ser flexível */
+  padding: 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .form {
+    padding: 1rem;
+  }
+  
+  .modal-content {
+    margin: 0 auto;
+  }
+}
+
