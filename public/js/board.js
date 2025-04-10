@@ -176,6 +176,67 @@ window.renderBoard = function() {
         clearFiltersBtn.style.display = 
             (window.filters.labels.length > 0 || window.filters.search) ? 'flex' : 'none';
     }
+
+    // Atualiza o contador de filtros ativos
+    const activeFiltersCount = document.getElementById('active-filters-count');
+    if (activeFiltersCount) {
+        const totalFilters = window.filters.labels.length + (window.filters.search ? 1 : 0);
+        activeFiltersCount.textContent = totalFilters;
+        activeFiltersCount.classList.toggle('hidden', totalFilters === 0);
+    }
+
+    // Atualiza a exibição das tags filtradas ativas
+    const activeFiltersContainer = document.getElementById('active-filters');
+    if (activeFiltersContainer) {
+        activeFiltersContainer.innerHTML = '';
+        
+        // Adiciona as tags de etiquetas
+        window.filters.labels.forEach(label => {
+            const tag = document.createElement('div');
+            tag.className = `px-3 py-1 rounded-full text-sm flex items-center space-x-2 ${window.labels[label].color} text-white`;
+            tag.innerHTML = `
+                <span>${window.labels[label].text}</span>
+                <button class="remove-filter" data-type="label" data-value="${label}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            activeFiltersContainer.appendChild(tag);
+        });
+
+        // Adiciona a tag de pesquisa se houver
+        if (window.filters.search) {
+            const searchTag = document.createElement('div');
+            searchTag.className = 'px-3 py-1 rounded-full text-sm flex items-center space-x-2 bg-gray-700 text-white';
+            searchTag.innerHTML = `
+                <span>Pesquisa: ${window.filters.search}</span>
+                <button class="remove-filter" data-type="search">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            activeFiltersContainer.appendChild(searchTag);
+        }
+
+        // Adiciona eventos para remover filtros individuais
+        activeFiltersContainer.querySelectorAll('.remove-filter').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const type = button.dataset.type;
+                const value = button.dataset.value;
+
+                if (type === 'label') {
+                    window.filters.labels = window.filters.labels.filter(l => l !== value);
+                    const checkbox = document.querySelector(`.filter-label[value="${value}"]`);
+                    if (checkbox) checkbox.checked = false;
+                } else if (type === 'search') {
+                    window.filters.search = '';
+                    const searchInput = document.getElementById('search-input');
+                    if (searchInput) searchInput.value = '';
+                }
+
+                window.renderBoard();
+            });
+        });
+    }
 };
 
 // Função auxiliar para criar elemento de cartão
@@ -260,6 +321,79 @@ function createCardElement(card) {
 
 // Inicializa os eventos de filtro e lixeira quando o documento estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
+    // Carregar tema
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        if (settings.theme) {
+            document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+    }
+
+    // Carregar estado do quadro
+    const savedState = localStorage.getItem('boardState');
+    if (savedState) {
+        window.boardState = JSON.parse(savedState);
+    }
+
+    // Inicializar filtros
+    const filterDropdown = document.getElementById('filter-dropdown');
+    const filterMenu = filterDropdown.querySelector('div');
+    const filterButton = filterDropdown.querySelector('button');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    const searchInput = document.getElementById('search-input');
+
+    // Toggle do menu de filtros
+    filterButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterMenu.classList.toggle('hidden');
+    });
+
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!filterDropdown.contains(e.target)) {
+            filterMenu.classList.add('hidden');
+        }
+    });
+
+    // Aplicar filtros
+    applyFiltersBtn.addEventListener('click', () => {
+        const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
+            .map(checkbox => checkbox.value);
+        
+        window.filters.labels = selectedLabels;
+        window.filters.search = searchInput.value.trim();
+        
+        window.renderBoard();
+        filterMenu.classList.add('hidden');
+    });
+
+    // Limpar filtros
+    clearFiltersBtn.addEventListener('click', () => {
+        window.filters.labels = [];
+        window.filters.search = '';
+        searchInput.value = '';
+        
+        // Desmarca todos os checkboxes
+        document.querySelectorAll('.filter-label').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        window.renderBoard();
+    });
+
+    // Pesquisa em tempo real
+    searchInput.addEventListener('input', () => {
+        window.filters.search = searchInput.value.trim();
+        window.renderBoard();
+    });
+
+    // Renderizar o quadro inicial
+    if (typeof window.renderBoard === 'function') {
+        window.renderBoard();
+    }
+
     // Configuração da lixeira
     const trash = document.getElementById('trash');
     if (trash) {
@@ -288,73 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.renderBoard();
                 }
             }
-        });
-    }
-
-    // Toggle do dropdown de filtros
-    const filterBtn = document.querySelector('#filter-dropdown button');
-    const filterDropdown = document.querySelector('#filter-dropdown .hidden');
-    
-    if (filterBtn && filterDropdown) {
-        filterBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterDropdown.classList.toggle('hidden');
-        });
-
-        // Fechar dropdown ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#filter-dropdown')) {
-                filterDropdown.classList.add('hidden');
-            }
-        });
-    }
-
-    // Aplicar filtros
-    const applyFiltersBtn = document.getElementById('apply-filters');
-    if (applyFiltersBtn) {
-        applyFiltersBtn.addEventListener('click', () => {
-            const selectedLabels = [...document.querySelectorAll('.filter-label:checked')]
-                .map(cb => cb.value);
-            
-            window.filters.labels = selectedLabels;
-            window.renderBoard();
-            filterDropdown.classList.add('hidden');
-        });
-    }
-
-    // Pesquisa
-    const searchInput = document.getElementById('search-input');
-    let searchTimeout;
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                window.filters.search = e.target.value.trim();
-                window.renderBoard();
-            }, 300);
-        });
-    }
-
-    // Limpar filtros
-    const clearFiltersBtn = document.getElementById('clear-filters');
-    if (clearFiltersBtn) {
-        clearFiltersBtn.addEventListener('click', () => {
-            // Limpa checkboxes
-            document.querySelectorAll('.filter-label:checked')
-                .forEach(cb => cb.checked = false);
-            
-            // Limpa campo de pesquisa
-            if (searchInput) {
-                searchInput.value = '';
-            }
-            
-            // Reseta filtros
-            window.filters.labels = [];
-            window.filters.search = '';
-            
-            // Atualiza o quadro
-            window.renderBoard();
         });
     }
 });
