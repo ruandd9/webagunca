@@ -413,33 +413,6 @@ footer {
   }
 }
 
-/* footer */
-footer .container {
-  padding: 2rem 1rem !important; /* Reduzir padding */
-}
-
-footer .flex {
-  flex-direction: column; /* Empilhar colunas */
-  gap: 2rem;
-}
-
-footer > div > div {
-  width: 100% !important; /* Forçar largura total */
-  margin: 0 !important;
-  padding: 0 1rem;
-}
-
-@media (min-width: 768px) {
-  footer .flex {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  footer > div > div {
-    width: 50% !important; /* 2 colunas em tablets */
-  }
-}
-
 /* geral */
 @media (min-width: 1024px) {
   footer .flex {
@@ -473,3 +446,12 @@ footer > div > div {
   }
 }
 
+html, body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  flex: 1;
+}
