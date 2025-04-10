@@ -43,70 +43,46 @@
       </p>
     </div>
   </main>
-
-  <footer class="mt-15 ">
-    <div class="container mx-auto py-16 px-11">
-      <div class="flex justify-between items-start">
-        <div class="">
-          <div class="flex items-center mb-4">
-            <div class="w-1/5">
-              <img class="logo" src="./src/img/logo.svg" alt="logo">
-            </div>
-            <h1 class="text-2xl  font-bold text-white ml-2">bagunça</h1>
-          </div>
-          <p class="text-sm text-white">
-            Nosso sistema de Kanban é a ferramenta ideal para organizar suas tarefas e projetos de maneira fácil e
-            intuitiva.
-          </p>
-        </div>
-        <div class="w-1/2 mx-20">
-          <h2 class="text-lg font-bold text-white mb-2">Desenvolvedores</h2>
-          <ul class="text-sm">
-            <li>Yan</li>
-            <li>Talisson</li>
-            <li>Douglas</li>
-            <li>Raphael</li>
-            <li>Ruan</li>
-          </ul>
-        </div>
-        <div class="w-1/4">
-          <h2 class="text-lg font-bold text-white mb-2">Perguntas</h2>
-          <ul class="text-sm">
-            <li>Amo codar</li>
-            <li>let's code?</li>
-          </ul>
-        </div>
-        <div class="w-1/3">
-          <h2 class="text-lg font-bold text-white mb-2">Perguntas</h2>
-          <ul class="text-sm">
-            <li>Como usar o sistema?</li>
-            <li>Por que usar o Bagunça?</li>
-            <li>Criar conta?</li>
-          </ul>
-        </div>
-        <div class="w-1/3">
-          <h2 class="text-lg font-bold text-white mb-2">Quem somos</h2>
-          <ul class="text-sm p-2">
-            <li>Um grupo de estudantes do SENAC - DF inspirados em facilitar a vida utilizando uma nova plataforma Kanban,</li>
-            <li> ela é aberta à quem quiser organizar sua vida e seus projetos pessoais!</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-
   <script src="./src/js/index.js"></script>
 </body>
 
+<footer class="bg-transparent rounded-lg dark:bg-gray-900 w-full mt-auto">
+  <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+      <div class="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between">
+          <a href="#" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+              <img src="./src/img/logo-bagunca.svg" class="h-8" alt="Logo Bagunça" />
+              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BAGUNÇA</span>
+          </a>
+          <ul class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+              <li>
+                  <a href="#" class="hover:underline">Sobre</a>
+              </li>
+              <li>
+                  <a href="#" class="hover:underline">Política e Privacidade</a>
+              </li>
+              <li>
+                  <a href="#" class="hover:underline">Licença</a>
+              </li>
+              <li>
+                  <a href="#" class="hover:underline">Contato</a>
+              </li>
+          </ul>
+      </div>
+      <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+      <span class="block text-sm text-gray-500 text-center dark:text-gray-400">
+          © 2025 <a href="#" class="hover:underline">Bagunça™</a> Todos os direitos reservados.
+      </span>
+  </div>
+</footer>
+
 <!--Modal teste simples-->
-<div class="modal fade" id="exampleModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="form modal-content ">
       <div class="d-flex flex-column mb-2">
         <div class="d-flex justify-content-between align-items-center">
             <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
-            <button class="btn-close border-0 bg-transparent p-0"></button>
+            <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <legend class="fw-bold-5 h3">Cadastro</legend>
     </div>
