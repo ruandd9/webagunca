@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+    <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.02);
+        }
+
+        .calendar-day.today {
+            border: 2px solid #3B82F6;
+        }
+
+        .calendar-day.has-events {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #3B82F6;
+            margin: 2px;
+        }
+
+        .event-card {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .event-card:hover {
+            transform: translateX(4px);
+            border-left-color: #3B82F6;
+        }
+
+        .event-time {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-time i {
+            margin-right: 0.25rem;
+            font-size: 0.7rem;
+        }
+
+        .event-actions {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .event-card:hover .event-actions {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid {
+                gap: 0.25rem;
+            }
+            
+            .calendar-day {
+                font-size: 0.75rem;
+            }
+            
+            .week-day-header {
+                font-size: 0.75rem;
+            }
+            
+            .event-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .event-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .event-actions {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar - Desktop -->
+        <div class="hidden md:block w-64 bg-gray-800 p-4">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-8 overflow-auto">
+            <!-- Header -->
+            <header class="mb-4 md:mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold mb-1 md:mb-2">Calendário</h1>
+                        <p class="text-sm md:text-base text-gray-400">Visualize suas tarefas por data</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <button id="prevMonth" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="currentMonth" class="text-base md:text-lg font-semibold">Março 2024</span>
+                            <button id="nextMonth" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <button id="menuButton" class="md:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Calendar -->
+            <div class="bg-gray-800 rounded-lg p-3 md:p-6">
+                <!-- Week days header -->
+                <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2 md:mb-4">
+                    <div class="text-center text-gray-400 font-medium week-day-header">Dom</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Seg</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Ter</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Qua</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Qui</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Sex</div>
+                    <div class="text-center text-gray-400 font-medium week-day-header">Sáb</div>
+                </div>
+
+                <!-- Calendar grid -->
+                <div id="calendarGrid" class="calendar-grid">
+                    <!-- Os dias serão gerados dinamicamente via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Event List -->
+            <div class="mt-4 md:mt-8">
+                <h2 class="text-lg md:text-xl font-semibold mb-3 md:mb-4">Eventos do Dia</h2>
+                <div class="space-y-2 md:space-y-3">
+                    <div class="bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between event-card">
+                        <div class="flex items-center space-x-3 md:space-x-4">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-500 rounded-lg flex items-center justify-center event-icon">
+                                <i class="fas fa-tasks text-lg md:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-sm md:text-base">Reunião de Equipe</h3>
+                                <div class="event-time">
+                                    <i class="far fa-clock"></i>
+                                    <span>14:00 - 15:30</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-actions flex space-x-2">
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between event-card">
+                        <div class="flex items-center space-x-3 md:space-x-4">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-500 rounded-lg flex items-center justify-center event-icon">
+                                <i class="fas fa-code text-lg md:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-sm md:text-base">Desenvolvimento Frontend</h3>
+                                <div class="event-time">
+                                    <i class="far fa-clock"></i>
+                                    <span>16:00 - 18:00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-actions flex space-x-2">
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between event-card">
+                        <div class="flex items-center space-x-3 md:space-x-4">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-green-500 rounded-lg flex items-center justify-center event-icon">
+                                <i class="fas fa-utensils text-lg md:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-sm md:text-base">Almoço com Cliente</h3>
+                                <div class="event-time">
+                                    <i class="far fa-clock"></i>
+                                    <span>12:30 - 13:30</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event-actions flex space-x-2">
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-white p-2">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="fixed top-0 left-0 h-full w-64 bg-gray-800 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="p-2 rounded">
+                        <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
+                    </div>
+                    <button id="closeMenu" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                        <i class="fas fa-columns mr-3"></i>
+                        Quadros
+                    </a>
+                    <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                        <i class="fas fa-cog mr-3"></i>
+                        Configurações
+                    </a>
+                    <a href="./calendario.html" class="flex items-center text-white">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Calendario
+                    </a>
+                    <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                        <i class="fas fa-bell mr-3"></i>
+                        Notificações
+                    </a>
+                    <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                        <i class="fas fa-info-circle mr-3"></i>
+                        Informações
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para gerar o calendário
+        function generateCalendar(year, month) {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startingDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            
+            const monthNames = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+
+            // Atualiza o título do mês
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            // Adiciona os dias do mês anterior
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startingDay - 1; i >= 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day bg-gray-700 rounded-lg p-2 text-gray-500';
+                dayElement.innerHTML = `<span class="text-sm">${prevMonthLastDay - i}</span>`;
+                calendarGrid.appendChild(dayElement);
+            }
+
+            // Adiciona os dias do mês atual
+            const today = new Date();
+            for (let i = 1; i <= totalDays; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day bg-gray-700 rounded-lg p-2';
+                if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                dayElement.innerHTML = `<span class="text-sm">${i}</span>`;
+                calendarGrid.appendChild(dayElement);
+            }
+
+            // Adiciona os dias do próximo mês
+            const remainingDays = 42 - (startingDay + totalDays); // 42 = 6 semanas * 7 dias
+            for (let i = 1; i <= remainingDays; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day bg-gray-700 rounded-lg p-2 text-gray-500';
+                dayElement.innerHTML = `<span class="text-sm">${i}</span>`;
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Inicializa o calendário com o mês atual
+        let currentDate = new Date();
+        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+
+        // Adiciona eventos de clique para navegação
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        // Controle do menu mobile
+        const menuButton = document.getElementById('menuButton');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('-translate-x-full');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+        });
+    </script>
+</body>
+
+</html>
