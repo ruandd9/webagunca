@@ -6,41 +6,57 @@ body {
   color: white;
   font-family: "Inter", sans-serif;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 header {
-  margin: 2rem 1rem; /* Reduzir margens em mobile */
+  margin: 2rem 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* Permite que os itens quebrem linha */
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 0.5rem;
 }
 
 #logo-header {
   width: 55px;
   height: auto;
-  margin: 0 1rem; /* Reduzir margens */
+  margin: 0 0.5rem;
 }
 
 .header-home {
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   font-size: 13px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .header-home ul {
-  gap: 1.5rem; /* Reduzir espaçamento */
-  flex-wrap: wrap; /* Permite que os links quebrem linha */
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header-home ul,
-li,
-a {
-  gap: 85px;
+.header-home li,
+.header-home a {
+  gap: 0.75rem;
   list-style-type: none;
-  padding: 10;
+  padding: 0;
   display: flex;
   color: #cfcfcf;
   text-decoration: none;
+  box-sizing: border-box;
 }
 
 .text-content-homepage {
@@ -132,9 +148,6 @@ i {
   border: 1px solid #888;
   width: 100%;
   max-width: 460px;
-
-
-
 }
 
 /* animação de descida */
@@ -211,7 +224,6 @@ footer {
   border-radius: 0.5rem;
   padding-left: 10px;
   transition: 0.2s ease-in-out;
-
 }
 
 .form-group {
@@ -249,8 +261,6 @@ footer {
 .inputForm:focus-within {
   border: 1.5px solid #2d79f3;
 }
-
-
 
 .flex-row>div>label {
   font-size: 14px;
@@ -332,7 +342,6 @@ footer {
 }
 
 /*end insane checkbox*/
-
 
 .button-submit {
   display: flex;
