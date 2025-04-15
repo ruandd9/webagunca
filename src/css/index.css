@@ -408,7 +408,7 @@ footer {
 }
 
 .text-content-homepage h1 {
-  font-size: 8rem; /* Reduzir drasticamente em mobile */
+  font-size: 7rem; /* Reduzir drasticamente em mobile */
   line-height: 1;
   margin-bottom: 50px;
 }
@@ -430,9 +430,9 @@ footer {
   }
   
   .text-content-homepage h1 {
-    font-size: 150px;
+    font-size: 7rem; /* Reduzir drasticamente em mobile */
     letter-spacing: -4px;
-    transform: scaleX(1.05);
+    transform: scaleX(1.01);
   }
   
   .text-content-homepage p {
