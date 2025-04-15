@@ -62,7 +62,7 @@ header {
 }
 
 .text-content-homepage {
-  margin-top: 24vh;
+  margin-top: 12vh;
   text-align: center;
   justify-content: center;
   align-items: center;
@@ -84,7 +84,7 @@ header {
   -webkit-background-clip: text;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
-  transform: scaleX(1.1);
+  transform: scaleX(1.2);
   transform-origin: center;
 }
 
@@ -425,6 +425,10 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .text-content-homepage {
+    margin-top: 8vh;
+  }
+  
   .text-content-homepage h1 {
     font-size: 150px;
     letter-spacing: -4px;
@@ -438,6 +442,10 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .text-content-homepage {
+    margin-top: 6vh;
+  }
+  
   .text-content-homepage h1 {
     font-size: 100px;
     letter-spacing: -2px;
