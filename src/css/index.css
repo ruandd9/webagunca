@@ -495,3 +495,11 @@ html, body {
 body {
   flex: 1;
 }
+
+.header-link {
+  text-decoration: none;
+}
+
+.header-link:hover {
+  text-decoration: none;
+}
