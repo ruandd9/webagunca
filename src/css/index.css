@@ -74,7 +74,7 @@ header {
   font-size: 300px;
   font-weight: 900;
   letter-spacing: -8px;
-  line-height: 0.9;
+  line-height: 1.28 !important;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
