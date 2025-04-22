@@ -69,7 +69,7 @@ Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição 
 <h2 align="center">📸 Prévia do Design</h2>
 
 <p align="center">
-  <img src="URL_DA_IMAGEM_AQUI" alt="Design Responsivo do Bagunça" width="600">
+  <img src="preview-index" alt="Design Responsivo do Bagunça" width="600">
 </p>
 
 ---
