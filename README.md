@@ -101,7 +101,7 @@ Quer ajudar a tornar o **Bagunça** ainda melhor? Siga os passos abaixo!
 <h2 align="center">📸 Prévia de Contribuições</h2>
 
 <p align="center">
-  <img src="URL_DA_IMAGEM_AQUI" alt="Nova Funcionalidade do Bagunça" width="600">
+  <img src="preview-feature.png" alt="Nova Funcionalidade do Bagunça" width="600">
 </p>
 
 ---
