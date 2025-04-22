@@ -67,7 +67,7 @@ Para dúvidas, sugestões ou feedback, entre em contato pelo e-mail: **ruanolive
 
 ---
 
-## Sobre o SENAC-DF
+## Sobre
 
 O **Bagunça** foi desenvolvido como parte do **Projeto Integrador** do **SENAC-DF**, uma iniciativa que incentiva os alunos a aplicar conhecimentos técnicos em projetos práticos e inovadores. Este projeto destaca o compromisso do SENAC em preparar jovens para o mercado de trabalho, desenvolvendo soluções que atendem às demandas reais de organização e produtividade, especialmente para universitários que precisam gerenciar tarefas em equipe.
 
