@@ -1,128 +1,127 @@
-<div style="background-color: #f4f4f9; padding: 20px; border-radius: 10px; font-family: Arial, sans-serif;">
+<h1 align="center">🌟 Bagunça - Projeto Integrador SENAC-DF 🌟</h1>
 
-<h1 style="align: center; color: #2c3e50; font-size: 2.5em;">🌟 Bagunça - Projeto Integrador SENAC-DF 🌟</h1>
-
-<p style="text-align: center; color: #34495e; font-size: 1.2em;">
-Bem-vindo ao repositório do <strong>Bagunça</strong>, um website inovador para organização pessoal, desenvolvido como parte do Projeto Integrador (PI) do SENAC-DF. 📋 Este projeto foi cuidadosamente criado com foco em jovens universitários que trabalham em grupo e precisam gerenciar tarefas de forma prática e eficiente. 🚀
+<p align="center">
+  <strong>Bem-vindo ao repositório do Bagunça</strong>, um website inovador para organização pessoal, desenvolvido como parte do Projeto Integrador (PI) do SENAC-DF. 📋 Este projeto foi criado com foco em jovens universitários que trabalham em grupo e precisam gerenciar tarefas de forma prática e eficiente. 🚀
 </p>
 
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">📖 Descrição do Projeto</h2>
-<p style="color: #34495e;">
-O <strong>Bagunça</strong> é uma ferramenta projetada para auxiliar jovens universitários na gestão de suas tarefas e projetos colaborativos. Inspirado em plataformas como o Trello, utiliza metodologias ágeis, como Scrum e Kanban, para oferecer uma solução intuitiva e visual que ajuda a organizar o caos do dia a dia acadêmico e profissional.
+<p align="center">
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-blue?style=flat-square" alt="Status: Em Desenvolvimento"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/Licença-MIT-green?style=flat-square" alt="Licença: MIT"></a>
 </p>
-</div>
 
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">🛠️ Funcionalidades</h2>
-<ul style="color: #34495e;">
-    <li>✅ Criar, editar e excluir tarefas com facilidade.</li>
-    <li>✅ Organizar tarefas em listas personalizadas para diferentes projetos ou disciplinas.</li>
-    <li>✅ Acompanhar o progresso de atividades em grupo de forma clara e visual.</li>
-</ul>
-</div>
+---
 
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">🎯 Público-Alvo</h2>
-<p style="color: #34495e;">
-O <strong>Bagunça</strong> foi idealizado especialmente para jovens universitários que:
+<h2 align="center">📖 Descrição do Projeto</h2>
+
+O **Bagunça** é uma ferramenta projetada para auxiliar jovens universitários na gestão de suas tarefas e projetos colaborativos. Inspirado em plataformas como o Trello, utiliza metodologias ágeis, como Scrum e Kanban, para oferecer uma solução intuitiva e visual que ajuda a organizar o caos do dia a dia acadêmico e profissional.
+
+---
+
+<h2 align="center">🛠️ Funcionalidades</h2>
+
+- ✅ Criar, editar e excluir tarefas com facilidade.
+- ✅ Organizar tarefas em listas personalizadas para diferentes projetos ou disciplinas.
+- ✅ Acompanhar o progresso de atividades em grupo de forma clara e visual.
+
+---
+
+<h2 align="center">🎯 Público-Alvo</h2>
+
+O **Bagunça** foi idealizado especialmente para jovens universitários que:
+
+- 👥 Trabalham em projetos em grupo para disciplinas ou atividades extracurriculares.
+- ⚖️ Precisam gerenciar múltiplas tarefas, equilibrando estudos, trabalho e vida pessoal.
+- 🔍 Buscam uma ferramenta simples, acessível e visual para organizar suas responsabilidades.
+
+---
+
+<h2 align="center">🏫 Sobre o SENAC-DF</h2>
+
+Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição em formar profissionais capacitados, promovendo o aprendizado prático e o desenvolvimento de soluções inovadoras voltadas para as necessidades reais do mercado.
+
+---
+
+<h2 align="center">📸 Prévia da Plataforma</h2>
+
+<p align="center">
+  <img src="URL_DA_IMAGEM_AQUI" alt="Interface Principal do Bagunça" width="600">
 </p>
-<ul style="color: #34495e;">
-    <li>👥 Trabalham em projetos em grupo para disciplinas ou atividades extracurriculares.</li>
-    <li>⚖️ Precisam gerenciar múltiplas tarefas, equilibrando estudos, trabalho e vida pessoal.</li>
-    <li>🔍 Buscam uma ferramenta simples, acessível e visual para organizar suas responsabilidades.</li>
-</ul>
-</div>
 
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">🏫 Sobre o SENAC-DF</h2>
-<p style="color: #34495e;">
-Desenvolvido no SENAC-DF, o <strong>Bagunça</strong> reflete o compromisso da instituição em formar profissionais capacitados, promovendo o aprendizado prático e o desenvolvimento de soluções inovadoras voltadas para as necessidades reais do mercado.
+---
+
+<h2 align="center">💻 Tecnologias Utilizadas</h2>
+
+<p align="center">
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/Font_Awesome-339AF0?style=flat-square&logo=font-awesome&logoColor=white" alt="Font Awesome"></a>
 </p>
-</div>
 
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">📸 Prévia da Plataforma</h2>
-<p style="text-align: center; color: #34495e;">
-Adicione uma captura de tela da interface principal do Bagunça aqui.
+- 🌐 **HTML5 e CSS3**: Estrutura e design da interface.
+- ⚡ **JavaScript**: Interatividade e funcionalidades dinâmicas.
+- 🎨 **Tailwind CSS**: Estilização moderna e responsiva.
+- ✨ **Font Awesome**: Ícones para uma experiência visual mais rica.
+
+---
+
+<h2 align="center">📸 Prévia do Design</h2>
+
+<p align="center">
+  <img src="URL_DA_IMAGEM_AQUI" alt="Design Responsivo do Bagunça" width="600">
 </p>
-</div>
 
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">💻 Tecnologias Utilizadas</h2>
-<p style="color: #34495e;">
-Veja as ferramentas que dão vida ao <strong>Bagunça</strong>!
+---
+
+<h2 align="center">👥 Contribuidores</h2>
+
+Conheça os talentos por trás do **Bagunça**!
+
+- 🧑‍💻 **Douglas Araújo**
+- 🧑‍💻 **Raphael Melo**
+- 🧑‍💻 **Ruan Lobo**
+- 🧑‍💻 **Talisson Leandro**
+- 🧑‍💻 **Yan Basílio**
+
+---
+
+<h2 align="center">🤝 Como Contribuir</h2>
+
+Quer ajudar a tornar o **Bagunça** ainda melhor? Siga os passos abaixo!
+
+1. 🍴 Faça um fork deste repositório.
+2. 🌿 Crie uma branch para suas alterações: `git checkout -b minha-contribuicao`
+3. 💾 Implemente suas melhorias e faça commit: `git commit -m 'Adicionando minha contribuição'`
+4. 🚀 Envie para o repositório remoto: `git push origin minha-contribuicao`
+5. 📬 Abra um Pull Request para revisão.
+
+---
+
+<h2 align="center">📸 Prévia de Contribuições</h2>
+
+<p align="center">
+  <img src="URL_DA_IMAGEM_AQUI" alt="Nova Funcionalidade do Bagunça" width="600">
 </p>
-<ul style="color: #34495e;">
-    <li>🌐 <strong>HTML5 e CSS3</strong>: Estrutura e design da interface.</li>
-    <li>⚡ <strong>JavaScript</strong>: Interatividade e funcionalidades dinâmicas.</li>
-    <li>🎨 <strong>Tailwind CSS</strong>: Estilização moderna e responsiva.</li>
-    <li>✨ <strong>Font Awesome</strong>: Ícones para uma experiência visual mais rica.</li>
-</ul>
-</div>
 
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">📸 Prévia do Design</h2>
-<p style="text-align: center; color: #34495e;">
-Adicione uma captura de tela mostrando o design responsivo ou uma funcionalidade específica.
-</p>
-</div>
+---
 
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">👥 Contribuidores</h2>
-<p style="color: #34495e;">
-Conheça os talentos por trás do <strong>Bagunça</strong>!
-</p>
-<ul style="color: #34495e;">
-    <li>🧑‍💻 Douglas Araújo</li>
-    <li>🧑‍💻 Raphael Melo</li>
-    <li>🧑‍💻 Ruan Lobo</li>
-    <li>🧑‍💻 Talisson Leandro</li>
-    <li>🧑‍💻 Yan Basílio</li>
-</ul>
-</div>
+<h2 align="center">📧 Contato</h2>
 
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">🤝 Como Contribuir</h2>
-<p style="color: #34495e;">
-Quer ajudar a tornar o <strong>Bagunça</strong> ainda melhor? Siga os passos abaixo!
-</p>
-<ul style="color: #34495e;">
-    <li>🍴 Faça um fork deste repositório.</li>
-    <li>🌿 Crie uma branch para suas alterações: <code>git checkout -b minha-contribuicao</code></li>
-    <li>💾 Implemente suas melhorias e faça commit: <code>git commit -m 'Adicionando minha contribuição'</code></li>
-    <li>🚀 Envie para o repositório remoto: <code>git push origin minha-contribuicao</code></li>
-    <li>📬 Abra um Pull Request para revisão.</li>
-</ul>
-</div>
-
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">📸 Prévia de Contribuições</h2>
-<p style="text-align: center; color: #34495e;">
-Adicione uma captura de tela de uma funcionalidade nova ou da interface de contribuição.
-</p>
-</div>
-
-<div style="background-color: #e6f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">📧 Contato</h2>
-<p style="color: #34495e;">
 Tem dúvidas, sugestões ou feedback? Entre em contato!
-</p>
-<p style="color: #34495e;">
-📩 <strong>Email</strong>: <a href="mailto:ruanoliveiralobo@gmail.com" style="color: #2980b9;">ruanoliveiralobo@gmail.com</a>
-</p>
-</div>
 
-<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-<h2 style="text-align: center; color: #2980b9;">ℹ️ Sobre</h2>
-<p style="color: #34495e;">
-O <strong>Bagunça</strong> foi desenvolvido como parte do Projeto Integrador do SENAC-DF, uma iniciativa que incentiva os alunos a aplicar conhecimentos técnicos em projetos práticos e inovadores. Este projeto destaca o compromisso do SENAC em preparar jovens para o mercado de trabalho, desenvolvendo soluções que atendem às demandas reais de organização e produtividade, especialmente para universitários que precisam gerenciar tarefas em equipe.
-</p>
-</div>
+- 📩 **Email**: [ruanoliveiralobo@gmail.com](mailto:ruanoliveiralobo@gmail.com)
 
-<h1 style="text-align: center; color: #2c3e50; font-size: 2em;">⭐ Obrigado por conhecer o Bagunça! ⭐</h1>
-<p style="text-align: center; color: #34495e; font-size: 1.2em;">
-Junte-se a nós e transforme a organização de tarefas em algo simples e colaborativo para jovens universitários! 🚀
-</p>
+---
 
-</div>
+<h2 align="center">ℹ️ Sobre</h2>
+
+O **Bagunça** foi desenvolvido como parte do Projeto Integrador do SENAC-DF, uma iniciativa que incentiva os alunos a aplicar conhecimentos técnicos em projetos práticos e inovadores. Este projeto destaca o compromisso do SENAC em preparar jovens para o mercado de trabalho, desenvolvendo soluções que atendem às demandas reais de organização e produtividade, especialmente para universitários que precisam gerenciar tarefas em equipe.
+
+---
+
+<h1 align="center">⭐ Obrigado por conhecer o Bagunça! ⭐</h1>
+
+<p align="center">
+  Junte-se a nós e transforme a organização de tarefas em algo simples e colaborativo para jovens universitários! 🚀
+</p>
