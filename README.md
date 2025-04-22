@@ -44,7 +44,7 @@ Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição 
 <h2 align="center">📸 Prévia da Plataforma</h2>
 
 <p align="center">
-  <img src="URL_DA_IMAGEM_AQUI" alt="Interface Principal do Bagunça" width="600">
+  <img src="image.png" alt="Interface Principal do Bagunça" width="600">
 </p>
 
 ---
