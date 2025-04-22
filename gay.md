@@ -1,6 +1,6 @@
 <div style="background-color: #f4f4f9; padding: 20px; border-radius: 10px; font-family: Arial, sans-serif;">
 
-<h1 style="text-align: center; color: #2c3e50; font-size: 2.5em;">🌟 Bagunça - Projeto Integrador SENAC-DF 🌟</h1>
+<h1 style="align: center; color: #2c3e50; font-size: 2.5em;">🌟 Bagunça - Projeto Integrador SENAC-DF 🌟</h1>
 
 <p style="text-align: center; color: #34495e; font-size: 1.2em;">
 Bem-vindo ao repositório do <strong>Bagunça</strong>, um website inovador para organização pessoal, desenvolvido como parte do Projeto Integrador (PI) do SENAC-DF. 📋 Este projeto foi cuidadosamente criado com foco em jovens universitários que trabalham em grupo e precisam gerenciar tarefas de forma prática e eficiente. 🚀
