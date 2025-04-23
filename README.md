@@ -77,11 +77,13 @@ Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição 
 
 Conheça os talentos por trás do **Bagunça**!
 
-<li><a src="https://github.com/YanFellippe">**Yan Fellippe** - Gerente do Projeto e Desenvolvedor Fullstack</a></li>
-<li><a src="https://github.com/ruandd9">**Ruan Lobo** - Subgerente e Desenvolvedor Fullstack</a></li>
-<li><a src="https://github.com/talissonleandro">**Talisson Leandro** - Desenvolvedor Fullstack e Designer</a></li>
-<li><a src="https://github.com/douglasarj">**Douglas Araújo** - Desenvolvedor Fullstack e Designer</a></li>
-<li><a src="https://github.com/dragonkiri">**Raphael Melo** - Desenvolvedor Fullstack e Designer</a></li>
+<ul>
+  <li><a href="https://github.com/YanFellippe"><strong>Yan Fellippe</strong></a> - Gerente do Projeto e Desenvolvedor Fullstack</li>
+  <li><a href="https://github.com/ruandd9"><strong>Ruan Lobo</strong></a> - Subgerente e Desenvolvedor Fullstack</li>
+  <li><a href="https://github.com/talissonleandro"><strong>Talisson Leandro</strong></a> - Desenvolvedor Fullstack e Designer</li>
+  <li><a href="https://github.com/douglasarj"><strong>Douglas Araújo</strong></a> - Desenvolvedor Fullstack e Designer</li>
+  <li><a href="https://github.com/dragonkiri"><strong>Raphael Melo</strong></a> - Desenvolvedor Fullstack e Designer</li>
+</ul>
 
 ---
 
