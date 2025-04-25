@@ -7,6 +7,14 @@ window.filters = {
 window.draggedCard = null;
 window.originalList = null;
 
+// Variáveis globais para suporte touch
+let touchStartY = 0;
+let touchStartX = 0;
+let initialTouchY = 0;
+let initialTouchX = 0;
+let touchTimeout;
+let touchClone = null;
+
 // Funções principais
 window.saveBoardState = function() {
     localStorage.setItem('boardState', JSON.stringify(window.boardState));
@@ -248,27 +256,15 @@ function createCardElement(card) {
     div.draggable = true;
     div.dataset.cardId = card.id;
     
-    // Adiciona eventos de drag & drop
-    div.addEventListener('dragstart', (e) => {
-        window.draggedCard = e.target;
-        window.originalList = e.target.closest('.list');
-        e.target.classList.add('opacity-50');
-        
-        // Necessário para Firefox
-        e.dataTransfer.setData('text/plain', '');
-    });
+    // Eventos de drag & drop para desktop
+    div.addEventListener('dragstart', handleDragStart);
+    div.addEventListener('dragend', handleDragEnd);
     
-    div.addEventListener('dragend', (e) => {
-        e.target.classList.remove('opacity-50');
-        window.draggedCard = null;
-        window.originalList = null;
-        
-        // Remove classes de hover de todas as listas
-        document.querySelectorAll('.list-content').forEach(list => {
-            list.classList.remove('dragging-over');
-        });
-    });
-    
+    // Eventos touch para dispositivos móveis
+    div.addEventListener('touchstart', handleTouchStart, { passive: false });
+    div.addEventListener('touchmove', handleTouchMove, { passive: false });
+    div.addEventListener('touchend', handleTouchEnd);
+
     div.innerHTML = `
         <div class="flex justify-between items-start mb-3">
             <div class="flex space-x-2">
@@ -317,6 +313,154 @@ function createCardElement(card) {
     });
 
     return div;
+}
+
+// Funções auxiliares para drag & drop
+function handleDragStart(e) {
+    window.draggedCard = e.target;
+    window.originalList = e.target.closest('.list');
+    e.target.classList.add('opacity-50');
+    e.dataTransfer.setData('text/plain', '');
+}
+
+function handleDragEnd(e) {
+    e.target.classList.remove('opacity-50');
+    window.draggedCard = null;
+    window.originalList = null;
+    
+    document.querySelectorAll('.list-content').forEach(list => {
+        list.classList.remove('dragging-over');
+    });
+}
+
+// Funções para suporte touch
+function handleTouchStart(e) {
+    const touch = e.touches[0];
+    touchStartY = touch.clientY;
+    touchStartX = touch.clientX;
+    initialTouchY = touch.clientY;
+    initialTouchX = touch.clientX;
+    
+    // Inicia um timer para diferenciar entre toque para scroll e toque para drag
+    touchTimeout = setTimeout(() => {
+        window.draggedCard = e.target;
+        window.originalList = e.target.closest('.list');
+        e.target.classList.add('opacity-50');
+        
+        // Cria uma cópia visual do cartão para feedback
+        touchClone = e.target.cloneNode(true);
+        touchClone.id = 'dragging-clone';
+        touchClone.style.position = 'fixed';
+        touchClone.style.top = `${touch.clientY - 20}px`;
+        touchClone.style.left = `${touch.clientX - 20}px`;
+        touchClone.style.width = `${e.target.offsetWidth}px`;
+        touchClone.style.pointerEvents = 'none';
+        touchClone.style.opacity = '0.8';
+        touchClone.style.zIndex = '1000';
+        touchClone.style.transform = 'scale(1.05)';
+        touchClone.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        document.body.appendChild(touchClone);
+    }, 200);
+}
+
+function handleTouchMove(e) {
+    if (!window.draggedCard) return;
+    
+    // Previne o scroll apenas quando estamos em modo de drag
+    if (touchClone) {
+        e.preventDefault();
+    }
+    
+    const touch = e.touches[0];
+    
+    if (touchClone) {
+        touchClone.style.top = `${touch.clientY - 20}px`;
+        touchClone.style.left = `${touch.clientX - 20}px`;
+        
+        // Detecta lista sob o toque
+        const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const listContent = elemBelow?.closest('.list-content');
+        
+        document.querySelectorAll('.list-content').forEach(list => {
+            list.classList.remove('dragging-over');
+        });
+        
+        if (listContent) {
+            listContent.classList.add('dragging-over');
+            
+            // Adiciona uma prévia visual do card na lista de destino
+            const previewCard = document.createElement('div');
+            previewCard.className = 'card-preview';
+            previewCard.style.height = `${window.draggedCard.offsetHeight}px`;
+            previewCard.style.margin = '0.5rem 0';
+            previewCard.style.border = '2px dashed rgba(255, 255, 255, 0.3)';
+            previewCard.style.borderRadius = '0.375rem';
+            
+            // Remove a prévia anterior se existir
+            const existingPreview = listContent.querySelector('.card-preview');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            
+            // Insere a prévia na posição correta
+            const cards = Array.from(listContent.children);
+            const cardBelow = cards.find(card => {
+                const rect = card.getBoundingClientRect();
+                return touch.clientY < rect.bottom;
+            });
+            
+            if (cardBelow) {
+                listContent.insertBefore(previewCard, cardBelow);
+            } else {
+                listContent.appendChild(previewCard);
+            }
+        }
+    }
+}
+
+function handleTouchEnd(e) {
+    clearTimeout(touchTimeout);
+    
+    if (!window.draggedCard) return;
+    
+    if (touchClone) {
+        touchClone.remove();
+        touchClone = null;
+    }
+    
+    // Remove todas as prévias
+    document.querySelectorAll('.card-preview').forEach(preview => {
+        preview.remove();
+    });
+    
+    const touch = e.changedTouches[0];
+    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const listContent = elemBelow?.closest('.list-content');
+    
+    if (listContent) {
+        const targetList = listContent.closest('.list');
+        const targetListId = targetList.id;
+        const sourceListId = window.originalList.id;
+        const cardId = window.draggedCard.dataset.cardId;
+        
+        // Move o cartão para a nova lista
+        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+        
+        if (cardIndex !== -1) {
+            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
+            window.boardState.lists[targetListId].push(movedCard);
+            window.saveBoardState();
+            window.renderBoard();
+        }
+    }
+    
+    window.draggedCard.classList.remove('opacity-50');
+    window.draggedCard = null;
+    window.originalList = null;
+    
+    document.querySelectorAll('.list-content').forEach(list => {
+        list.classList.remove('dragging-over');
+    });
 }
 
 // Inicializa os eventos de filtro e lixeira quando o documento estiver pronto
