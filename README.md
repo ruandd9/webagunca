@@ -73,6 +73,14 @@ Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição 
 
 ---
 
+<h2 align="center">📸 Mais Prévias</h2>
+
+<p align="center">
+  <img src="preview-feature.png" alt="Nova Funcionalidade do Bagunça" width="600">
+</p>
+
+---
+
 <h2 align="center">👥 Contribuidores</h2>
 
 Conheça os talentos por trás do **Bagunça**!
@@ -96,14 +104,6 @@ Quer ajudar a tornar o **Bagunça** ainda melhor? Siga os passos abaixo!
 3. 💾 Implemente suas melhorias e faça commit: `git commit -m 'Adicionando minha contribuição'`
 4. 🚀 Envie para o repositório remoto: `git push origin minha-contribuicao`
 5. 📬 Abra um Pull Request para revisão.
-
----
-
-<h2 align="center">📸 Prévia de Contribuições</h2>
-
-<p align="center">
-  <img src="preview-feature.png" alt="Nova Funcionalidade do Bagunça" width="600">
-</p>
 
 ---
 
