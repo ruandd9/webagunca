@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Sidebar -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./chat-page.html" class="flex items-center text-white hover:text-white">
+                    <i class="fas fa-comments mr-3"></i>
+                    Chat
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-11 mt-16 md:mt-0 overflow-y-auto container">
+            <!-- Header -->
+            <header class="py-2 mb-5">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div class="flex items-center space-x-4 md:space-x-11">
+                        <div class="nav-dropdown relative">
+                            <a href="#" class="text-white text-lg flex items-center space-x-2">
+                                <i class="fas fa-comments mr-3"></i>
+                                <span>CHAT</span>
+                            </a>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="pesquisar contatos..." class="bg-white text-black px-4 py-1 rounded-full w-full md:w-96">
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 relative">
+                        <div class="dropdown">
+                            <div class="bg-blue-500 text-white p-2 rounded-full cursor-pointer" style="width: 40px; height: 40px; text-align: center;">YF</div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="../index.html">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <hr class="mb-10">
+            <!-- Contacts area -->
+            <div class="flex items-start flex-col gap-y-4">
+                <!-- Container do contato 1 -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            RM
+                        </div>
+                    </div>
+                    <!-- Informações do usuário -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Raphael Marques</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                <!-- Container do contato 2 -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            YF
+                        </div>
+                    </div>
+                    <!-- Informações do usuário -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Yan Fellippe</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                <!-- Container do contato 3 -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            DA
+                        </div>
+                    </div>
+                    <!-- Informações do usuário -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Douglas Araújo</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                <!-- Container do contato 4 -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            RL
+                        </div>
+                    </div>
+                    <!-- Informações do usuário -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Ruan Lobo</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                <!-- Container do contato 5 -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            TL
+                        </div>
+                    </div>
+                    <!-- Informações do usuário -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Talisson Leandro</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                <!-- Container do grupo -->
+                <div class="flex w-64 bg-[#3E4C70] text-white p-3">
+                    <!-- Ícone do perfil -->
+                    <div class="flex flex-col items-center justify-center mr-4">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mb-2 mt-2">
+                            <img src="/webagunca/src/img/logoBag.png" alt="bagunça-logo" class="w-7 h-7">
+                        </div>
+                    </div>
+                    <!-- Informações do grupo -->
+                    <div class="flex flex-col justify-between">
+                        <p class="font-bold mb-1">Bagunça</p>
+                        <p class="text-sm text-gray-300">precisamos conversar a respeito de...</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Carregar tema salvo
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
