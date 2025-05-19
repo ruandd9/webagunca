@@ -138,14 +138,118 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Área de mensagens */
+/* Área de mensagens com suporte a temas */
 .chat-messages-area {
     display: flex;
     flex-direction: column;
     background-color: var(--bg-dark);
     height: 100%;
     position: relative;
-    overflow: hidden; /* Previne scroll duplo */
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+/* Estilos do menu de temas */
+.theme-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    min-width: 180px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-dropdown.active {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.theme-option:hover {
+    background-color: var(--bg-tertiary);
+    transform: translateX(2px);
+}
+
+.theme-option .color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease;
+}
+
+.theme-option:hover .color-preview {
+    transform: scale(1.1);
+}
+
+.theme-option span:last-child {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Ajuste para o botão de tema */
+#theme-button {
+    position: relative;
+}
+
+#theme-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: var(--accent);
+    transition: width 0.2s ease;
+}
+
+#theme-button:hover::after {
+    width: 80%;
+}
+
+/* Animação do dropdown */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajuste para mensagens com diferentes fundos */
+.message.outgoing {
+    background-color: var(--chat-outgoing);
+    border-bottom-right-radius: 3px;
+}
+
+.message.incoming {
+    background-color: var(--chat-incoming);
+    border-bottom-left-radius: 3px;
+}
+
+/* Ajuste para o container de mensagens com diferentes fundos */
+.messages-container {
+    background-color: transparent;
+    transition: background-color 0.3s ease;
 }
 
 /* Ajuste para o header do chat */
@@ -202,18 +306,6 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-/* Mensagens enviadas (suas) */
-.message.outgoing {
-    background-color: var(--chat-outgoing);
-    border-bottom-right-radius: 3px;
-}
-
-/* Mensagens recebidas (de outras pessoas) */
-.message.incoming {
-    background-color: var(--chat-incoming);
-    border-bottom-left-radius: 3px;
 }
 
 .message-content {
@@ -499,4 +591,49 @@ body {
     font-weight: 500;
     color: white;
     flex-shrink: 0;
+}
+
+/* Botão Adicionar Contato */
+.add-contact-button {
+    padding: 30px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-dark);
+}
+
+.add-contact-button button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: var(--accent);
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.add-contact-button button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.add-contact-button button:active {
+    transform: translateY(0);
+}
+
+.add-contact-button i {
+    font-size: 0.875rem;
+}
+
+/* Ajuste responsivo para o botão */
+@media (max-width: 768px) {
+    .add-contact-button {
+        padding: 12px;
+    }
+    
+    .add-contact-button button {
+        padding: 10px 14px;
+    }
 } 

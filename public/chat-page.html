@@ -138,6 +138,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Botão Adicionar Contato -->
+                        <div class="add-contact-button">
+                            <button class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors duration-200">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Adicionar Contato</span>
+                            </button>
+                        </div>
                     </aside>
 
                     <!-- Área de Mensagens -->
@@ -158,9 +166,33 @@
                                 <button class="action-button">
                                     <i class="fas fa-video"></i>
                                 </button>
-                                <button class="action-button">
-                                    <i class="fas fa-info-circle"></i>
-                                </button>
+                                <div class="relative">
+                                    <button class="action-button" id="theme-button">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <div class="theme-dropdown" id="theme-dropdown">
+                                        <div class="theme-option" data-theme="default">
+                                            <span class="color-preview" style="background-color: var(--bg-dark)"></span>
+                                            <span>Padrão</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="light">
+                                            <span class="color-preview" style="background-color: #F3F4F6"></span>
+                                            <span>Claro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-blue">
+                                            <span class="color-preview" style="background-color: #1f457e"></span>
+                                            <span>Azul Escuro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-purple">
+                                            <span class="color-preview" style="background-color: #1e1b4b"></span>
+                                            <span>Roxo Escuro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-green">
+                                            <span class="color-preview" style="background-color: #1b2d1b"></span>
+                                            <span>Verde Escuro</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -390,6 +422,57 @@
 
         // Scroll automático para a última mensagem ao carregar
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Controle do menu de temas
+        const themeButton = document.getElementById('theme-button');
+        const themeDropdown = document.getElementById('theme-dropdown');
+        const chatMessagesArea = document.querySelector('.chat-messages-area');
+
+        // Tema atual
+        let currentTheme = 'default';
+
+        // Função para aplicar o tema
+        function applyTheme(theme) {
+            const themes = {
+                'default': 'var(--bg-dark)',
+                'light': '#F3F4F6',
+                'dark-blue': '#1f547e',           // Azul escuro mais intenso
+                'dark-purple': '#1e1b4b',         // Roxo escuro mais intenso
+                'dark-green': '#1b2d1b'
+            };
+
+            chatMessagesArea.style.backgroundColor = themes[theme];
+            currentTheme = theme;
+            localStorage.setItem('chatTheme', theme);
+        }
+
+        // Carregar tema salvo
+        const savedTheme = localStorage.getItem('chatTheme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        }
+
+        // Toggle do dropdown
+        themeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeDropdown.classList.toggle('active');
+        });
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!themeButton.contains(e.target) && !themeDropdown.contains(e.target)) {
+                themeDropdown.classList.remove('active');
+            }
+        });
+
+        // Seleção de tema
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const theme = option.dataset.theme;
+                applyTheme(theme);
+                themeDropdown.classList.remove('active');
+            });
+        });
     </script>
 
     <style>
@@ -408,6 +491,51 @@
         .scroll-observer {
             height: 1px;
             width: 100%;
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .theme-option:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .color-preview {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </body>
