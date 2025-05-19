@@ -82,7 +82,7 @@
                     </div>
                 </header>
 
-                <hr class="mb-10">
+                <hr class="mb-7">
 
                 <!-- Container do Chat -->
                 <div class="chat-container">
@@ -164,26 +164,39 @@
                             </div>
                         </div>
 
+                        <!-- Container de mensagens -->
                         <div class="messages-container">
-                            <div class="message outgoing">
-                                <div class="message-content">
-                                    Olá! Como está o desenvolvimento do projeto?
+                            <!-- Mensagem de saída (sua) -->
+                            <div class="message-wrapper outgoing">
+                                <div class="message-avatar">YF</div>
+                                <div class="message outgoing">
+                                    <div class="message-content">
+                                        Olá! Como está o desenvolvimento do projeto?
+                                    </div>
+                                    <span class="message-time">14:30</span>
                                 </div>
-                                <span class="message-time">14:30</span>
                             </div>
 
-                            <div class="message incoming">
-                                <div class="message-content">
-                                    Tudo bem! Estou finalizando as últimas alterações.
+                            <!-- Mensagem de entrada (outra pessoa) -->
+                            <div class="message-wrapper incoming">
+                                <div class="message-avatar">RM</div>
+                                <div class="message incoming">
+                                    <div class="message-content">
+                                        Tudo bem! Estou finalizando as últimas alterações.
+                                    </div>
+                                    <span class="message-time">14:31</span>
                                 </div>
-                                <span class="message-time">14:31</span>
                             </div>
 
-                            <div class="message outgoing">
-                                <div class="message-content">
-                                    Ótimo! Podemos revisar amanhã?
+                            <!-- Mensagem de saída (sua) -->
+                            <div class="message-wrapper outgoing">
+                                <div class="message-avatar">YF</div>
+                                <div class="message outgoing">
+                                    <div class="message-content">
+                                        Ótimo! Podemos revisar amanhã?
+                                    </div>
+                                    <span class="message-time">14:32</span>
                                 </div>
-                                <span class="message-time">14:32</span>
                             </div>
                         </div>
 
@@ -216,6 +229,11 @@
         const userAvatar = document.querySelector('.dropdown');
         const dropdownMenu = document.querySelector('.dropdown-content');
 
+        // Elementos do chat
+        const chatInput = document.querySelector('.chat-input');
+        const sendButton = document.querySelector('.send-button');
+        const messagesContainer = document.querySelector('.messages-container');
+
         userAvatar.addEventListener('click', () => {
             dropdownMenu.classList.toggle('active');
         });
@@ -236,28 +254,133 @@
             });
         });
 
-        // Envio de mensagem
-        const chatInput = document.querySelector('.chat-input');
-        const sendButton = document.querySelector('.send-button');
-        const messagesContainer = document.querySelector('.messages-container');
+        // Simulação de mensagens antigas (em um caso real, isso viria do backend)
+        const oldMessages = [
+            {
+                type: 'incoming',
+                content: 'Vamos marcar uma reunião para discutir o projeto?',
+                time: '14:25'
+            },
+            {
+                type: 'outgoing',
+                content: 'Claro! Que tal amanhã às 10h?',
+                time: '14:26'
+            },
+            {
+                type: 'incoming',
+                content: 'Perfeito! Vou preparar a apresentação.',
+                time: '14:27'
+            },
+            {
+                type: 'outgoing',
+                content: 'Ótimo! Vou revisar o código até lá.',
+                time: '14:28'
+            },
+            {
+                type: 'incoming',
+                content: 'Não esqueça de atualizar a documentação.',
+                time: '14:29'
+            }
+        ];
 
+        let currentPage = 1;
+        const messagesPerPage = 10;
+        let isLoading = false;
+
+        // Função para criar elemento de mensagem
+        function createMessageElement(message, isOutgoing = true) {
+            const avatar = isOutgoing ? 'YF' : 'RM'; // Em um caso real, isso viria do usuário atual
+            const messageHTML = `
+                <div class="message-wrapper ${isOutgoing ? 'outgoing' : 'incoming'}">
+                    <div class="message-avatar">${avatar}</div>
+                    <div class="message ${isOutgoing ? 'outgoing' : 'incoming'}">
+                        <div class="message-content">
+                            ${message.content}
+                        </div>
+                        <span class="message-time">${message.time}</span>
+                    </div>
+                </div>
+            `;
+            return messageHTML;
+        }
+
+        // Função para carregar mensagens antigas
+        function loadOldMessages() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.className = 'loading-messages';
+            loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando mensagens...';
+            messagesContainer.insertBefore(loadingIndicator, messagesContainer.firstChild);
+
+            setTimeout(() => {
+                const start = (currentPage - 1) * messagesPerPage;
+                const end = start + messagesPerPage;
+                const messagesToLoad = oldMessages.slice(start, end);
+
+                if (messagesToLoad.length > 0) {
+                    const fragment = document.createDocumentFragment();
+                    messagesToLoad.forEach(message => {
+                        const messageElement = document.createElement('div');
+                        messageElement.innerHTML = createMessageElement(message, message.type === 'outgoing');
+                        fragment.appendChild(messageElement.firstElementChild);
+                    });
+
+                    messagesContainer.removeChild(loadingIndicator);
+                    const firstMessage = messagesContainer.firstChild;
+                    messagesContainer.insertBefore(fragment, firstMessage);
+
+                    currentPage++;
+                } else {
+                    messagesContainer.removeChild(loadingIndicator);
+                    const noMoreMessages = document.createElement('div');
+                    noMoreMessages.className = 'no-more-messages';
+                    noMoreMessages.textContent = 'Não há mais mensagens para carregar';
+                    messagesContainer.insertBefore(noMoreMessages, messagesContainer.firstChild);
+                }
+
+                isLoading = false;
+            }, 1000);
+        }
+
+        // Observador de scroll para detectar quando chegar ao topo
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !isLoading) {
+                    loadOldMessages();
+                }
+            });
+        }, {
+            root: messagesContainer,
+            threshold: 0.1
+        });
+
+        // Adicionar elemento observador no topo do container
+        const observerElement = document.createElement('div');
+        observerElement.className = 'scroll-observer';
+        messagesContainer.insertBefore(observerElement, messagesContainer.firstChild);
+        observer.observe(observerElement);
+
+        // Função de envio de mensagem
         function sendMessage() {
             const message = chatInput.value.trim();
             if (message) {
-                const messageHTML = `
-                    <div class="message outgoing">
-                        <div class="message-content">
-                            ${message}
-                        </div>
-                        <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                    </div>
-                `;
-                messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+                const messageHTML = createMessageElement({
+                    content: message,
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                }, true);
+                
+                const messageElement = document.createElement('div');
+                messageElement.innerHTML = messageHTML;
+                messagesContainer.appendChild(messageElement.firstElementChild);
+                
                 chatInput.value = '';
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                messageElement.firstElementChild.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
+        // Event listeners para envio de mensagem
         sendButton.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -265,8 +388,27 @@
             }
         });
 
-        // Scroll automático para a última mensagem
+        // Scroll automático para a última mensagem ao carregar
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     </script>
+
+    <style>
+        .loading-messages,
+        .no-more-messages {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .loading-messages i {
+            margin-right: 0.5rem;
+        }
+
+        .scroll-observer {
+            height: 1px;
+            width: 100%;
+        }
+    </style>
 </body>
 </html>
