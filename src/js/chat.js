@@ -1,3 +1,287 @@
+// Gerenciamento de Contatos
+class ContactManager {
+    constructor() {
+        // Contatos padrão que já existiam
+        const defaultContacts = [
+            {
+                id: 1,
+                firstName: 'Raphael',
+                lastName: 'Marques',
+                initials: 'RM',
+                lastMessage: 'Vamos discutir o novo projeto',
+                lastMessageTime: '14:30',
+                online: true,
+                profileColor: 'blue-500'
+            },
+            {
+                id: 2,
+                firstName: 'Yan',
+                lastName: 'Fellippe',
+                initials: 'YF',
+                lastMessage: 'Reunião amanhã às 10h',
+                lastMessageTime: '13:45',
+                online: true,
+                profileColor: 'blue-500'
+            }
+        ];
+
+        // Carrega contatos do localStorage ou usa os contatos padrão
+        const savedContacts = JSON.parse(localStorage.getItem('chatContacts'));
+        this.contacts = savedContacts || defaultContacts;
+        
+        // Se não houver contatos salvos, salva os contatos padrão
+        if (!savedContacts) {
+            this.saveContacts();
+        }
+
+        this.modal = document.getElementById('contactModal');
+        this.form = document.getElementById('contactForm');
+        this.addContactButton = document.querySelector('.add-contact-button button');
+        this.closeModalButton = document.getElementById('closeModal');
+        this.cancelButton = document.getElementById('cancelContact');
+        this.deleteButton = document.getElementById('deleteContact');
+        this.contactsList = document.querySelector('.contacts-list');
+        this.contextMenu = document.getElementById('contactContextMenu');
+        this.modalTitle = document.getElementById('modalTitle');
+        this.contactIdInput = document.getElementById('contactId');
+        this.profileColorInput = document.getElementById('profileColor');
+
+        this.initializeEventListeners();
+        this.renderContacts();
+    }
+
+    initializeEventListeners() {
+        // Abrir modal para novo contato
+        this.addContactButton.addEventListener('click', () => this.openModal());
+
+        // Fechar modal
+        this.closeModalButton.addEventListener('click', () => this.closeModal());
+        this.cancelButton.addEventListener('click', () => this.closeModal());
+
+        // Fechar modal ao clicar fora
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+
+        // Submeter formulário
+        this.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveContact();
+        });
+
+        // Botão de excluir
+        this.deleteButton.addEventListener('click', () => {
+            const contactId = parseInt(this.contactIdInput.value);
+            if (contactId) {
+                this.deleteContact(contactId);
+            }
+        });
+
+        // Opções de cor
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const color = option.dataset.color;
+                this.profileColorInput.value = color;
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    opt.classList.remove('ring-2', 'ring-white');
+                });
+                option.classList.add('ring-2', 'ring-white');
+            });
+        });
+
+        // Menu de contexto
+        document.addEventListener('contextmenu', (e) => {
+            const contactItem = e.target.closest('.contact-item');
+            if (contactItem) {
+                e.preventDefault();
+                this.showContextMenu(e, contactItem);
+            }
+        });
+
+        // Fechar menu de contexto ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#contactContextMenu') && !e.target.closest('.contact-item')) {
+                this.contextMenu.classList.add('hidden');
+            }
+        });
+
+        // Eventos do menu de contexto
+        this.contextMenu.querySelector('.edit-contact').addEventListener('click', () => {
+            const contactId = parseInt(this.contextMenu.dataset.contactId);
+            this.editContact(contactId);
+            this.contextMenu.classList.add('hidden');
+        });
+
+        this.contextMenu.querySelector('.delete-contact').addEventListener('click', () => {
+            const contactId = parseInt(this.contextMenu.dataset.contactId);
+            this.deleteContact(contactId);
+            this.contextMenu.classList.add('hidden');
+        });
+    }
+
+    showContextMenu(e, contactItem) {
+        const contactId = contactItem.dataset.contactId;
+        this.contextMenu.dataset.contactId = contactId;
+        this.contextMenu.style.left = `${e.pageX}px`;
+        this.contextMenu.style.top = `${e.pageY}px`;
+        this.contextMenu.classList.remove('hidden');
+    }
+
+    openModal(contact = null) {
+        this.modalTitle.textContent = contact ? 'Editar Contato' : 'Adicionar Novo Contato';
+        this.deleteButton.classList.toggle('hidden', !contact);
+        
+        if (contact) {
+            this.contactIdInput.value = contact.id;
+            document.getElementById('firstName').value = contact.firstName;
+            document.getElementById('lastName').value = contact.lastName;
+            this.profileColorInput.value = contact.profileColor;
+            
+            // Selecionar a cor atual
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('ring-2', 'ring-white');
+                if (option.dataset.color === contact.profileColor) {
+                    option.classList.add('ring-2', 'ring-white');
+                }
+            });
+        } else {
+            this.form.reset();
+            this.contactIdInput.value = '';
+            this.profileColorInput.value = 'blue-500';
+            document.querySelector('.color-option[data-color="blue-500"]').classList.add('ring-2', 'ring-white');
+        }
+
+        this.modal.classList.remove('hidden');
+        this.modal.classList.add('flex');
+        document.getElementById('firstName').focus();
+    }
+
+    closeModal() {
+        this.modal.classList.add('hidden');
+        this.modal.classList.remove('flex');
+        this.form.reset();
+        this.contactIdInput.value = '';
+        this.deleteButton.classList.add('hidden');
+    }
+
+    getInitials(firstName, lastName) {
+        return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+    }
+
+    saveContact() {
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const contactId = this.contactIdInput.value;
+        const profileColor = this.profileColorInput.value;
+
+        if (firstName && lastName) {
+            if (contactId) {
+                // Editar contato existente
+                const index = this.contacts.findIndex(c => c.id === parseInt(contactId));
+                if (index !== -1) {
+                    this.contacts[index] = {
+                        ...this.contacts[index],
+                        firstName,
+                        lastName,
+                        initials: this.getInitials(firstName, lastName),
+                        profileColor
+                    };
+                }
+            } else {
+                // Adicionar novo contato
+                const newContact = {
+                    id: Date.now(),
+                    firstName,
+                    lastName,
+                    initials: this.getInitials(firstName, lastName),
+                    lastMessage: 'Nova conversa iniciada',
+                    lastMessageTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    online: true,
+                    profileColor
+                };
+                this.contacts.unshift(newContact);
+            }
+
+            this.saveContacts();
+            this.renderContacts();
+            this.closeModal();
+        }
+    }
+
+    editContact(contactId) {
+        const contact = this.contacts.find(c => c.id === contactId);
+        if (contact) {
+            this.openModal(contact);
+        }
+    }
+
+    deleteContact(contactId) {
+        if (confirm('Tem certeza que deseja excluir este contato?')) {
+            this.contacts = this.contacts.filter(c => c.id !== contactId);
+            this.saveContacts();
+            this.renderContacts();
+            this.closeModal();
+        }
+    }
+
+    saveContacts() {
+        localStorage.setItem('chatContacts', JSON.stringify(this.contacts));
+    }
+
+    createContactElement(contact) {
+        return `
+            <div class="contact-item" data-contact-id="${contact.id}">
+                <div class="contact-avatar bg-${contact.profileColor}">
+                    <span>${contact.initials}</span>
+                    ${contact.online ? '<div class="online-indicator"></div>' : ''}
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">
+                        <span>${contact.firstName} ${contact.lastName}</span>
+                        <span class="text-xs text-gray-400">${contact.lastMessageTime}</span>
+                    </div>
+                    <div class="contact-last-message">
+                        ${contact.lastMessage}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderContacts() {
+        this.contactsList.innerHTML = '';
+        this.contacts.forEach(contact => {
+            const contactElement = document.createElement('div');
+            contactElement.innerHTML = this.createContactElement(contact);
+            this.contactsList.appendChild(contactElement.firstElementChild);
+        });
+        this.initializeContactSelection();
+    }
+
+    initializeContactSelection() {
+        const contactItems = document.querySelectorAll('.contact-item');
+        contactItems.forEach(item => {
+            item.addEventListener('click', () => {
+                contactItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                const contactId = item.dataset.contactId;
+                const contact = this.contacts.find(c => c.id === parseInt(contactId));
+                if (contact) {
+                    const header = document.querySelector('.chat-header');
+                    header.querySelector('h2').textContent = `${contact.firstName} ${contact.lastName}`;
+                    header.querySelector('.contact-avatar').className = `contact-avatar bg-${contact.profileColor}`;
+                }
+            });
+        });
+    }
+}
+
+// Inicializar o gerenciador de contatos
+const contactManager = new ContactManager();
+
 // Menu mobile principal
 document.getElementById('mobile-menu-button').addEventListener('click', function() {
     const sidebar = document.getElementById('sidebar');
