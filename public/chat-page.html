@@ -53,9 +53,9 @@
         </div>
 
         <!-- Conteúdo Principal -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col h-screen">
             <!-- Header -->
-            <div class="flex-1 p-4 md:p-11 md:mt-0">
+            <div class="flex-1 p-4 md:p-11 md:mt-0 flex flex-col h-full">
                 <header class="py-2">
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                         <div class="flex items-center space-x-4 md:space-x-11">
@@ -85,9 +85,9 @@
                 <hr class="mb-7">
 
                 <!-- Container do Chat -->
-                <div class="chat-container">
+                <div class="chat-container h-full">
                     <!-- Sidebar do Chat -->
-                    <aside class="chat-sidebar">
+                    <aside class="chat-sidebar hidden md:block">
                         <div class="chat-sidebar-header">
                             <div class="contact-avatar">
                                 <img src="../src/img/logoBag.png" alt="Logo" class="w-8 h-8">
@@ -118,7 +118,7 @@
                     </aside>
 
                     <!-- Área de Mensagens -->
-                    <main class="chat-messages-area">
+                    <main class="chat-messages-area h-full">
                         <div class="chat-header">
                             <div class="contact-avatar">
                                 <span>RM</span>
@@ -305,6 +305,8 @@
 
         .chat-header {
             z-index: 10;
+            background-color: var(--bg-dark);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .dropdown-content {
@@ -354,6 +356,59 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 120px);
+            }
+
+            .chat-messages-area {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .messages-container {
+                flex: 1;
+                overflow-y: auto;
+                height: calc(100% - 120px);
+            }
+
+            .chat-input-area {
+                position: sticky;
+                bottom: 0;
+                background-color: var(--bg-dark);
+                border-top: 1px solid var(--border-color);
+                padding: 0.5rem;
+            }
+        }
+
+        /* Estilos para telas maiores */
+        @media (min-width: 769px) {
+            .chat-container {
+                display: flex;
+                height: 100%;
+            }
+
+            .chat-messages-area {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                height: 100%;
+            }
+
+            .messages-container {
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            .chat-input-area {
+                background-color: var(--bg-dark);
+                border-top: 1px solid var(--border-color);
+                padding: 0.5rem;
+            }
         }
     </style>
 </body>
