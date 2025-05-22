@@ -38,6 +38,7 @@ body {
     display: flex;
     gap: 15px;
     flex-direction: column;
+    border-radius: 20px;
 }
 
 /* Cabeçalho da sidebar */
