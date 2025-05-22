@@ -305,10 +305,51 @@
                     <i class="fas fa-plus mr-2"></i>
                     Adicionar lista
                 </button>
+            </div>
+        </div>
+    </div>
 
-                <!-- Lixeira -->
-                <div id="trash" class="fixed bottom-6 right-6 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors">
-                    <i class="fas fa-trash-alt text-2xl"></i>
+    <!-- Modal de Edição de Card -->
+    <div id="edit-card-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Editar Cartão</h2>
+                <button class="text-gray-400 hover:text-white" onclick="closeEditCardModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Título</label>
+                    <input type="text" id="edit-card-title" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Descrição</label>
+                    <textarea id="edit-card-description" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Etiquetas</label>
+                    <div id="edit-card-labels" class="flex flex-wrap gap-2">
+                        <!-- Labels serão inseridas aqui via JavaScript -->
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Comentários</label>
+                    <div id="edit-card-comments" class="space-y-2">
+                        <!-- Comentários serão inseridos aqui via JavaScript -->
+                    </div>
+                    <div class="mt-2">
+                        <input type="text" id="new-comment" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white" placeholder="Adicionar comentário...">
+                    </div>
+                </div>
+                <div class="flex justify-between pt-4">
+                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" onclick="deleteCard()">
+                        <i class="fas fa-trash mr-2"></i>Excluir Cartão
+                    </button>
+                    <div class="space-x-2">
+                        <button class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600" onclick="closeEditCardModal()">Cancelar</button>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="saveCardChanges()">Salvar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -324,6 +365,141 @@
                 'concluido': []
             }
         };
+
+        // Variável para armazenar o card atual sendo editado
+        let currentEditingCard = null;
+
+        // Função para abrir o modal de edição
+        function openEditCardModal(card) {
+            currentEditingCard = card;
+            const modal = document.getElementById('edit-card-modal');
+            const titleInput = document.getElementById('edit-card-title');
+            const descriptionInput = document.getElementById('edit-card-description');
+            const labelsContainer = document.getElementById('edit-card-labels');
+            const commentsContainer = document.getElementById('edit-card-comments');
+
+            // Preencher os campos com os dados do card
+            titleInput.value = card.querySelector('h3').textContent;
+            descriptionInput.value = card.querySelector('p')?.textContent || '';
+
+            // Limpar e preencher as etiquetas
+            labelsContainer.innerHTML = '';
+            const cardLabels = card.getAttribute('data-labels')?.split(',') || [];
+            Object.entries(window.labels).forEach(([key, label]) => {
+                const labelElement = document.createElement('label');
+                labelElement.className = 'flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = key;
+                checkbox.checked = cardLabels.includes(key);
+                checkbox.className = 'edit-label-checkbox';
+                const labelColor = document.createElement('span');
+                labelColor.className = `w-8 h-2 rounded ${label.color}`;
+                const labelText = document.createElement('span');
+                labelText.textContent = label.text;
+                labelElement.appendChild(checkbox);
+                labelElement.appendChild(labelColor);
+                labelElement.appendChild(labelText);
+                labelsContainer.appendChild(labelElement);
+            });
+
+            // Limpar e preencher os comentários
+            commentsContainer.innerHTML = '';
+            const comments = card.getAttribute('data-comments')?.split('|') || [];
+            comments.forEach(comment => {
+                if (comment) {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'bg-gray-700 p-2 rounded';
+                    commentElement.textContent = comment;
+                    commentsContainer.appendChild(commentElement);
+                }
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        // Função para fechar o modal de edição
+        function closeEditCardModal() {
+            const modal = document.getElementById('edit-card-modal');
+            modal.classList.add('hidden');
+            currentEditingCard = null;
+        }
+
+        // Função para salvar as alterações do card
+        function saveCardChanges() {
+            if (!currentEditingCard) return;
+
+            const titleInput = document.getElementById('edit-card-title');
+            const descriptionInput = document.getElementById('edit-card-description');
+            const selectedLabels = Array.from(document.querySelectorAll('.edit-label-checkbox:checked')).map(checkbox => checkbox.value);
+            const newComment = document.getElementById('new-comment').value;
+
+            // Atualizar o card
+            currentEditingCard.querySelector('h3').textContent = titleInput.value;
+            const descriptionElement = currentEditingCard.querySelector('p');
+            if (descriptionElement) {
+                descriptionElement.textContent = descriptionInput.value;
+            } else if (descriptionInput.value) {
+                const p = document.createElement('p');
+                p.className = 'text-sm text-gray-400 mt-2';
+                p.textContent = descriptionInput.value;
+                currentEditingCard.appendChild(p);
+            }
+
+            // Atualizar etiquetas
+            currentEditingCard.setAttribute('data-labels', selectedLabels.join(','));
+            const labelsContainer = currentEditingCard.querySelector('.flex.gap-2');
+            if (labelsContainer) {
+                labelsContainer.innerHTML = selectedLabels.map(label => `
+                    <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
+                        ${window.labels[label].text}
+                    </span>
+                `).join('');
+            }
+
+            // Adicionar novo comentário se houver
+            if (newComment) {
+                const currentComments = currentEditingCard.getAttribute('data-comments')?.split('|') || [];
+                currentComments.push(newComment);
+                currentEditingCard.setAttribute('data-comments', currentComments.join('|'));
+                document.getElementById('new-comment').value = '';
+            }
+
+            // Salvar estado
+            saveBoardState();
+            closeEditCardModal();
+        }
+
+        // Função para excluir o card
+        function deleteCard() {
+            if (!currentEditingCard) return;
+
+            if (confirm('Tem certeza que deseja excluir este cartão?')) {
+                currentEditingCard.remove();
+                saveBoardState();
+                closeEditCardModal();
+            }
+        }
+
+        // Função para salvar o estado do quadro
+        function saveBoardState() {
+            const state = {
+                lists: {}
+            };
+
+            document.querySelectorAll('.list').forEach(list => {
+                const listId = list.id;
+                const cards = Array.from(list.querySelectorAll('.card')).map(card => ({
+                    title: card.querySelector('h3').textContent,
+                    description: card.querySelector('p')?.textContent || '',
+                    labels: card.getAttribute('data-labels')?.split(',') || [],
+                    comments: card.getAttribute('data-comments')?.split('|') || []
+                }));
+                state.lists[listId] = cards;
+            });
+
+            localStorage.setItem('boardState', JSON.stringify(state));
+        }
 
         // Configuração das etiquetas
         window.labels = {
@@ -393,6 +569,7 @@
             card.className = 'card bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600';
             card.setAttribute('draggable', 'true');
             card.setAttribute('data-labels', labels.join(','));
+            card.setAttribute('data-comments', '');
             
             card.innerHTML = `
                 <h3 class="font-medium">${title}</h3>
@@ -407,6 +584,11 @@
                     </div>
                 ` : ''}
             `;
+
+            // Adicionar evento de clique para abrir o modal de edição
+            card.addEventListener('click', () => {
+                openEditCardModal(card);
+            });
 
             listContent.appendChild(card);
             filterCards(); // Aplicar filtros após adicionar novo cartão

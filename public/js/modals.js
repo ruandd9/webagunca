@@ -356,6 +356,7 @@ window.showCardModal = function(card) {
 
                 <!-- Ações -->
                 <div class="flex justify-end space-x-2 pt-4 border-t border-gray-700">
+                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 delete">Excluir</button>
                     <button class="px-4 py-2 text-gray-400 hover:text-white cancel">Cancelar</button>
                     <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 save">Salvar alterações</button>
                 </div>
@@ -369,6 +370,7 @@ window.showCardModal = function(card) {
     const closeBtn = modal.querySelector('.close-modal');
     const cancelBtn = modal.querySelector('.cancel');
     const saveBtn = modal.querySelector('.save');
+    const deleteBtn = modal.querySelector('.delete');
     const titleInput = modal.querySelector('input[type="text"]');
     const descriptionInput = modal.querySelector('textarea:not(.new-comment)');
     const labelCheckboxes = modal.querySelectorAll('input[type="checkbox"]');
@@ -437,5 +439,21 @@ window.showCardModal = function(card) {
         window.saveBoardState();
         window.renderBoard();
         closeModal();
+    });
+
+    deleteBtn.addEventListener('click', () => {
+        window.showConfirmModal('Tem certeza que deseja excluir este cartão?', () => {
+            // Encontrar o cartão no estado e remover
+            for (const listId in window.boardState.lists) {
+                const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
+                if (idx !== -1) {
+                    window.boardState.lists[listId].splice(idx, 1);
+                    window.saveBoardState();
+                    window.renderBoard();
+                    break;
+                }
+            }
+            closeModal();
+        });
     });
 }
