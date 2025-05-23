@@ -469,8 +469,8 @@ body {
 .send-button {
     background-color: var(--accent);
     color: white;
-    padding: 8px;
-    border-radius: 50%;
+    padding: 12px;
+    border-radius: 25%;
     cursor: pointer;
     transition: background-color 0.2s;
 }
