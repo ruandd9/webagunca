@@ -103,8 +103,13 @@
 
 <body class="bg-gray-900 text-white font-sans">
     <div class="flex h-screen">
-        <!-- Sidebar - Desktop -->
-        <div class="hidden md:block w-64 bg-gray-800 p-4">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar Principal -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
             <div class="flex items-center mb-8">
                 <div class="p-2 rounded">
                     <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
@@ -160,9 +165,6 @@
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
-                        <button id="menuButton" class="md:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors">
-                            <i class="fas fa-bars"></i>
-                        </button>
                     </div>
                 </div>
             </header>
@@ -259,44 +261,10 @@
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobileMenu" class="fixed top-0 left-0 h-full w-64 bg-gray-800 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
-            <div class="p-4">
-                <div class="flex justify-between items-center mb-8">
-                    <div class="p-2 rounded">
-                        <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
-                    </div>
-                    <button id="closeMenu" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <nav class="space-y-4">
-                    <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
-                        <i class="fas fa-columns mr-3"></i>
-                        Quadros
-                    </a>
-                    <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
-                        <i class="fas fa-cog mr-3"></i>
-                        Configurações
-                    </a>
-                    <a href="./calendario.html" class="flex items-center text-white">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Calendario
-                    </a>
-                    <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
-                        <i class="fas fa-bell mr-3"></i>
-                        Notificações
-                    </a>
-                    <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
-                        <i class="fas fa-info-circle mr-3"></i>
-                        Informações
-                    </a>
-                </nav>
-            </div>
-        </div>
     </div>
 
+    <script src="../src/js/features/calendar/calendar.js"></script>
+    <script src="../src/js/features/calendar/events.js"></script>
     <script>
         // Função para gerar o calendário
         function generateCalendar(year, month) {
@@ -363,16 +331,41 @@
         });
 
         // Controle do menu mobile
-        const menuButton = document.getElementById('menuButton');
-        const closeMenu = document.getElementById('closeMenu');
-        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        let isSidebarOpen = false;
 
-        menuButton.addEventListener('click', () => {
-            mobileMenu.classList.remove('-translate-x-full');
+        mobileMenuButton.addEventListener('click', function() {
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+            } else {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+            }
         });
 
-        closeMenu.addEventListener('click', () => {
-            mobileMenu.classList.add('-translate-x-full');
+        // Fechar sidebar ao clicar fora em dispositivos móveis
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 768) { // Apenas em dispositivos móveis
+                if (!sidebar.contains(event.target) && !mobileMenuButton.contains(event.target) && isSidebarOpen) {
+                    isSidebarOpen = false;
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        });
+
+        // Carregar tema salvo
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+            }
         });
     </script>
 </body>

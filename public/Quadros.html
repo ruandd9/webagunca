@@ -43,6 +43,48 @@
             opacity: 1;
         }
 
+        /* Estilos para o modal de filtros */
+        .filter-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 40;
+        }
+
+        .filter-overlay.active {
+            display: block;
+        }
+
+        #filter-menu {
+            z-index: 50;
+            transition: all 0.3s ease-in-out;
+            background-color: #1F2937;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #filter-menu.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #filter-menu {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 320px;
+                padding: 1rem;
+            }
+        }
+
         /* Estilos responsivos */
         @media (max-width: 1024px) {
             .sidebar {
@@ -158,6 +200,9 @@
             <i class="fas fa-bars"></i>
         </button>
 
+        <!-- Overlay para o modal de filtros -->
+        <div class="filter-overlay" id="filter-overlay"></div>
+
         <!-- Sidebar -->
         <div class="sidebar w-64 bg-gray-800 p-4 h-full fixed lg:relative">
             <div class="flex items-center mb-8">
@@ -216,20 +261,25 @@
                         <div class="flex items-center gap-2">
                             <!-- Filtros -->
                             <div class="relative" id="filter-dropdown">
-                                <button class="px-3 py-2 bg-gray-700 rounded-lg text-sm flex items-center space-x-2 hover:bg-gray-600">
+                                <button class="px-3 py-2 bg-gray-700 rounded-lg text-sm flex items-center space-x-2 hover:bg-gray-600" id="filter-button">
                                     <i class="fas fa-filter"></i>
                                     <span>Filtrar</span>
                                     <span id="active-filters-count" class="ml-2 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full hidden">0</span>
                                 </button>
-                                <div class="hidden absolute top-full right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg p-4 z-10">
-                                    <h3 class="text-sm font-medium mb-3">Filtrar por etiquetas</h3>
-                                    <div class="space-y-2" id="label-filters">
-                                    </div>
-                                    <div class="mt-4">
-                                        <button class="w-full px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm" id="apply-filters">
-                                            Aplicar filtros
-                                        </button>
-                                    </div>
+                            </div>
+
+                            <!-- Modal de Filtros -->
+                            <div id="filter-menu" class="hidden fixed md:absolute md:top-full md:right-0 md:mt-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 bg-gray-800 rounded-lg shadow-lg p-4 z-50">
+                                <h3 class="text-sm font-medium mb-3">Filtrar por etiquetas</h3>
+                                <div class="space-y-2" id="label-filters">
+                                </div>
+                                <div class="mt-4 space-y-2">
+                                    <button class="w-full px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm" id="apply-filters">
+                                        Aplicar filtros
+                                    </button>
+                                    <button class="w-full px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 text-sm hidden" id="clear-filters">
+                                        Limpar filtros
+                                    </button>
                                 </div>
                             </div>
 
@@ -605,6 +655,36 @@
                 }
             }
 
+            // Configuração do modal de filtros
+            const filterButton = document.getElementById('filter-button');
+            const filterMenu = document.getElementById('filter-menu');
+            const filterOverlay = document.getElementById('filter-overlay');
+
+            filterButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.innerWidth <= 768) {
+                    filterMenu.classList.remove('hidden');
+                    filterOverlay.classList.add('active');
+                } else {
+                    filterMenu.classList.toggle('hidden');
+                }
+            });
+
+            filterOverlay.addEventListener('click', () => {
+                filterMenu.classList.add('hidden');
+                filterOverlay.classList.remove('active');
+            });
+
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!filterButton.contains(e.target) && !filterMenu.contains(e.target)) {
+                    filterMenu.classList.add('hidden');
+                    if (window.innerWidth <= 768) {
+                        filterOverlay.classList.remove('active');
+                    }
+                }
+            });
+
             // Carregar estado do quadro
             const savedState = localStorage.getItem('boardState');
             if (savedState) {
@@ -681,8 +761,10 @@
             });
         });
     </script>
-    <script src="js/board.js"></script>
-    <script src="js/modals.js"></script>
+    <script src="../src/js/features/board/board.js"></script>
+    <script src="../src/js/features/board/modals.js"></script>
+    <script src="../src/js/features/board/quadros.js"></script>
+
 </body>
 
 </html>

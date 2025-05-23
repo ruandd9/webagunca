@@ -189,6 +189,8 @@
         </div>
     </div>
 
+    <script src="../src/js/features/profile/profile.js"></script>
+    <script src="../src/js/features/profile/settings.js"></script>
     <script>
         // Toggle mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
@@ -268,6 +270,17 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             document.querySelector('button.bg-blue-500').addEventListener('click', saveChanges);
+        });
+
+        // Carregar tema salvo
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+            }
         });
     </script>
 </body>
