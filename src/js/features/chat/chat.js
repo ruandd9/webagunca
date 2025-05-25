@@ -15,9 +15,9 @@ class ContactManager {
             },
             {
                 id: 2,
-                firstName: 'Yan',
-                lastName: 'Fellippe',
-                initials: 'YF',
+                firstName: 'Talisson',
+                lastName: 'Leandro',
+                initials: 'TL',
                 lastMessage: 'Reunião amanhã às 10h',
                 lastMessageTime: '13:45',
                 online: true,

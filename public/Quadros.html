@@ -167,6 +167,9 @@
                 padding-bottom: 1rem;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: thin;
+                display: flex;
+                gap: 1rem;
+                padding: 0.5rem;
             }
 
             .board-container::-webkit-scrollbar {
@@ -184,7 +187,19 @@
             }
 
             .list {
-                min-width: 280px;
+                min-width: 220px;
+                max-width: 220px;
+                flex-shrink: 0;
+            }
+
+            .add-list-btn {
+                min-width: 220px;
+                max-width: 220px;
+                flex-shrink: 0;
+            }
+
+            .card {
+                touch-action: none;
             }
         }
     </style>
