@@ -349,6 +349,8 @@ const oldMessages = [
 let currentPage = 1;
 const messagesPerPage = 10;
 let isLoading = false;
+let noMoreMessagesCount = 0; // Contador para controlar quantas vezes a mensagem apareceu
+const MAX_NO_MORE_MESSAGES = 4; // Limite máximo de exibição da mensagem
 
 // Função para criar elemento de mensagem
 function createMessageElement(message, isOutgoing = true) {
@@ -395,12 +397,18 @@ function loadOldMessages() {
             messagesContainer.insertBefore(fragment, firstMessage);
 
             currentPage++;
+            noMoreMessagesCount = 0; // Reseta o contador quando novas mensagens são carregadas
         } else {
             messagesContainer.removeChild(loadingIndicator);
-            const noMoreMessages = document.createElement('div');
-            noMoreMessages.className = 'no-more-messages';
-            noMoreMessages.textContent = 'Não há mais mensagens para carregar';
-            messagesContainer.insertBefore(noMoreMessages, messagesContainer.firstChild);
+            
+            // Só exibe a mensagem se não atingiu o limite
+            if (noMoreMessagesCount < MAX_NO_MORE_MESSAGES) {
+                const noMoreMessages = document.createElement('div');
+                noMoreMessages.className = 'no-more-messages';
+                noMoreMessages.textContent = 'Não há mais mensagens para carregar';
+                messagesContainer.insertBefore(noMoreMessages, messagesContainer.firstChild);
+                noMoreMessagesCount++;
+            }
         }
 
         isLoading = false;
