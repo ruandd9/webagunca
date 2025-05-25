@@ -335,6 +335,10 @@ function handleDragEnd(e) {
 
 // Funções para suporte touch
 function handleTouchStart(e) {
+    // Encontra o card pai mais próximo
+    const card = e.target.closest('.card');
+    if (!card) return;
+
     const touch = e.touches[0];
     touchStartY = touch.clientY;
     touchStartX = touch.clientX;
@@ -343,17 +347,17 @@ function handleTouchStart(e) {
     
     // Inicia um timer para diferenciar entre toque para scroll e toque para drag
     touchTimeout = setTimeout(() => {
-        window.draggedCard = e.target;
-        window.originalList = e.target.closest('.list');
-        e.target.classList.add('opacity-50');
+        window.draggedCard = card;
+        window.originalList = card.closest('.list');
+        card.classList.add('opacity-50');
         
         // Cria uma cópia visual do cartão para feedback
-        touchClone = e.target.cloneNode(true);
+        touchClone = card.cloneNode(true);
         touchClone.id = 'dragging-clone';
         touchClone.style.position = 'fixed';
         touchClone.style.top = `${touch.clientY - 20}px`;
         touchClone.style.left = `${touch.clientX - 20}px`;
-        touchClone.style.width = `${e.target.offsetWidth}px`;
+        touchClone.style.width = `${card.offsetWidth}px`;
         touchClone.style.pointerEvents = 'none';
         touchClone.style.opacity = '0.8';
         touchClone.style.zIndex = '1000';
