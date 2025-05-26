@@ -152,7 +152,7 @@ window.renderBoard = function() {
                             return true;
                         })
                         .forEach(card => {
-                            const cardElement = createCardElement(card);
+                            const cardElement = createCardElement(card, listId);
                             if (cardElement) {
                                 listContent.appendChild(cardElement);
                             }
@@ -248,7 +248,7 @@ window.renderBoard = function() {
 };
 
 // Função auxiliar para criar elemento de cartão
-function createCardElement(card) {
+function createCardElement(card, listId) {
     if (!card || !card.id || !card.title) return null;
 
     const div = document.createElement('div');
@@ -295,12 +295,19 @@ function createCardElement(card) {
                     </span>
                 ` : ''}
             </div>
-            <div class="flex -space-x-2">
-                ${card.assignees && Array.isArray(card.assignees) ? card.assignees.map(assignee => `
-                    <img src="https://ui-avatars.com/api/?name=${assignee}" 
-                         alt="${assignee}" 
-                         class="w-6 h-6 rounded-full border-2 border-gray-700">
-                `).join('') : ''}
+            <div class="flex items-center space-x-2">
+                ${listId === 'concluido' ? `
+                    <span class="text-green-500">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </span>
+                ` : ''}
+                <div class="flex -space-x-2">
+                    ${card.assignees && Array.isArray(card.assignees) ? card.assignees.map(assignee => `
+                        <img src="https://ui-avatars.com/api/?name=${assignee}" 
+                             alt="${assignee}" 
+                             class="w-6 h-6 rounded-full border-2 border-gray-700">
+                    `).join('') : ''}
+                </div>
             </div>
         </div>
     `;

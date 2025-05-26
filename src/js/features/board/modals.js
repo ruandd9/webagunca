@@ -357,6 +357,7 @@ window.showCardModal = function(card) {
                 <!-- Ações -->
                 <div class="flex justify-end space-x-2 pt-4 border-t border-gray-700">
                     <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 delete">Excluir</button>
+                    <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 complete">Marcar como Concluído</button>
                     <button class="px-4 py-2 text-gray-400 hover:text-white cancel">Cancelar</button>
                     <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 save">Salvar alterações</button>
                 </div>
@@ -371,6 +372,7 @@ window.showCardModal = function(card) {
     const cancelBtn = modal.querySelector('.cancel');
     const saveBtn = modal.querySelector('.save');
     const deleteBtn = modal.querySelector('.delete');
+    const completeBtn = modal.querySelector('.complete');
     const titleInput = modal.querySelector('input[type="text"]');
     const descriptionInput = modal.querySelector('textarea:not(.new-comment)');
     const labelCheckboxes = modal.querySelectorAll('input[type="checkbox"]');
@@ -455,5 +457,27 @@ window.showCardModal = function(card) {
             }
             closeModal();
         });
+    });
+
+    // Adicionar evento para marcar como concluído
+    completeBtn.addEventListener('click', () => {
+        // Verifica se a lista "concluido" existe, se não, cria
+        if (!window.boardState.lists['concluido']) {
+            window.boardState.lists['concluido'] = [];
+        }
+
+        // Encontra o cartão na lista atual e remove
+        for (const listId in window.boardState.lists) {
+            const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
+            if (idx !== -1) {
+                const [movedCard] = window.boardState.lists[listId].splice(idx, 1);
+                // Adiciona o cartão à lista "concluido"
+                window.boardState.lists['concluido'].push(movedCard);
+                window.saveBoardState();
+                window.renderBoard();
+                break;
+            }
+        }
+        closeModal();
     });
 }
