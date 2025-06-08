@@ -118,12 +118,12 @@ input[type="search"] {
     border-color: var(--border) !important;
 }
 
-button:not(.theme-button) {
+button:not(.theme-button):not(.color-option) {
     background-color: var(--bg-secondary) !important;
     color: var(--text-primary) !important;
     border-color: var(--border) !important;
 }
 
-button:hover:not(.theme-button) {
+button:hover:not(.theme-button):not(.color-option) {
     background-color: var(--bg-tertiary) !important;
 }

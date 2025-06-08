@@ -305,5 +305,86 @@
             }
         });
     </script>
+
+    <!-- Estilos para a lista de contatos -->
+    <style>
+        .chat-sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 320px;
+            border-right: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            overflow-y: auto;
+        }
+
+        .chat-sidebar::-webkit-scrollbar {
+            width: 8px; /* Largura da barra de rolagem */
+        }
+
+        .chat-sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3); /* Fundo quase imperceptível */
+        }
+
+        .chat-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(80, 80, 80, 0.6); /* Thumb cinza escuro, quase transparente */
+            border-radius: 50px; /* Bordas bem arredondadas */
+        }
+
+        .chat-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(120, 120, 120, 0.9); /* Thumb um pouco mais visível no hover */
+        }
+
+        .chat-sidebar::-webkit-scrollbar-button {
+            display: none; /* Remove os botões de seta da scrollbar */
+        }
+
+        .chat-sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .search-container {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 4rem;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .contacts-list {
+            padding: 0.5rem;
+        }
+
+        .add-contact-button {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 40;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .chat-sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
 </body>
 </html>

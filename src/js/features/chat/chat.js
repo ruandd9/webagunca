@@ -199,9 +199,9 @@ class ContactManager {
                     lastMessage: 'Nova conversa iniciada',
                     lastMessageTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                     online: true,
-                    profileColor
+                    profileColor: profileColor
                 };
-                this.contacts.unshift(newContact);
+                this.contacts.push(newContact);
             }
 
             this.saveContacts();
