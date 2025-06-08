@@ -18,7 +18,7 @@
         </button>
 
         <!-- Sidebar Principal -->
-        <div id="sidebar" class="w-64 bg-gray-800 p-4 h-full z-40 shadow-lg md:relative">
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
             <div class="flex items-center mb-8">
                 <div class="p-2 rounded">
                     <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
@@ -291,15 +291,22 @@
     <script src="../src/js/features/user/userInitials.js"></script>
     <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
-        // Definir variáveis de estado para o menu mobile
-        let isSidebarOpen = false;
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        // Variáveis para controle do menu mobile
         const sidebar = document.getElementById('sidebar');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        let isSidebarOpen = false;
 
         // Toggle mobile menu
-        mobileMenuButton.addEventListener('click', function() {
+        mobileMenuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
             isSidebarOpen = !isSidebarOpen;
-            sidebar.classList.toggle('open', isSidebarOpen);
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+            } else {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+            }
         });
 
         // Fechar sidebar ao clicar fora em dispositivos móveis
@@ -307,10 +314,82 @@
             if (window.innerWidth < 768) { // Apenas em dispositivos móveis
                 if (!sidebar.contains(event.target) && !mobileMenuButton.contains(event.target) && isSidebarOpen) {
                     isSidebarOpen = false;
-                    sidebar.classList.remove('open');
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
                 }
             }
         });
+
+        // Prevenir que o clique dentro da sidebar feche o menu
+        sidebar.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
     </script>
+
+    <!-- Estilos para a lista de contatos -->
+    <style>
+        .chat-sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 320px;
+            border-right: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            overflow-y: auto;
+        }
+
+        .chat-sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .search-container {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 4rem;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .contacts-list {
+            padding: 0.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .add-contact-button {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 40;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            #sidebar.translate-x-0 {
+                transform: translateX(0);
+            }
+
+            #mobile-menu-button {
+                display: block;
+            }
+        }
+    </style>
 </body>
 </html>
