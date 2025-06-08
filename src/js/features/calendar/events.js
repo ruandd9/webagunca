@@ -101,6 +101,58 @@ function getFirstDayOffset() {
     return firstDay.getDay();
 }
 
+// Função para calcular o tempo restante e retornar o status
+function getTimeRemaining(deadline) {
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+    const diffMinutes = Math.ceil(diffTime / (1000 * 60));
+
+    let status = {
+        text: '',
+        color: '',
+        icon: ''
+    };
+
+    if (diffTime < 0) {
+        status = {
+            text: 'Atrasado',
+            color: 'text-red-500',
+            icon: 'fa-exclamation-circle'
+        };
+    } else if (diffDays === 0) {
+        if (diffHours <= 3) {
+            status = {
+                text: `${diffHours}h restantes`,
+                color: 'text-red-500',
+                icon: 'fa-clock'
+            };
+        } else {
+            status = {
+                text: `${diffHours}h restantes`,
+                color: 'text-yellow-500',
+                icon: 'fa-clock'
+            };
+        }
+    } else if (diffDays <= 3) {
+        status = {
+            text: `${diffDays}d restantes`,
+            color: 'text-yellow-500',
+            icon: 'fa-clock'
+        };
+    } else {
+        status = {
+            text: `${diffDays}d restantes`,
+            color: 'text-green-500',
+            icon: 'fa-clock'
+        };
+    }
+
+    return status;
+}
+
 // Função para renderizar os eventos do dia selecionado
 function renderDayEvents(date) {
     const eventsContainer = document.querySelector('.space-y-2');
@@ -158,13 +210,21 @@ function renderDayEvents(date) {
             minute: '2-digit'
         });
 
+        const timeRemaining = getTimeRemaining(event.start);
+
         eventElement.innerHTML = `
             <div class="flex items-center space-x-3 md:space-x-4">
                 <div class="w-10 h-10 md:w-12 md:h-12 ${event.color} rounded-lg flex items-center justify-center event-icon">
                     <i class="fas fa-tasks text-lg md:text-xl"></i>
                 </div>
-                <div>
-                    <h3 class="font-medium text-sm md:text-base">${event.title}</h3>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <h3 class="font-medium text-sm md:text-base mr-2">${event.title}</h3>
+                        <div class="flex items-center space-x-2 ${timeRemaining.color} text-sm">
+                            <i class="fas ${timeRemaining.icon}"></i>
+                            <span>${timeRemaining.text}</span>
+                        </div>
+                    </div>
                     <div class="event-time text-gray-400 text-sm">
                         <i class="far fa-clock mr-1"></i>
                         <span>${eventTime}</span>

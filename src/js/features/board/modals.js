@@ -30,6 +30,10 @@ window.showAddCardModal = function(listId) {
                     <textarea class="w-full bg-gray-700 text-white rounded px-3 py-2 h-24" placeholder="Digite uma descrição..."></textarea>
                 </div>
                 <div>
+                    <label class="block text-sm font-medium mb-1">Prazo</label>
+                    <input type="datetime-local" class="w-full bg-gray-700 text-white rounded px-3 py-2">
+                </div>
+                <div>
                     <label class="block text-sm font-medium mb-1">Etiquetas</label>
                     <div class="grid grid-cols-2 gap-2">
                         ${Object.entries(window.labels).map(([key, label]) => `
@@ -57,6 +61,7 @@ window.showAddCardModal = function(listId) {
     const createBtn = modal.querySelector('.create');
     const titleInput = modal.querySelector('input[type="text"]');
     const descriptionInput = modal.querySelector('textarea');
+    const deadlineInput = modal.querySelector('input[type="datetime-local"]');
     const labelCheckboxes = modal.querySelectorAll('input[type="checkbox"]');
 
     const closeModal = () => modal.remove();
@@ -82,6 +87,7 @@ window.showAddCardModal = function(listId) {
             id: Date.now().toString(),
             title,
             description: descriptionInput.value.trim(),
+            deadline: deadlineInput.value,
             labels: selectedLabels,
             comments: 0,
             attachments: 0,
@@ -307,13 +313,19 @@ window.showCardModal = function(card) {
                     <textarea class="w-full bg-gray-700 text-white rounded px-3 py-2 h-32">${card.description || ''}</textarea>
                 </div>
 
+                <!-- Prazo -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Prazo</label>
+                    <input type="datetime-local" class="w-full bg-gray-700 text-white rounded px-3 py-2" value="${card.deadline || ''}">
+                </div>
+
                 <!-- Etiquetas -->
                 <div>
                     <h4 class="font-medium mb-2">Etiquetas</h4>
                     <div class="grid grid-cols-2 gap-2">
                         ${Object.entries(window.labels).map(([key, label]) => `
                             <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer">
-                                <input type="checkbox" value="${key}" ${card.labels.includes(key) ? 'checked' : ''}>
+                                <input type="checkbox" value="${key}" ${card.labels && card.labels.includes(key) ? 'checked' : ''}>
                                 <span class="w-8 h-2 rounded ${label.color}"></span>
                                 <span>${label.text}</span>
                             </label>
@@ -375,6 +387,7 @@ window.showCardModal = function(card) {
     const completeBtn = modal.querySelector('.complete');
     const titleInput = modal.querySelector('input[type="text"]');
     const descriptionInput = modal.querySelector('textarea:not(.new-comment)');
+    const deadlineInput = modal.querySelector('input[type="datetime-local"]');
     const labelCheckboxes = modal.querySelectorAll('input[type="checkbox"]');
     const addCommentBtn = modal.querySelector('.add-comment');
     const newCommentInput = modal.querySelector('.new-comment');
@@ -434,6 +447,7 @@ window.showCardModal = function(card) {
 
         card.title = title;
         card.description = descriptionInput.value.trim();
+        card.deadline = deadlineInput.value;
         card.labels = [...labelCheckboxes]
             .filter(cb => cb.checked)
             .map(cb => cb.value);
