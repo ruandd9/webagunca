@@ -262,13 +262,7 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.social-login-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          alert('Este serviço está em manutenção. Por favor, utilize o cadastro tradicional.');
-        });
-      });
+      // Removendo o código de login social
     });
   </script>
 </body>
@@ -376,21 +370,21 @@
         <p class="p mb-3">Ou</p>
         <div class="flex-row">
           <div>
-            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn" data-provider="google">
+            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
               <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
               <span>Login com o Google</span>
             </button>
           </div>
           <div class="flex-row">
             <div>
-              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="facebook">
+              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
                 <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
                 <span>Login com o Facebook</span>
               </button>
             </div>
             <div class="flex-row">
               <div>
-                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="github">
+                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
                   <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
                   <span>Login com o GitHub</span>
                 </button>
@@ -454,21 +448,21 @@
                 <p class="p mb-3">Ou</p>
                 <div class="flex-row">
                   <div>
-                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn" data-provider="google">
+                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
                       <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
                       <span>Login com o Google</span>
                     </button>
                   </div>
                   <div class="flex-row">
                     <div>
-                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="facebook">
+                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
                         <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
                         <span>Login com o Facebook</span>
                       </button>
                     </div>
                     <div class="flex-row">
                       <div>
-                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="github">
+                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
                           <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
                           <span>Login com o GitHub</span>
                         </button>
