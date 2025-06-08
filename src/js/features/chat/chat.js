@@ -119,6 +119,14 @@ class ContactManager {
             this.deleteContact(contactId);
             this.contextMenu.classList.add('hidden');
         });
+
+        // Event listener para o botão de voltar em telas menores
+        const backToContactsBtn = document.getElementById('backToContactsBtn');
+        if (backToContactsBtn) {
+            backToContactsBtn.addEventListener('click', () => {
+                this.showContactList();
+            });
+        }
     }
 
     showContextMenu(e, contactItem) {
@@ -254,28 +262,68 @@ class ContactManager {
         this.contactsList.innerHTML = '';
         this.contacts.forEach(contact => {
             const contactElement = document.createElement('div');
-            contactElement.innerHTML = this.createContactElement(contact);
-            this.contactsList.appendChild(contactElement.firstElementChild);
-        });
-        this.initializeContactSelection();
-    }
+            contactElement.innerHTML = this.createContactElement(contact).trim();
+            const item = contactElement.firstChild;
+            this.contactsList.appendChild(item);
 
-    initializeContactSelection() {
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
+            // Adicionar evento de clique para exibir a conversa em telas menores
             item.addEventListener('click', () => {
-                contactItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                
-                const contactId = item.dataset.contactId;
-                const contact = this.contacts.find(c => c.id === parseInt(contactId));
-                if (contact) {
-                    const header = document.querySelector('.chat-header');
-                    header.querySelector('h2').textContent = `${contact.firstName} ${contact.lastName}`;
-                    header.querySelector('.contact-avatar').className = `contact-avatar bg-${contact.profileColor}`;
-                }
+                this.showConversationArea();
+                this.selectContact(item, contact);
             });
         });
+
+        // Seleciona o primeiro contato por padrão ao carregar a página
+        if (this.contacts.length > 0) {
+            const firstContactItem = this.contactsList.querySelector('.contact-item');
+            if (firstContactItem) {
+                this.selectContact(firstContactItem, this.contacts[0]);
+            }
+        }
+    }
+
+    selectContact(item, contact) {
+        // Remove a classe 'active' de todos os itens de contato
+        document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+        // Adiciona a classe 'active' ao item clicado
+        item.classList.add('active');
+
+        // Atualiza o cabeçalho do chat com as informações do contato selecionado
+        const chatHeader = document.querySelector('.chat-header');
+        if (chatHeader) {
+            const headerName = chatHeader.querySelector('h2');
+            const headerAvatar = chatHeader.querySelector('.contact-avatar');
+            const headerAvatarInitials = headerAvatar ? headerAvatar.querySelector('span') : null;
+            const headerOnlineStatus = chatHeader.querySelector('p');
+
+            if (headerName) {
+                headerName.textContent = `${contact.firstName} ${contact.lastName}`;
+            }
+            if (headerAvatar) {
+                // Garante a remoção de classes de cor existentes e adiciona a nova
+                headerAvatar.className = 'contact-avatar'; // Reseta para a classe base
+                headerAvatar.classList.add(`bg-${contact.profileColor}`);
+            }
+            if (headerAvatarInitials) {
+                headerAvatarInitials.textContent = contact.initials;
+            }
+            if (headerOnlineStatus) {
+                headerOnlineStatus.textContent = contact.online ? 'online' : 'offline';
+            }
+        }
+    }
+
+    // Funções para alternar a visualização em telas menores
+    showContactList() {
+        if (window.innerWidth <= 768) { // Apenas em telas menores
+            document.body.classList.remove('show-chat-conversation');
+        }
+    }
+
+    showConversationArea() {
+        if (window.innerWidth <= 768) { // Apenas em telas menores
+            document.body.classList.add('show-chat-conversation');
+        }
     }
 }
 
