@@ -9,24 +9,156 @@ window.originalList = null;
 
 // Verificar se há um cartão para editar quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
-    const editCardId = localStorage.getItem('editCardId');
-    const editCardListId = localStorage.getItem('editCardListId');
-    
-    if (editCardId && editCardListId) {
-        const boardState = JSON.parse(localStorage.getItem('boardState'));
-        const card = boardState.lists[editCardListId]?.find(c => c.id === editCardId);
-        if (card) {
-            // Limpar os IDs do localStorage
-            localStorage.removeItem('editCardId');
-            localStorage.removeItem('editCardListId');
-            
-            // Abrir o modal de edição com um pequeno delay para garantir que o quadro esteja renderizado
-            setTimeout(() => {
-                window.showCardModal(card);
-            }, 100);
+    // Carregar tema
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        if (settings.theme) {
+            document.documentElement.setAttribute('data-theme', settings.theme);
         }
     }
+
+    // Obter o ID do quadro da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('board');
+
+    if (!boardId) {
+        window.showErrorModal('ID do quadro não encontrado');
+        return;
+    }
+
+    // Carregar informações do quadro
+    const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
+    const board = savedBoards.find(b => b.id === boardId);
+
+    if (!board) {
+        window.showErrorModal('Quadro não encontrado');
+        return;
+    }
+
+    // Atualizar o título da página
+    document.title = `${board.title} - Bagunça`;
+    
+    // Atualizar o título no header
+    const boardTitle = document.querySelector('.nav-dropdown a span');
+    if (boardTitle) {
+        boardTitle.textContent = board.title;
+    }
+
+    // Carregar estado do quadro
+    const savedState = localStorage.getItem(`board_${boardId}`);
+    if (savedState) {
+        window.boardState = JSON.parse(savedState);
+    } else {
+        // Estado inicial do quadro
+        window.boardState = {
+            lists: {
+                'todo': [],
+                'em-andamento': [],
+                'concluido': []
+            }
+        };
+        localStorage.setItem(`board_${boardId}`, JSON.stringify(window.boardState));
+    }
+
+    // Inicializar filtros
+    const filterDropdown = document.getElementById('filter-dropdown');
+    const filterMenu = filterDropdown.querySelector('div');
+    const filterButton = filterDropdown.querySelector('button');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    const searchInput = document.getElementById('search-input');
+
+    // Toggle do menu de filtros
+    filterButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterMenu.classList.toggle('hidden');
+    });
+
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!filterDropdown.contains(e.target)) {
+            filterMenu.classList.add('hidden');
+        }
+    });
+
+    // Aplicar filtros em tempo real quando uma etiqueta é selecionada
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('filter-label')) {
+            const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
+                .map(checkbox => checkbox.value);
+            
+            window.filters.labels = selectedLabels;
+            window.filters.search = searchInput.value.trim();
+            
+            window.renderBoard();
+        }
+    });
+
+    // Limpar filtros
+    clearFiltersBtn.addEventListener('click', () => {
+        window.filters.labels = [];
+        window.filters.search = '';
+        searchInput.value = '';
+        
+        // Desmarca todos os checkboxes
+        document.querySelectorAll('.filter-label').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        window.renderBoard();
+    });
+
+    // Pesquisa em tempo real
+    searchInput.addEventListener('input', () => {
+        window.filters.search = searchInput.value.trim();
+        window.renderBoard();
+    });
+
+    // Renderizar o quadro inicial
+    if (typeof window.renderBoard === 'function') {
+        window.renderBoard();
+    }
+
+    // Configuração da lixeira
+    const trash = document.getElementById('trash');
+    if (trash) {
+        trash.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            trash.classList.add('dragging-over');
+        });
+
+        trash.addEventListener('dragleave', () => {
+            trash.classList.remove('dragging-over');
+        });
+
+        trash.addEventListener('drop', (e) => {
+            e.preventDefault();
+            trash.classList.remove('dragging-over');
+
+            if (window.draggedCard && window.originalList) {
+                const sourceListId = window.originalList.id;
+                const cardId = window.draggedCard.dataset.cardId;
+                const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+
+                if (cardIndex !== -1) {
+                    // Remove o cartão da lista
+                    window.boardState.lists[sourceListId].splice(cardIndex, 1);
+                    window.saveBoardState();
+                    window.renderBoard();
+                }
+            }
+        });
+    }
 });
+
+// Função para salvar o estado do quadro
+window.saveBoardState = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('board');
+    if (boardId) {
+        localStorage.setItem(`board_${boardId}`, JSON.stringify(window.boardState));
+    }
+};
 
 // Variáveis globais para suporte touch
 let touchStartY = 0;
@@ -37,10 +169,6 @@ let touchTimeout;
 let touchClone = null;
 
 // Funções principais
-window.saveBoardState = function() {
-    localStorage.setItem('boardState', JSON.stringify(window.boardState));
-};
-
 window.showConfirmModal = function(message, onConfirm) {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
