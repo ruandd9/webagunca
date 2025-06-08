@@ -265,6 +265,8 @@
 
     <script src="../src/js/features/calendar/calendar.js"></script>
     <script src="../src/js/features/calendar/events.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
         // Função para gerar o calendário
         function generateCalendar(year, month) {
@@ -353,17 +355,6 @@
                     isSidebarOpen = false;
                     sidebar.classList.remove('translate-x-0');
                     sidebar.classList.add('-translate-x-full');
-                }
-            }
-        });
-
-        // Carregar tema salvo
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSettings = localStorage.getItem('userSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                if (settings.theme) {
-                    document.documentElement.setAttribute('data-theme', settings.theme);
                 }
             }
         });

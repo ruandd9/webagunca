@@ -67,7 +67,7 @@
                     </div>
                     <div class="flex items-center space-x-4 relative">
                         <div class="dropdown">
-                            <div class="bg-blue-500 text-white p-2 rounded-full cursor-pointer" style="width: 40px; height: 40px; text-align: center;">YF</div>
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
                             <div class="dropdown-content">
                                 <h3 class="text-lg mb-2">Profile</h3>
                                 <a href="./perfil1.html">Ver Perfil</a>
@@ -205,6 +205,8 @@
     </div>
 
     <script src="../src/js/features/notifications/notifications.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
         // Toggle mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
@@ -212,26 +214,15 @@
             sidebar.classList.toggle('-translate-x-full');
         });
 
-        // Carregar tema salvo
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSettings = localStorage.getItem('userSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                if (settings.theme) {
-                    document.documentElement.setAttribute('data-theme', settings.theme);
-                }
-            }
-
-            // Adicionar event listeners para os botões de filtro
-            document.querySelectorAll('button').forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remover classe active de todos os botões
-                    document.querySelectorAll('button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    // Adicionar classe active ao botão clicado
-                    this.classList.add('active');
+        // Adicionar event listeners para os botões de filtro
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover classe active de todos os botões
+                document.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('active');
                 });
+                // Adicionar classe active ao botão clicado
+                this.classList.add('active');
             });
         });
 

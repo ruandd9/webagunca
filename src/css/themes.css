@@ -36,8 +36,8 @@
 
 /* Aplicação dos temas */
 body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
 }
 
 .bg-gray-900 {
@@ -91,5 +91,39 @@ input, select, textarea {
 }
 
 .dropdown-content a:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Ajustes específicos para elementos comuns */
+.sidebar {
+    background-color: var(--bg-secondary) !important;
+}
+
+.board {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border) !important;
+}
+
+.board:hover {
+    border-color: var(--accent) !important;
+}
+
+/* Ajustes para inputs e botões */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"] {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+button:not(.theme-button) {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+button:hover:not(.theme-button) {
     background-color: var(--bg-tertiary) !important;
 }

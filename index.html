@@ -37,10 +37,10 @@
         <div class="flex items-center space-x-6 ml-auto ms-4">
           <a href="#" id="loginLink"
             class="header-link border-2 border-white bg-transparent text-white px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
-            data-bs-target="#exampleModal" data-bs-toggle="modal">Login</a>
+            data-bs-target="#loginModal" data-bs-toggle="modal">Login</a>
           <a href="#" id="registerLink"
             class="header-link bg-white text-purple-900 px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
-            data-bs-toggle="modal" data-bs-target="#exampleModal">Cadastro</a>
+            data-bs-toggle="modal" data-bs-target="#registerModal">Cadastro</a>
 
           <!-- Botão do menu mobile -->
           <button id="mobileMenuButton" class="md:hidden text-white focus:outline-none">
@@ -62,10 +62,10 @@
           <div class="pt-4 border-t border-white/20">
             <a href="#"
               class="block bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-600 transition-colors text-center mb-4"
-              data-bs-target="#exampleModal" data-bs-toggle="modal">Login</a>
+              data-bs-target="#loginModal" data-bs-toggle="modal">Login</a>
             <a href="#"
               class="block bg-white text-purple-900 px-6 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors text-center"
-              data-bs-toggle="modal" data-bs-target="#exampleModal">Cadastro</a>
+              data-bs-toggle="modal" data-bs-target="#registerModal">Cadastro</a>
           </div>
         </div>
       </div>
@@ -341,10 +341,65 @@
   </div>
 </footer>
 
-<!--Modal teste simples-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal de Login -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form class="form modal-content ">
+    <form class="form modal-content" id="loginForm">
+      <div class="d-flex flex-column mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
+          <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <legend class="fw-bold-5 h3">Login</legend>
+      </div>
+      <div class="">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" class="form-control" required>
+        </div>
+
+        <button type="submit" class="button-submit">Entrar</button>
+        <p class="p mb-3">Ou</p>
+        <div class="flex-row">
+          <div>
+            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3">
+              <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
+              <a href="./public/board-page.html">Login com o Google</a>
+            </button>
+          </div>
+          <div class="flex-row">
+            <div>
+              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+                <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
+                <a href="./public/board-page.html">Login com o Facebook</a>
+              </button>
+            </div>
+            <div class="flex-row">
+              <div>
+                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+                  <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
+                  <a href="./public/board-page.html">Login com o GitHub</a>
+                </button>
+              </div>
+              <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de Cadastro -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="form modal-content" id="cadastroForm">
       <div class="d-flex flex-column mb-2">
         <div class="d-flex justify-content-between align-items-center">
           <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
@@ -356,41 +411,40 @@
       <div class="">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="text" id="email" value="johnsondoe@nomail.com" class="form-control">
+          <input type="email" id="email" class="form-control" required>
         </div>
 
         <div class="">
           <div class="form-group">
-            <label for="email">Nome completo</label>
-            <input type="text" id="email" value="johnson doe junior" class="form-control">
+            <label for="nomeCompleto">Nome completo</label>
+            <input type="text" id="nomeCompleto" class="form-control" required>
           </div>
 
           <div class="">
             <div class="form-group">
-              <label for="email">Criar senha</label>
-              <input type="password" id="email" value="johnsondoe@nomail.com" class="form-control">
+              <label for="senha">Criar senha</label>
+              <input type="password" id="senha" class="form-control" required>
             </div>
 
             <div class="">
               <div class="form-group">
-                <label for="email">Confirmar senha</label>
-                <input type="password" id="email" value="johnsondoe@nomail.com" class="form-control">
+                <label for="confirmarSenha">Confirmar senha</label>
+                <input type="password" id="confirmarSenha" class="form-control" required>
               </div>
 
               <div>
                 <div>
-                  <label class="checkbox-container ">
-                    <input class="custom-checkbox" checked="" type="checkbox">
+                  <label class="checkbox-container">
+                    <input class="custom-checkbox" type="checkbox" id="termos" required>
                     <span class="checkmark"></span>
                     <p class="termos-servicos">Eu concordo com os <b><u>termos & condições</u></b> e a <b><u>política de
                           privacidade</u></b></p>
                   </label>
                 </div>
 
-                <button class=" button-submit"> <a href="./public/board-page.html">Criar conta</a> </button>
+                <button type="submit" class="button-submit">Criar conta</button>
                 <p class="p mb-3">Ou</p>
                 <div class="flex-row">
-
                   <div>
                     <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3">
                       <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
@@ -404,7 +458,7 @@
                         <a href="./public/board-page.html">Login com o Facebook</a>
                       </button>
                     </div>
-                    <div class=" flex-row">
+                    <div class="flex-row">
                       <div>
                         <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
                           <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
@@ -423,6 +477,59 @@
     </form>
   </div>
 </div>
+
+<script>
+// Manipulador do formulário de login
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value;
+    const senha = document.getElementById('loginSenha').value;
+    
+    // Aqui você pode adicionar a lógica de autenticação
+    // Por enquanto, vamos apenas redirecionar para a página do board
+    window.location.href = './public/board-page.html';
+});
+
+// Manipulador do formulário de cadastro
+document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const nomeCompleto = document.getElementById('nomeCompleto').value;
+    const senha = document.getElementById('senha').value;
+    const confirmarSenha = document.getElementById('confirmarSenha').value;
+    
+    if (senha !== confirmarSenha) {
+        alert('As senhas não coincidem!');
+        return;
+    }
+    
+    // Criar objeto com os dados do usuário
+    const userData = {
+        email: email,
+        nomeCompleto: nomeCompleto,
+        nomeUsuario: nomeCompleto.split(' ')[0], // Pega o primeiro nome como nome de usuário
+        telefone: '',
+        notificacoes: {
+            email: true,
+            navegador: true,
+            som: false
+        },
+        privacidade: {
+            perfilPublico: true,
+            mostrarOnline: false
+        },
+        tema: 'dark'
+    };
+    
+    // Salvar no localStorage
+    localStorage.setItem('userData', JSON.stringify(userData));
+    
+    // Redirecionar para a página do board
+    window.location.href = './public/board-page.html';
+});
+</script>
 </body>
 
 </html>

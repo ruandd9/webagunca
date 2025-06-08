@@ -67,7 +67,7 @@
                     </div>
                     <div class="flex items-center space-x-4 relative">
                         <div class="dropdown">
-                            <div class="bg-blue-500 text-white p-2 rounded-full cursor-pointer" style="width: 40px; height: 40px; text-align: center;">YF</div>
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
                             <div class="dropdown-content">
                                 <h3 class="text-lg mb-2">Profile</h3>
                                 <a href="./perfil1.html">Ver Perfil</a>
@@ -188,22 +188,13 @@
     </div>
 
     <script src="../src/js/features/about/about.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
         // Toggle mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
-        });
-
-        // Carregar tema salvo
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSettings = localStorage.getItem('userSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                if (settings.theme) {
-                    document.documentElement.setAttribute('data-theme', settings.theme);
-                }
-            }
         });
     </script>
 </body>

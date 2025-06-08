@@ -776,7 +776,27 @@
     <script src="../src/js/features/board/board.js"></script>
     <script src="../src/js/features/board/modals.js"></script>
     <script src="../src/js/features/board/quadros.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
 
+    <div class="dropdown">
+        <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+        <div class="dropdown-content">
+            <h3 class="text-lg mb-2">Profile</h3>
+            <a href="./perfil1.html">Ver Perfil</a>
+            <a href="./perfil1.html">Configurações</a>
+            <a href="./sobreNos.html">Ajuda</a>
+            <hr class="my-2">
+            <a href="../index.html">Sair</a>
+        </div>
+    </div>
 </body>
 
 </html>

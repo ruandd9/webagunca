@@ -70,7 +70,7 @@
                     <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 relative w-full md:w-auto">
                         <input type="text" placeholder="Pesquisar quadros..." class="bg-white text-black px-4 py-1 rounded-full w-full md:w-96">
                         <div class="dropdown">
-                            <div class="bg-blue-500 text-white p-2 rounded-full cursor-pointer" style="width: 40px; height: 40px; text-align: center;">AF</div>
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
                             <div class="dropdown-content">
                                 <h3 class="text-lg mb-2">Profile</h3>
                                 <a href="./perfil1.html">Ver Perfil</a>
@@ -151,22 +151,13 @@
     </div>
 
     <script src="../src/js/features/board/quadros.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
         // Toggle mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
-        });
-
-        // Carregar tema salvo
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSettings = localStorage.getItem('userSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                if (settings.theme) {
-                    document.documentElement.setAttribute('data-theme', settings.theme);
-                }
-            }
         });
     </script>
 </body>
