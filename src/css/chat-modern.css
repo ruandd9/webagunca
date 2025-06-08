@@ -77,6 +77,28 @@ body {
     overflow-y: auto;
 }
 
+.contacts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contacts-list::-webkit-scrollbar-track {
+    background: #374151;
+    border-radius: 3px;
+}
+
+.contacts-list::-webkit-scrollbar-thumb {
+    background: #4B5563;
+    border-radius: 3px;
+}
+
+.contacts-list::-webkit-scrollbar-thumb:hover {
+    background: #6B7280;
+}
+
+.contacts-list::-webkit-scrollbar-button {
+    display: none;
+}
+
 .contact-item {
     display: flex;
     padding: 22px 26px;
