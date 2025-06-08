@@ -82,13 +82,15 @@ function renderEvents() {
             let eventDots = dayElement.querySelector('.event-dots');
             if (!eventDots) {
                 eventDots = document.createElement('div');
-                eventDots.className = 'event-dots flex justify-center mt-1';
+                eventDots.className = 'event-dots flex flex-col gap-1 mt-1';
                 dayElement.appendChild(eventDots);
             }
 
-            const dot = document.createElement('div');
-            dot.className = `event-dot ${event.color}`;
-            eventDots.appendChild(dot);
+            const eventIndicator = document.createElement('div');
+            eventIndicator.className = `event-indicator ${event.color} text-white text-xs px-2 py-1 rounded-full truncate`;
+            eventIndicator.title = event.title;
+            eventIndicator.textContent = event.title;
+            eventDots.appendChild(eventIndicator);
         }
     });
 }
@@ -104,25 +106,52 @@ function renderDayEvents(date) {
     const eventsContainer = document.querySelector('.space-y-2');
     if (!eventsContainer) return;
 
+    // Remove a seleção anterior
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove('selected-day');
+    });
+
+    // Adiciona a seleção ao dia atual
+    const dayElement = document.querySelector(`.calendar-day[data-date="${date.toISOString().split('T')[0]}"]`);
+    if (dayElement) {
+        dayElement.classList.add('selected-day');
+    }
+
     const dayEvents = window.calendarEvents.events.filter(event => {
         const eventDate = new Date(event.start);
         return eventDate.toDateString() === date.toDateString();
     });
 
-    eventsContainer.innerHTML = '';
+    // Formata a data para exibição
+    const formattedDate = date.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
 
-    if (dayEvents.length === 0) {
-        eventsContainer.innerHTML = `
-            <div class="text-center text-gray-400 py-4">
-                Nenhum evento para este dia
+    // Cria o container com o título da data
+    eventsContainer.innerHTML = `
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-white capitalize">${formattedDate}</h2>
+            <div class="mt-2 text-gray-400">
+                ${dayEvents.length} ${dayEvents.length === 1 ? 'evento' : 'eventos'} para este dia
             </div>
-        `;
-        return;
-    }
+        </div>
+        <div class="events-list space-y-3">
+            ${dayEvents.length === 0 ? `
+                <div class="text-center text-gray-400 py-4">
+                    Nenhum evento para este dia
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    const eventsList = eventsContainer.querySelector('.events-list');
 
     dayEvents.forEach(event => {
         const eventElement = document.createElement('div');
-        eventElement.className = 'bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between event-card';
+        eventElement.className = 'bg-gray-800 rounded-lg p-3 md:p-4 flex items-center justify-between event-card hover:bg-gray-700 transition-colors';
         
         const eventTime = new Date(event.start).toLocaleTimeString('pt-BR', {
             hour: '2-digit',
@@ -136,8 +165,8 @@ function renderDayEvents(date) {
                 </div>
                 <div>
                     <h3 class="font-medium text-sm md:text-base">${event.title}</h3>
-                    <div class="event-time">
-                        <i class="far fa-clock"></i>
+                    <div class="event-time text-gray-400 text-sm">
+                        <i class="far fa-clock mr-1"></i>
                         <span>${eventTime}</span>
                     </div>
                     ${event.description ? `
@@ -146,16 +175,16 @@ function renderDayEvents(date) {
                 </div>
             </div>
             <div class="event-actions flex space-x-2">
-                <button class="text-gray-400 hover:text-white p-2" onclick="editCard('${event.id}')">
+                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="editCard('${event.id}')">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="text-gray-400 hover:text-white p-2" onclick="deleteCard('${event.id}')">
+                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="deleteCard('${event.id}')">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
         `;
 
-        eventsContainer.appendChild(eventElement);
+        eventsList.appendChild(eventElement);
     });
 }
 
@@ -211,6 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dayElement && !dayElement.classList.contains('text-gray-500')) {
             const day = parseInt(dayElement.querySelector('span').textContent);
             const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            
+            // Adiciona o atributo data-date para facilitar a seleção
+            dayElement.setAttribute('data-date', selectedDate.toISOString().split('T')[0]);
+            
             renderDayEvents(selectedDate);
         }
     });
