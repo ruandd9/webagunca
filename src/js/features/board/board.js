@@ -495,7 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterDropdown = document.getElementById('filter-dropdown');
     const filterMenu = filterDropdown.querySelector('div');
     const filterButton = filterDropdown.querySelector('button');
-    const applyFiltersBtn = document.getElementById('apply-filters');
     const clearFiltersBtn = document.getElementById('clear-filters');
     const searchInput = document.getElementById('search-input');
 
@@ -512,16 +511,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Aplicar filtros
-    applyFiltersBtn.addEventListener('click', () => {
-        const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
-            .map(checkbox => checkbox.value);
-        
-        window.filters.labels = selectedLabels;
-        window.filters.search = searchInput.value.trim();
-        
-        window.renderBoard();
-        filterMenu.classList.add('hidden');
+    // Aplicar filtros em tempo real quando uma etiqueta é selecionada
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('filter-label')) {
+            const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
+                .map(checkbox => checkbox.value);
+            
+            window.filters.labels = selectedLabels;
+            window.filters.search = searchInput.value.trim();
+            
+            window.renderBoard();
+        }
     });
 
     // Limpar filtros
