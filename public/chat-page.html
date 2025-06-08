@@ -18,7 +18,7 @@
         </button>
 
         <!-- Sidebar Principal -->
-        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
+        <div id="sidebar" class="w-64 bg-gray-800 p-4 h-full z-40 shadow-lg md:relative">
             <div class="flex items-center mb-8">
                 <div class="p-2 rounded">
                     <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
@@ -87,7 +87,7 @@
                 <!-- Container do Chat -->
                 <div class="chat-container h-full">
                     <!-- Sidebar do Chat -->
-                    <aside class="chat-sidebar hidden md:block">
+                    <aside id="chatContactSidebar" class="chat-sidebar">
                         <div class="chat-sidebar-header">
                             <div class="contact-avatar">
                                 <img src="../src/img/logoBag.png" alt="Logo" class="w-8 h-8">
@@ -118,8 +118,11 @@
                     </aside>
 
                     <!-- Área de Mensagens -->
-                    <main class="chat-messages-area h-full">
+                    <main id="chatConversationArea" class="chat-messages-area h-full hidden-mobile">
                         <div class="chat-header my-2 shadow-lg mx-2 bg-gray-800 rounded-lg">
+                            <button id="backToContactsBtn" class="action-button md:hidden">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
                             <div class="contact-avatar">
                                 <span>RM</span>
                                 <div class="online-indicator"></div>
@@ -288,10 +291,15 @@
     <script src="../src/js/features/user/userInitials.js"></script>
     <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
+        // Definir variáveis de estado para o menu mobile
+        let isSidebarOpen = false;
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+
         // Toggle mobile menu
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
+        mobileMenuButton.addEventListener('click', function() {
+            isSidebarOpen = !isSidebarOpen;
+            sidebar.classList.toggle('open', isSidebarOpen);
         });
 
         // Fechar sidebar ao clicar fora em dispositivos móveis
@@ -299,71 +307,10 @@
             if (window.innerWidth < 768) { // Apenas em dispositivos móveis
                 if (!sidebar.contains(event.target) && !mobileMenuButton.contains(event.target) && isSidebarOpen) {
                     isSidebarOpen = false;
-                    sidebar.classList.remove('translate-x-0');
-                    sidebar.classList.add('-translate-x-full');
+                    sidebar.classList.remove('open');
                 }
             }
         });
     </script>
-
-    <!-- Estilos para a lista de contatos -->
-    <style>
-        .chat-sidebar {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 320px;
-            border-right: 1px solid var(--border-color);
-            background-color: var(--bg-dark);
-            overflow-y: auto;
-        }
-
-        .chat-sidebar-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            background-color: var(--bg-dark);
-            z-index: 10;
-        }
-
-        .search-container {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 4rem;
-            background-color: var(--bg-dark);
-            z-index: 10;
-        }
-
-        .contacts-list {
-            padding: 0.5rem;
-        }
-
-        .add-contact-button {
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-            position: sticky;
-            bottom: 0;
-            background-color: var(--bg-dark);
-            z-index: 10;
-        }
-
-        @media (max-width: 768px) {
-            .chat-sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 40;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
-            }
-
-            .chat-sidebar.active {
-                transform: translateX(0);
-            }
-        }
-    </style>
 </body>
 </html>
