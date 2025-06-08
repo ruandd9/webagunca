@@ -185,9 +185,16 @@ function showCreateBoardModal() {
                             <input type="radio" name="coverType" value="image" class="cover-type">
                             <span>Imagem de capa</span>
                         </div>
-                        <div class="image-option hidden">
+                        <div class="image-option hidden space-y-2">
                             <input type="text" class="w-full bg-gray-700 text-white rounded px-3 py-2" placeholder="URL da imagem...">
                             <p class="text-sm text-gray-400 mt-1">Cole aqui a URL de uma imagem para usar como capa</p>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <input type="file" accept="image/*" class="file-input bg-gray-700 text-white rounded px-3 py-2">
+                                <span class="text-sm text-gray-400">ou escolha um arquivo</span>
+                            </div>
+                            <div class="preview-area mt-2 hidden">
+                                <img src="" alt="Preview" class="w-full h-20 object-cover rounded">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -211,9 +218,13 @@ function showCreateBoardModal() {
     const coverTypeInputs = modal.querySelectorAll('.cover-type');
     const colorOptions = modal.querySelectorAll('.color-option');
     const imageOption = modal.querySelector('.image-option');
-    const imageUrlInput = modal.querySelector('.image-option input');
+    const imageUrlInput = modal.querySelector('.image-option input[type="text"]');
+    const fileInput = modal.querySelector('.file-input');
+    const previewArea = modal.querySelector('.preview-area');
+    const previewImg = previewArea.querySelector('img');
 
     let selectedColor = '#3B82F6'; // Cor padrão
+    let selectedFileBase64 = '';
 
     const closeModal = () => modal.remove();
 
@@ -243,6 +254,23 @@ function showCreateBoardModal() {
         });
     });
 
+    // Preview e conversão do arquivo para base64
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                selectedFileBase64 = ev.target.result;
+                previewImg.src = selectedFileBase64;
+                previewArea.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            selectedFileBase64 = '';
+            previewArea.classList.add('hidden');
+        }
+    });
+
     createBtn.addEventListener('click', () => {
         const title = titleInput.value.trim();
         if (!title) {
@@ -260,8 +288,12 @@ function showCreateBoardModal() {
         };
 
         // Adiciona informações de capa
-        if (coverType === 'image' && imageUrlInput.value.trim()) {
-            board.coverImage = imageUrlInput.value.trim();
+        if (coverType === 'image') {
+            if (selectedFileBase64) {
+                board.coverImage = selectedFileBase64;
+            } else if (imageUrlInput.value.trim()) {
+                board.coverImage = imageUrlInput.value.trim();
+            }
         } else {
             board.backgroundColor = selectedColor;
         }
