@@ -90,9 +90,6 @@
         <div class="particles" id="particles"></div>
         <div class="glow-effect" style="top: 20%; left: 30%;"></div>
         <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
-        <div class="particles" id="particles"></div>
-        <div class="glow-effect" style="top: 20%; left: 30%;"></div>
-        <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
       </div>
       <!-- Hero background fim -->
 
@@ -263,6 +260,17 @@
       }
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.social-login-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          alert('Este serviço está em manutenção. Por favor, utilize o cadastro tradicional.');
+        });
+      });
+    });
+  </script>
 </body>
 
 <footer class="relative my-5">
@@ -368,23 +376,23 @@
         <p class="p mb-3">Ou</p>
         <div class="flex-row">
           <div>
-            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3">
+            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn" data-provider="google">
               <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
-              <a href="./public/board-page.html">Login com o Google</a>
+              <span>Login com o Google</span>
             </button>
           </div>
           <div class="flex-row">
             <div>
-              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="facebook">
                 <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
-                <a href="./public/board-page.html">Login com o Facebook</a>
+                <span>Login com o Facebook</span>
               </button>
             </div>
             <div class="flex-row">
               <div>
-                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="github">
                   <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
-                  <a href="./public/board-page.html">Login com o GitHub</a>
+                  <span>Login com o GitHub</span>
                 </button>
               </div>
               <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
@@ -446,23 +454,23 @@
                 <p class="p mb-3">Ou</p>
                 <div class="flex-row">
                   <div>
-                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3">
+                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn" data-provider="google">
                       <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
-                      <a href="./public/board-page.html">Login com o Google</a>
+                      <span>Login com o Google</span>
                     </button>
                   </div>
                   <div class="flex-row">
                     <div>
-                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="facebook">
                         <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
-                        <a href="./public/board-page.html">Login com o Facebook</a>
+                        <span>Login com o Facebook</span>
                       </button>
                     </div>
                     <div class="flex-row">
                       <div>
-                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3">
+                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn" data-provider="github">
                           <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
-                          <a href="./public/board-page.html">Login com o GitHub</a>
+                          <span>Login com o GitHub</span>
                         </button>
                       </div>
                       <p class="p">Ja tem uma conta? <span class="span"><b>Fazer login</b></span></p>
