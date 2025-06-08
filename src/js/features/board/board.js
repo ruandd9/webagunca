@@ -7,6 +7,27 @@ window.filters = {
 window.draggedCard = null;
 window.originalList = null;
 
+// Verificar se há um cartão para editar quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+    const editCardId = localStorage.getItem('editCardId');
+    const editCardListId = localStorage.getItem('editCardListId');
+    
+    if (editCardId && editCardListId) {
+        const boardState = JSON.parse(localStorage.getItem('boardState'));
+        const card = boardState.lists[editCardListId]?.find(c => c.id === editCardId);
+        if (card) {
+            // Limpar os IDs do localStorage
+            localStorage.removeItem('editCardId');
+            localStorage.removeItem('editCardListId');
+            
+            // Abrir o modal de edição com um pequeno delay para garantir que o quadro esteja renderizado
+            setTimeout(() => {
+                window.showCardModal(card);
+            }, 100);
+        }
+    }
+});
+
 // Variáveis globais para suporte touch
 let touchStartY = 0;
 let touchStartX = 0;
@@ -265,6 +286,26 @@ function createCardElement(card, listId) {
     div.addEventListener('touchmove', handleTouchMove, { passive: false });
     div.addEventListener('touchend', handleTouchEnd);
 
+    // Verifica se o prazo está próximo ou expirado
+    let deadlineClass = '';
+    let deadlineIcon = '';
+    if (card.deadline) {
+        const deadline = new Date(card.deadline);
+        const now = new Date();
+        const diffDays = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) {
+            deadlineClass = 'text-red-500';
+            deadlineIcon = 'fa-exclamation-circle';
+        } else if (diffDays <= 3) {
+            deadlineClass = 'text-yellow-500';
+            deadlineIcon = 'fa-clock';
+        } else {
+            deadlineClass = 'text-green-500';
+            deadlineIcon = 'fa-calendar-check';
+        }
+    }
+
     div.innerHTML = `
         <div class="flex justify-between items-start mb-3">
             <div class="flex space-x-2">
@@ -280,6 +321,12 @@ function createCardElement(card, listId) {
         </div>
         <h3 class="font-medium mb-2">${card.title}</h3>
         <p class="text-sm text-gray-400 mb-3">${card.description || ''}</p>
+        ${card.deadline ? `
+            <div class="flex items-center ${deadlineClass} text-sm mb-3">
+                <i class="fas ${deadlineIcon} mr-2"></i>
+                <span>${new Date(card.deadline).toLocaleString('pt-BR')}</span>
+            </div>
+        ` : ''}
         <div class="flex justify-between items-center text-sm text-gray-400">
             <div class="flex space-x-3">
                 ${card.comments > 0 ? `
@@ -579,4 +626,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const calendarGrid = document.getElementById('calendarGrid');
+    if (calendarGrid) {
+        calendarGrid.addEventListener('click', (e) => {
+            const dayElement = e.target.closest('.calendar-day');
+            if (dayElement && !dayElement.classList.contains('text-gray-500')) {
+                const day = parseInt(dayElement.querySelector('span').textContent);
+                const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                renderDayEvents(selectedDate);
+            }
+        });
+    }
+
+    // Carrega os eventos do quadro
+    loadBoardEvents();
 });
