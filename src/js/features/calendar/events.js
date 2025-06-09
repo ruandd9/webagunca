@@ -5,33 +5,40 @@ window.calendarEvents = {
 
 // Função para carregar eventos do quadro
 function loadBoardEvents() {
-    const boardState = localStorage.getItem('boardState');
-    if (boardState) {
-        const state = JSON.parse(boardState);
-        const events = [];
+    const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
+    const events = [];
 
-        // Percorre todas as listas do quadro
-        Object.entries(state.lists).forEach(([listId, cards]) => {
-            cards.forEach(card => {
-                if (card.deadline) {
-                    events.push({
-                        id: card.id,
-                        title: card.title,
-                        description: card.description,
-                        start: card.deadline,
-                        end: card.deadline, // Usando o mesmo horário para início e fim
-                        type: 'card',
-                        listId: listId,
-                        labels: card.labels || [],
-                        color: getLabelColor(card.labels)
-                    });
-                }
+    // Percorre todos os quadros
+    savedBoards.forEach(board => {
+        const boardState = localStorage.getItem(`board_${board.id}`);
+        if (boardState) {
+            const state = JSON.parse(boardState);
+            
+            // Percorre todas as listas do quadro
+            Object.entries(state.lists).forEach(([listId, cards]) => {
+                cards.forEach(card => {
+                    if (card.deadline) {
+                        events.push({
+                            id: card.id,
+                            title: card.title,
+                            description: card.description,
+                            start: card.deadline,
+                            end: card.deadline, // Usando o mesmo horário para início e fim
+                            type: 'card',
+                            listId: listId,
+                            boardId: board.id,
+                            boardTitle: board.title,
+                            labels: card.labels || [],
+                            color: getLabelColor(card.labels)
+                        });
+                    }
+                });
             });
-        });
+        }
+    });
 
-        window.calendarEvents.events = events;
-        renderEvents();
-    }
+    window.calendarEvents.events = events;
+    renderEvents();
 }
 
 // Função para obter a cor baseada nas etiquetas do cartão
@@ -229,16 +236,19 @@ function renderDayEvents(date) {
                         <i class="far fa-clock mr-1"></i>
                         <span>${eventTime}</span>
                     </div>
+                    <div class="text-sm text-gray-400 mt-1">
+                        <span class="font-medium">Quadro:</span> ${event.boardTitle}
+                    </div>
                     ${event.description ? `
                         <p class="text-sm text-gray-400 mt-1">${event.description}</p>
                     ` : ''}
                 </div>
             </div>
             <div class="event-actions flex space-x-2">
-                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="editCard('${event.id}')">
+                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="editCard('${event.id}', '${event.boardId}')">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="deleteCard('${event.id}')">
+                <button class="text-gray-400 hover:text-white p-2 transition-colors" onclick="deleteCard('${event.id}', '${event.boardId}')">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
@@ -249,35 +259,19 @@ function renderDayEvents(date) {
 }
 
 // Função para editar um cartão
-function editCard(cardId) {
-    // Encontrar o cartão no estado do quadro
-    const boardState = JSON.parse(localStorage.getItem('boardState'));
-    let cardToEdit = null;
-    let listId = null;
+function editCard(cardId, boardId) {
+    // Salvar o ID do cartão e do quadro no localStorage
+    localStorage.setItem('editCardId', cardId);
+    localStorage.setItem('editCardBoardId', boardId);
     
-    for (const currentListId in boardState.lists) {
-        const card = boardState.lists[currentListId].find(c => c.id === cardId);
-        if (card) {
-            cardToEdit = card;
-            listId = currentListId;
-            break;
-        }
-    }
-    
-    if (cardToEdit) {
-        // Salvar o ID do cartão e da lista no localStorage
-        localStorage.setItem('editCardId', cardId);
-        localStorage.setItem('editCardListId', listId);
-        
-        // Redirecionar para a página do quadro
-        window.location.href = 'Quadros.html';
-    }
+    // Redirecionar para a página do quadro
+    window.location.href = `Quadros.html?board=${boardId}`;
 }
 
 // Função para excluir um cartão
-function deleteCard(cardId) {
+function deleteCard(cardId, boardId) {
     if (confirm('Tem certeza que deseja excluir este cartão?')) {
-        const boardState = JSON.parse(localStorage.getItem('boardState'));
+        const boardState = JSON.parse(localStorage.getItem(`board_${boardId}`));
         
         for (const listId in boardState.lists) {
             const cardIndex = boardState.lists[listId].findIndex(c => c.id === cardId);
@@ -287,7 +281,7 @@ function deleteCard(cardId) {
             }
         }
 
-        localStorage.setItem('boardState', JSON.stringify(boardState));
+        localStorage.setItem(`board_${boardId}`, JSON.stringify(boardState));
         loadBoardEvents();
     }
 }
