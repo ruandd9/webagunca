@@ -141,19 +141,18 @@
             .event-actions {
                 opacity: 1;
             }
+
+            #sidebar {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
     <div class="flex h-screen">
-        <!-- Mobile Menu Button -->
-        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
-            <i class="fas fa-bars"></i>
-        </button>
-
         <!-- Sidebar Principal -->
-        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
+        <div id="sidebar" class="hidden md:block w-64 bg-gray-800 p-4 h-full shadow-lg">
             <div class="flex items-center mb-8">
                 <div class="p-2 rounded">
                     <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
@@ -192,12 +191,17 @@
             <!-- Header -->
             <header class="mb-4 md:mb-8">
                 <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-xl md:text-2xl font-bold mb-1 md:mb-2 flex items-center">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            Calendário
-                        </h1>
-                        <p class="text-sm md:text-base text-gray-400">Visualize suas tarefas por data</p>
+                    <div class="flex items-center">
+                        <a href="./board-page.html" class="md:hidden mr-4 text-gray-400 hover:text-white">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-xl md:text-2xl font-bold mb-1 md:mb-2 flex items-center">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                Calendário
+                            </h1>
+                            <p class="text-sm md:text-base text-gray-400">Visualize suas tarefas por data</p>
+                        </div>
                     </div>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
@@ -374,33 +378,6 @@
         document.getElementById('nextMonth').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
-        });
-
-        // Controle do menu mobile
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const sidebar = document.getElementById('sidebar');
-        let isSidebarOpen = false;
-
-        mobileMenuButton.addEventListener('click', function() {
-            isSidebarOpen = !isSidebarOpen;
-            if (isSidebarOpen) {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-            } else {
-                sidebar.classList.remove('translate-x-0');
-                sidebar.classList.add('-translate-x-full');
-            }
-        });
-
-        // Fechar sidebar ao clicar fora em dispositivos móveis
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth < 768) { // Apenas em dispositivos móveis
-                if (!sidebar.contains(event.target) && !mobileMenuButton.contains(event.target) && isSidebarOpen) {
-                    isSidebarOpen = false;
-                    sidebar.classList.remove('translate-x-0');
-                    sidebar.classList.add('-translate-x-full');
-                }
-            }
         });
     </script>
 </body>
