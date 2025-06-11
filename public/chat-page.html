@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="../src/css/themes.css">
     <link rel="stylesheet" href="../src/css/principal-home.css">
     <link rel="stylesheet" href="../src/css/chat-modern.css"> <!-- css da pagina-->
+    <script src="../src/js/features/auth/auth.js"></script>
+    <script>
+        // Verificar se o usuário está logado
+        if (!auth.isUserLoggedIn()) {
+            window.location.href = '../index.html';
+        }
+    </script>
 </head>
 <body class="bg-gray-900 text-white font-sans">
     <div class="flex flex-col md:flex-row h-screen">
@@ -75,7 +82,7 @@
                                     <a href="./perfil1.html">Configurações</a>
                                     <a href="./sobreNos.html">Ajuda</a>
                                     <hr class="my-2">
-                                    <a href="../index.html">Sair</a>
+                                    <a href="#" onclick="auth.logoutUser()">Sair</a>
                                 </div>
                             </div>
                         </div>

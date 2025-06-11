@@ -241,6 +241,7 @@
   </main>
   <script src="./src/js/index.js"></script>
   <script src="./src/js/particles.js"></script>
+  <script src="./src/js/features/auth/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const mobileMenuButton = document.getElementById('mobileMenuButton');
@@ -258,11 +259,73 @@
           }
         });
       }
-    });
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Removendo o código de login social
+
+      // Manipulador do formulário de login
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+        
+        try {
+          const userData = auth.loginUser(email, senha);
+          // Redirecionar para a página do board após login bem-sucedido
+          window.location.href = './public/board-page.html';
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      // Manipulador do formulário de cadastro
+      document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const nomeCompleto = document.getElementById('nomeCompleto').value;
+        const senha = document.getElementById('senha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+        const termos = document.getElementById('termos').checked;
+
+        try {
+          // Validar senhas
+          if (senha !== confirmarSenha) {
+            throw new Error('As senhas não coincidem');
+          }
+
+          // Validar termos
+          if (!termos) {
+            throw new Error('Você precisa aceitar os termos e condições');
+          }
+
+          // Registrar usuário
+          const userData = auth.registerUser(email, nomeCompleto, senha);
+          
+          // Fechar modal de cadastro
+          const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+          registerModal.hide();
+
+          // Redirecionar para a página do board
+          window.location.href = './public/board-page.html';
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      // Adicionar link para login no texto de cadastro
+      document.querySelector('#registerModal .p .span').addEventListener('click', function() {
+        const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        registerModal.hide();
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      });
+
+      // Adicionar link para cadastro no texto de login
+      document.querySelector('#loginModal .p .span').addEventListener('click', function() {
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        loginModal.hide();
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
+      });
     });
   </script>
 </body>
@@ -479,59 +542,6 @@
     </form>
   </div>
 </div>
-
-<script>
-// Manipulador do formulário de login
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const senha = document.getElementById('loginSenha').value;
-    
-    // Aqui você pode adicionar a lógica de autenticação
-    // Por enquanto, vamos apenas redirecionar para a página do board
-    window.location.href = './public/board-page.html';
-});
-
-// Manipulador do formulário de cadastro
-document.getElementById('cadastroForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const nomeCompleto = document.getElementById('nomeCompleto').value;
-    const senha = document.getElementById('senha').value;
-    const confirmarSenha = document.getElementById('confirmarSenha').value;
-    
-    if (senha !== confirmarSenha) {
-        alert('As senhas não coincidem!');
-        return;
-    }
-    
-    // Criar objeto com os dados do usuário
-    const userData = {
-        email: email,
-        nomeCompleto: nomeCompleto,
-        nomeUsuario: nomeCompleto.split(' ')[0], // Pega o primeiro nome como nome de usuário
-        telefone: '',
-        notificacoes: {
-            email: true,
-            navegador: true,
-            som: false
-        },
-        privacidade: {
-            perfilPublico: true,
-            mostrarOnline: false
-        },
-        tema: 'dark'
-    };
-    
-    // Salvar no localStorage
-    localStorage.setItem('userData', JSON.stringify(userData));
-    
-    // Redirecionar para a página do board
-    window.location.href = './public/board-page.html';
-});
-</script>
 </body>
 
 </html>
