@@ -7,7 +7,13 @@
 <p align="center">
   <a href="https://shields.io"><img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-blue?style=flat-square" alt="Status: Em Desenvolvimento"></a>
 </p>
+<div align="center">
 
+[![Último Commit](https://img.shields.io/badge/Último_Commit-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca/commits/main)
+[![Tamanho do Repo](https://img.shields.io/badge/Tamanho_do_Repositório-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca)
+[![Issues](https://img.shields.io/badge/Issues-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca/issues)
+  
+</div>
 ---
 
 <h2 align="center">📖 Descrição do Projeto</h2>
