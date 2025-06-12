@@ -10,6 +10,26 @@
     <link rel="stylesheet" href="../src/css/principal-home.css">
     <link rel="stylesheet" href="../src/css/themes.css">
     <style>
+        /* Estilos globais para scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         /* Estilos para drag & drop */
         .dragging-over {
             background-color: rgba(55, 65, 81, 0.5);
@@ -20,6 +40,11 @@
         
         .card {
             transition: opacity 0.2s ease-in-out;
+            margin-bottom: 0.75rem;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
         }
 
         /* Estilos para a lixeira */
@@ -73,15 +98,58 @@
             display: none;
         }
 
+        /* Estilos para as listas corrigidos */
+        .list {
+            width: 280px;
+            min-width: 280px;
+            max-height: calc(100vh - 200px);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-content {
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+            min-height: 50px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+            flex-grow: 1;
+            mask-image: linear-gradient(to top, transparent, black 5px, black calc(100% - 5px), transparent);
+            -webkit-mask-image: linear-gradient(to top, transparent, black 5px, black calc(100% - 5px), transparent);
+        }
+
+        .list-content.has-many-cards {
+            max-height: calc(100vh - 250px);
+        }
+
+        .board-container {
+            align-items: flex-start;
+            padding-bottom: 20px;
+        }
+
+        /* Estilo para o scroll horizontal fixo */
+        .horizontal-scroll-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: rgba(31, 41, 55, 0.8);
+            z-index: 30;
+        }
+
+        .horizontal-scroll {
+            height: 100%;
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 6px;
+            transition: width 0.2s ease;
+        }
+
         @media (max-width: 768px) {
-            #filter-menu {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 90%;
-                max-width: 320px;
-                padding: 1rem;
+            .list {
+                width: 220px;
+                min-width: 220px;
             }
         }
 
@@ -128,11 +196,6 @@
                 gap: 1rem;
             }
 
-            .list {
-                min-width: 250px;
-                width: 100%;
-            }
-
             .add-list-btn {
                 min-width: 250px;
                 width: 100%;
@@ -170,26 +233,6 @@
                 display: flex;
                 gap: 1rem;
                 padding: 0.5rem;
-            }
-
-            .board-container::-webkit-scrollbar {
-                height: 8px;
-            }
-
-            .board-container::-webkit-scrollbar-track {
-                background: #1F2937;
-                border-radius: 4px;
-            }
-
-            .board-container::-webkit-scrollbar-thumb {
-                background: #4B5563;
-                border-radius: 4px;
-            }
-
-            .list {
-                min-width: 220px;
-                max-width: 220px;
-                flex-shrink: 0;
             }
 
             .add-list-btn {
@@ -255,24 +298,6 @@
             padding-right: 0.5rem;
         }
 
-        .space-y-6::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .space-y-6::-webkit-scrollbar-track {
-            background: #374151;
-            border-radius: 3px;
-        }
-
-        .space-y-6::-webkit-scrollbar-thumb {
-            background: #4B5563;
-            border-radius: 3px;
-        }
-
-        .space-y-6::-webkit-scrollbar-thumb:hover {
-            background: #6B7280;
-        }
-
         @media (max-width: 640px) {
             .fixed.inset-0.bg-black.bg-opacity-50 {
                 padding: 0.5rem;
@@ -286,6 +311,45 @@
 
             .space-y-6 {
                 max-height: calc(100vh - 10rem);
+            }
+        }
+
+        /* Estilos para o dropdown do usuário */
+        .dropdown {
+            top: 20px;
+            right: 20px;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .dropdown-content a {
+            display: block;
+            color: #E5E7EB;
+            padding: 8px 0;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            color: #FFFFFF;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Estilo para o botão de adicionar lista */
+        .add-list-btn {
+            width: 280px;
+            min-width: 280px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .add-list-btn {
+                width: 220px;
+                min-width: 220px;
             }
         }
     </style>
@@ -390,6 +454,19 @@
                                 <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
                         </div>
+
+                        <!-- Dropdown do usuário -->
+                        <!-- <div class="dropdown">
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="../index.html">Sair</a>
+                            </div>
+                        </div> -->
                     </div>
 
                     <!-- Tags filtradas ativas -->
@@ -399,7 +476,7 @@
             </header>
 
             <!-- Board -->
-            <div class="board-container flex space-x-6 overflow-x-auto pb-4">
+            <div class="board-container flex space-x-6 overflow-x-auto pb-4" id="board-container">
                 <!-- Para Fazer -->
                 <div id="para-fazer" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
                     <div class="flex justify-between items-center mb-4">
@@ -408,7 +485,7 @@
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <div class="list-content space-y-4 flex-1">
+                    <div class="list-content space-y-4">
                     </div>
                     <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
                         <i class="fas fa-plus mr-2"></i>
@@ -424,7 +501,7 @@
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <div class="list-content space-y-4 flex-1">
+                    <div class="list-content space-y-4">
                     </div>
                     <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
                         <i class="fas fa-plus mr-2"></i>
@@ -440,7 +517,7 @@
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <div class="list-content space-y-4 flex-1">
+                    <div class="list-content space-y-4">
                     </div>
                     <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
                         <i class="fas fa-plus mr-2"></i>
@@ -516,6 +593,22 @@
 
         // Variável para armazenar o card atual sendo editado
         let currentEditingCard = null;
+
+        // Função para atualizar o scroll horizontal
+        function updateHorizontalScroll() {
+            const boardContainer = document.getElementById('board-container');
+            const scrollContainer = document.getElementById('horizontal-scroll');
+            
+            if (boardContainer && scrollContainer) {
+                const scrollWidth = boardContainer.scrollWidth;
+                const clientWidth = boardContainer.clientWidth;
+                const scrollLeft = boardContainer.scrollLeft;
+                const scrollRatio = clientWidth / scrollWidth;
+                
+                scrollContainer.style.width = `${scrollRatio * 100}%`;
+                scrollContainer.style.transform = `translateX(${(scrollLeft / scrollWidth) * 100}%)`;
+            }
+        }
 
         // Função para abrir o modal de edição
         function openEditCardModal(card) {
@@ -621,9 +714,16 @@
         // Função para excluir o card
         function deleteCard() {
             if (!currentEditingCard) return;
-
+        
             if (confirm('Tem certeza que deseja excluir este cartão?')) {
+                const listContent = currentEditingCard.closest('.list-content');
                 currentEditingCard.remove();
+                
+                // Verifica se agora tem menos de 6 cartões
+                if (listContent.querySelectorAll('.card').length < 6) {
+                    listContent.classList.remove('has-many-cards');
+                }
+                
                 saveBoardState();
                 closeEditCardModal();
             }
@@ -711,8 +811,15 @@
         function addCard(listId, title, description, labels = []) {
             const list = document.getElementById(listId);
             if (!list) return;
-
+        
             const listContent = list.querySelector('.list-content');
+            const cards = listContent.querySelectorAll('.card');
+            
+            // Verifica se já tem 6 cartões para adicionar a classe de scroll
+            if (cards.length >= 6) {
+                listContent.classList.add('has-many-cards');
+            }
+        
             const card = document.createElement('div');
             card.className = 'card bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600';
             card.setAttribute('draggable', 'true');
@@ -732,14 +839,13 @@
                     </div>
                 ` : ''}
             `;
-
-            // Adicionar evento de clique para abrir o modal de edição
+        
             card.addEventListener('click', () => {
                 openEditCardModal(card);
             });
-
+        
             listContent.appendChild(card);
-            filterCards(); // Aplicar filtros após adicionar novo cartão
+            filterCards();
         }
 
         // Carregar tema e estado do quadro
@@ -782,6 +888,14 @@
                     }
                 }
             });
+
+            // Configurar scroll horizontal
+            const boardContainer = document.getElementById('board-container');
+            if (boardContainer) {
+                boardContainer.addEventListener('scroll', updateHorizontalScroll);
+                window.addEventListener('resize', updateHorizontalScroll);
+                updateHorizontalScroll();
+            }
 
             // Carregar estado do quadro
             const savedState = localStorage.getItem('boardState');
@@ -836,8 +950,6 @@
                     labelFiltersContainer.appendChild(labelFilter);
                 });
             }
-
-            // Adicionar evento de pesquisa
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', filterCards);
@@ -871,18 +983,6 @@
             sidebar.classList.toggle('-translate-x-full');
         });
     </script>
-
-    <div class="dropdown">
-        <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
-        <div class="dropdown-content">
-            <h3 class="text-lg mb-2">Profile</h3>
-            <a href="./perfil1.html">Ver Perfil</a>
-            <a href="./perfil1.html">Configurações</a>
-            <a href="./sobreNos.html">Ajuda</a>
-            <hr class="my-2">
-            <a href="../index.html">Sair</a>
-        </div>
-    </div>
 </body>
 
 </html>
