@@ -338,15 +338,30 @@ window.showCardModal = function(card) {
                     <h4 class="font-medium mb-2">Comentários</h4>
                     <div class="space-y-4">
                         ${card.comments && Array.isArray(card.comments) ? card.comments.map(comment => `
-                            <div class="bg-gray-700 rounded p-3">
+                            <div class="bg-gray-700 rounded p-3" data-comment-id="${comment.id}">
                                 <div class="flex items-center mb-2">
                                     <img src="https://ui-avatars.com/api/?name=${comment.author}" 
                                          alt="${comment.author}" 
                                          class="w-6 h-6 rounded-full mr-2">
                                     <span class="font-medium">${comment.author}</span>
                                     <span class="text-gray-400 text-sm ml-2">${new Date(comment.date).toLocaleDateString('pt-BR')}</span>
+                                    <div class="ml-auto flex space-x-2">
+                                        <button class="edit-comment text-white hover:text-blue-300 text-sm bg-blue-500 px-2 py-1 rounded">
+                                            Editar
+                                        </button>
+                                        <button class="delete-comment text-white hover:text-red-300 text-sm bg-red-500 px-2 py-1 rounded">
+                                            Excluir
+                                        </button>
+                                    </div>
                                 </div>
-                                <p class="text-sm">${comment.text}</p>
+                                <p class="text-sm comment-text">${comment.text}</p>
+                                <div class="edit-comment-form hidden mt-2">
+                                    <textarea class="w-full bg-gray-600 text-white rounded px-3 py-2 h-20 mb-2 edit-comment-text">${comment.text}</textarea>
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="cancel-edit px-3 py-1 text-gray-400 hover:text-white">Cancelar</button>
+                                        <button class="save-edit px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Salvar</button>
+                                    </div>
+                                </div>
                             </div>
                         `).join('') : ''}
                         
@@ -423,6 +438,7 @@ window.showCardModal = function(card) {
         const commentsContainer = modal.querySelector('.space-y-4');
         const commentElement = document.createElement('div');
         commentElement.className = 'bg-gray-700 rounded p-3';
+        commentElement.dataset.commentId = comment.id;
         commentElement.innerHTML = `
             <div class="flex items-center mb-2">
                 <img src="https://ui-avatars.com/api/?name=${comment.author}" 
@@ -430,11 +446,87 @@ window.showCardModal = function(card) {
                      class="w-6 h-6 rounded-full mr-2">
                 <span class="font-medium">${comment.author}</span>
                 <span class="text-gray-400 text-sm ml-2">${new Date(comment.date).toLocaleDateString('pt-BR')}</span>
+                <div class="ml-auto flex space-x-2">
+                    <button class="edit-comment text-white hover:text-blue-300 text-sm bg-blue-500 px-2 py-1 rounded">
+                        Editar
+                    </button>
+                    <button class="delete-comment text-white hover:text-red-300 text-sm bg-red-500 px-2 py-1 rounded">
+                        Excluir
+                    </button>
+                </div>
             </div>
-            <p class="text-sm">${comment.text}</p>
+            <p class="text-sm comment-text">${comment.text}</p>
+            <div class="edit-comment-form hidden mt-2">
+                <textarea class="w-full bg-gray-600 text-white rounded px-3 py-2 h-20 mb-2 edit-comment-text">${comment.text}</textarea>
+                <div class="flex justify-end space-x-2">
+                    <button class="cancel-edit px-3 py-1 text-gray-400 hover:text-white">Cancelar</button>
+                    <button class="save-edit px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Salvar</button>
+                </div>
+            </div>
         `;
         commentsContainer.insertBefore(commentElement, commentsContainer.lastElementChild);
         newCommentInput.value = '';
+
+        // Adicionar eventos para os novos botões
+        setupCommentButtons(commentElement, card, comment.id);
+    });
+
+    // Função para configurar os botões de comentário
+    function setupCommentButtons(commentElement, card, commentId) {
+        const editBtn = commentElement.querySelector('.edit-comment');
+        const deleteBtn = commentElement.querySelector('.delete-comment');
+        const editForm = commentElement.querySelector('.edit-comment-form');
+        const commentText = commentElement.querySelector('.comment-text');
+        const editTextarea = commentElement.querySelector('.edit-comment-text');
+        const cancelEditBtn = commentElement.querySelector('.cancel-edit');
+        const saveEditBtn = commentElement.querySelector('.save-edit');
+
+        // Editar comentário
+        editBtn.addEventListener('click', () => {
+            editForm.classList.remove('hidden');
+            commentText.classList.add('hidden');
+        });
+
+        // Cancelar edição
+        cancelEditBtn.addEventListener('click', () => {
+            editForm.classList.add('hidden');
+            commentText.classList.remove('hidden');
+            editTextarea.value = commentText.textContent;
+        });
+
+        // Salvar edição
+        saveEditBtn.addEventListener('click', () => {
+            const newText = editTextarea.value.trim();
+            if (!newText) return;
+
+            const comment = card.comments.find(c => c.id === commentId);
+            if (comment) {
+                comment.text = newText;
+                commentText.textContent = newText;
+                window.saveBoardState();
+            }
+
+            editForm.classList.add('hidden');
+            commentText.classList.remove('hidden');
+        });
+
+        // Excluir comentário
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja excluir este comentário?')) {
+                const commentIndex = card.comments.findIndex(c => c.id === commentId);
+                if (commentIndex !== -1) {
+                    card.comments.splice(commentIndex, 1);
+                    commentElement.remove();
+                    window.saveBoardState();
+                }
+            }
+        });
+    }
+
+    // Configurar botões para comentários existentes
+    modal.querySelectorAll('[data-comment-id]').forEach(commentElement => {
+        const commentId = commentElement.dataset.commentId;
+        setupCommentButtons(commentElement, card, commentId);
     });
 
     // Salvar alterações
