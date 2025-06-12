@@ -14,6 +14,7 @@
 [![Issues](https://img.shields.io/badge/Issues-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca/issues)
   
 </div>
+
 ---
 
 <h2 align="center">📖 Descrição do Projeto</h2>
