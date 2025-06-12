@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Estado inicial do quadro
         window.boardState = {
             lists: {
-                'todo': [],
-                'em-andamento': [],
+                'para-fazer': [],
+                'fazendo': [],
                 'concluido': []
             }
         };
@@ -118,6 +118,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.renderBoard === 'function') {
         window.renderBoard();
     }
+
+    // Inicializar eventos de drag and drop para todas as listas
+    document.querySelectorAll('.list-content').forEach(listContent => {
+        listContent.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const draggingOver = listContent.querySelector('.dragging-over');
+            if (!draggingOver) {
+                listContent.classList.add('dragging-over');
+            }
+        });
+        
+        listContent.addEventListener('dragleave', (e) => {
+            if (!e.relatedTarget || !listContent.contains(e.relatedTarget)) {
+                listContent.classList.remove('dragging-over');
+            }
+        });
+        
+        listContent.addEventListener('drop', (e) => {
+            e.preventDefault();
+            listContent.classList.remove('dragging-over');
+            
+            if (window.draggedCard && window.originalList) {
+                const targetList = listContent.closest('.list');
+                const targetListId = targetList.id;
+                const sourceListId = window.originalList.id;
+                
+                // Move o cartão para a nova lista
+                const cardId = window.draggedCard.dataset.cardId;
+                const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+                
+                if (cardIndex !== -1) {
+                    const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
+                    window.boardState.lists[targetListId].push(movedCard);
+                    
+                    window.saveBoardState();
+                    window.renderBoard();
+                }
+            }
+        });
+    });
 
     // Configuração da lixeira
     const trash = document.getElementById('trash');

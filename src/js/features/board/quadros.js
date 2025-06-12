@@ -306,8 +306,8 @@ function showCreateBoardModal() {
         // Inicializa o estado do quadro
         const boardState = {
             lists: {
-                'todo': [],
-                'em-andamento': [],
+                'para-fazer': [],
+                'fazendo': [],
                 'concluido': []
             }
         };
