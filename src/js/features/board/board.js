@@ -483,7 +483,7 @@ function createCardElement(card, listId) {
                     </span>
                 `).join('') : ''}
             </div>
-            <button class="text-gray-400 hover:text-white card-menu-btn">
+            <button class="text-gray-400 hover:text-white card-menu-btn rounded-sm p-0.5">
                 <i class="fas fa-ellipsis-h"></i>
             </button>
         </div>
