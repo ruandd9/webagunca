@@ -9,9 +9,9 @@
 </p>
 <div align="center">
 
-[![Último Commit](https://img.shields.io/badge/Último_Commit-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca/commits/main)
-[![Tamanho do Repo](https://img.shields.io/badge/Tamanho_do_Repositório-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca)
-[![Issues](https://img.shields.io/badge/Issues-Indisponível-blue?style=flat-square)](https://github.com/ruandd9/webagunca/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ruandd9/webagunca?style=flat-square)](https://github.com/ruandd9/webagunca/commits/main)
+[![GitHub repo size](https://img.shields.io/github/repo-size/ruandd9/webagunca?style=flat-square)](https://github.com/ruandd9/webagunca)
+[![GitHub issues](https://img.shields.io/github/issues/ruandd9/webagunca?style=flat-square)](https://github.com/ruandd9/webagunca/issues)
   
 </div>
 
