@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../src/css/principal-home.css">
     <link rel="stylesheet" href="../src/css/themes.css">
+    <link rel="stylesheet" href="../src/css/tutorial.css">
     <style>
         /* Estilos globais para scrollbar */
         ::-webkit-scrollbar {
@@ -356,6 +357,23 @@
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorial-overlay">
+        <div class="tutorial-tooltip" id="tutorial-tooltip">
+            <div class="tutorial-content"></div>
+            <div class="tutorial-navigation">
+                <button class="tutorial-button secondary" id="tutorial-prev">Anterior</button>
+                <div class="tutorial-progress" id="tutorial-progress"></div>
+                <button class="tutorial-button primary" id="tutorial-next">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Fixo para Iniciar Tutorial -->
+    <button id="start-tutorial-btn" class="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors z-50">
+        <i class="fas fa-graduation-cap mr-2"></i>Iniciar Tutorial
+    </button>
+
     <!-- Overlay para mobile -->
     <div class="sidebar-overlay"></div>
 
@@ -976,7 +994,25 @@
     <script src="../src/js/features/board/quadros.js"></script>
     <script src="../src/js/features/user/userInitials.js"></script>
     <script src="../src/js/features/themes/themeManager.js"></script>
+    <script src="../src/js/features/tutorial/tutorial.js"></script>
     <script>
+        // Função para iniciar o tutorial
+        function startTutorial() {
+            console.log('Iniciando tutorial...');
+            // Inicializar o tutorial
+            new Tutorial();
+        }
+
+        // Iniciar o tutorial quando a página estiver completamente carregada
+        window.addEventListener('load', () => {
+            console.log('Página carregada');
+            // Adicionar evento ao botão de tutorial
+            const startTutorialBtn = document.getElementById('start-tutorial-btn');
+            if (startTutorialBtn) {
+                startTutorialBtn.addEventListener('click', startTutorial);
+            }
+        });
+
         // Toggle mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
