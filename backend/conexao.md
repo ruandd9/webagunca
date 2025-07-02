@@ -32,29 +32,40 @@
    - `Servidor rodando na porta 5000`
    - `Conectado ao MongoDB Atlas`
 
-5. **Testando as rotas (exemplo com Postman):**
+## Rotas da API disponíveis
 
-   - **Cadastro:**
-     - POST `http://localhost:5000/api/cadastrar`
-     - Body (JSON):
-       ```json
-       {
-         "nomeCompleto": "Maria Silva",
-         "email": "maria@exemplo.com",
-         "senha": "123456"
-       }
-       ```
-   - **Login:**
-     - POST `http://localhost:5000/api/login`
-     - Body (JSON):
-       ```json
-       {
-         "email": "maria@exemplo.com",
-         "senha": "123456"
-       }
-       ```
-   - **Listar usuários:**
-     - GET `http://localhost:5000/api/usuarios`
+| Método | Endpoint                        | Descrição                                      |
+|--------|----------------------------------|------------------------------------------------|
+| POST   | /api/cadastrar                  | Cadastra um novo usuário                       |
+| POST   | /api/login                      | Realiza o login/autenticação do usuário        |
+| GET    | /api/usuarios                   | Lista todos os usuários cadastrados (sem senha)|
+| GET    | /api/usuario/:email             | Busca um usuário pelo email (sem senha)        |
+
+**Exemplo de uso das rotas:**
+
+- **Cadastro:**
+  - POST `http://localhost:5000/api/cadastrar`
+  - Body (JSON):
+    ```json
+    {
+      "nomeCompleto": "Maria Silva",
+      "email": "maria@exemplo.com",
+      "senha": "123456"
+    }
+    ```
+- **Login:**
+  - POST `http://localhost:5000/api/login`
+  - Body (JSON):
+    ```json
+    {
+      "email": "maria@exemplo.com",
+      "senha": "123456"
+    }
+    ```
+- **Listar usuários:**
+  - GET `http://localhost:5000/api/usuarios`
+- **Buscar usuário por email:**
+  - GET `http://localhost:5000/api/usuario/maria@exemplo.com`
 
 ## Dependências utilizadas
 - express
