@@ -4,6 +4,11 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const boardRoutes = require('./routes/boardRoutes');
+const boardMemberRoutes = require('./routes/boardMemberRoutes');
+const listRoutes = require('./routes/listRoutes');
+const cardRoutes = require('./routes/cardRoutes');
+const cardLabelRoutes = require('./routes/cardLabelRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 // Configura variáveis de ambiente
 dotenv.config();
@@ -27,6 +32,11 @@ app.get('/', (req, res) => {
 
 app.use('/api', userRoutes);
 app.use('/api/boards', boardRoutes);
+app.use('/api/board-members', boardMemberRoutes);
+app.use('/api/lists', listRoutes);
+app.use('/api/cards', cardRoutes);
+app.use('/api/card-labels', cardLabelRoutes);
+app.use('/api/comments', commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
