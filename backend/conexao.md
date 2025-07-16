@@ -40,10 +40,13 @@
 | POST   | /api/login                      | Realiza o login/autenticação do usuário        |
 | GET    | /api/usuarios                   | Lista todos os usuários cadastrados (sem senha)|
 | GET    | /api/usuario/:email             | Busca um usuário pelo email (sem senha)        |
+| POST   | /api/boards/criar               | Cria um novo quadro (board)                    |
+| GET    | /api/boards/quadros             | Lista todos os quadros                         |
+| GET    | /api/boards/quadros/:id         | Busca um quadro pelo ID                        |
 
 **Exemplo de uso das rotas:**
 
-- **Cadastro:**
+- **Cadastro de usuário:**
   - POST `http://localhost:5000/api/cadastrar`
   - Body (JSON):
     ```json
@@ -67,12 +70,30 @@
 - **Buscar usuário por email:**
   - GET `http://localhost:5000/api/usuario/maria@exemplo.com`
 
-## Dependências utilizadas
-- express
-- mongoose
-- dotenv
-- cors
-- bcryptjs
+---
+
+### **Rotas de Board (Quadros)**
+
+- **Criar board:**
+  - POST `http://localhost:5000/api/boards/criar`
+  - Body (JSON):
+    ```json
+    {
+      "title": "Meu Quadro",
+      "description": "Descrição do quadro",
+      "visibility": "public",
+      "cover_type": "image",
+      "cover_value": "url_da_imagem",
+      "owner": "<ID_DO_USUARIO>"
+    }
+    ```
+    > O campo `owner` deve ser o `_id` de um usuário cadastrado (veja a rota de listar usuários acima).
+
+- **Listar todos os boards:**
+  - GET `http://localhost:5000/api/boards/quadros`
+
+- **Buscar board por ID:**
+  - GET `http://localhost:5000/api/boards/quadros/<ID_DO_BOARD>`
 
 ---
 
