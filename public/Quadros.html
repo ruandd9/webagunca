@@ -12,6 +12,29 @@
     <link rel="stylesheet" href="../src/css/tutorial.css">
     <style>
         /* Estilos globais para scrollbar */
+        .cursor-grabbing {
+            cursor: grabbing !important;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #4B5563; /* cinza mais escuro */
+        }
+
+        .sortable-drag {
+            cursor: grabbing;
+            transform: rotate(2deg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+        user-select: none; /* impede seleção de texto */
+        }
+
+        .board-container * {
+        user-select: none;
+        }
+
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -987,8 +1010,83 @@
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
             });
+
+            document.querySelectorAll('.list-content').forEach(list => {
+                new Sortable(list, {
+                    group: 'shared', // permite mover entre listas
+                    animation: 150,  // animação suave
+                    ghostClass: 'sortable-ghost', // classe aplicada ao "cartão sombra"
+                    dragClass: 'sortable-drag',   // classe aplicada ao cartão sendo arrastado
+                    onEnd: () => {
+                        saveBoardState(); // salva novo estado após movimentação
+                    }
+                });
+            });
+        });
+
+    // Função para permitir que o usuário possa fazer o drag de movimentação do projeto
+    (function enableDragToScroll() {
+        const container = document.getElementById('board-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('cursor-grabbing');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 1.5; // Multiplicador para ajustar a velocidade
+            container.scrollLeft = scrollLeft - walk;
+        });
+    })();
+
+    const container = document.getElementById('board-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('cursor-grabbing');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+
+            // BLOQUEAR SELEÇÃO DE TEXTO TEMPORARIAMENTE
+            document.body.style.userSelect = 'none';
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+
+            // RESTAURAR SELEÇÃO
+            document.body.style.userSelect = '';
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+            document.body.style.userSelect = '';
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="../src/js/features/board/board.js"></script>
     <script src="../src/js/features/board/modals.js"></script>
     <script src="../src/js/features/board/quadros.js"></script>
