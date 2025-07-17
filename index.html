@@ -14,26 +14,30 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <title>inicial-page</title>
+  <style>
+    html {
+      scroll-behavior: smooth;
+      /* Ajuste o valor abaixo para a altura do seu header fixo */
+      scroll-padding-top: 80px; 
+    }
+  </style>
 </head>
 
 <body>
   <header class="w-full z-50 fixed top-0 left-0 bg-indigo-400 backdrop-blur-md">
     <div class="max-w-screen-xl mx-auto px-2 md:px-4">
       <div class="flex items-center justify-between h-20">
-        <!-- Logo -->
         <div class="flex items-center me-5">
           <img src="./src/img/logo-bagunca.svg" class="h-8 mr-2" alt="Logo Bagunça" />
         </div>
 
-        <!-- Menu de Navegação -->
         <nav class="hidden md:flex items-center space-x-5">
-          <a href="#" class="header-link text-white hover:text-purple-200 transition-colors px-2">Início</a>
-          <a href="#" class="header-link text-white hover:text-purple-200 transition-colors px-2">Recursos</a>
-          <a href="#" class="header-link text-white hover:text-purple-200 transition-colors px-2">Sobre</a>
-          <a href="#" class="header-link text-white hover:text-purple-200 transition-colors px-2">Contato</a>
+          <a href="#inicio" class="header-link text-white hover:text-purple-200 transition-colors px-2">Início</a>
+          <a href="#recursos" class="header-link text-white hover:text-purple-200 transition-colors px-2">Recursos</a>
+          <a href="#sobre" class="header-link text-white hover:text-purple-200 transition-colors px-2">Sobre</a>
+          <a href="#contato" class="header-link text-white hover:text-purple-200 transition-colors px-2">Contato</a>
         </nav>
 
-        <!-- Botões de ação -->
         <div class="flex items-center space-x-6 ml-auto ms-4">
           <a href="#" id="loginLink"
             class="header-link border-2 border-white bg-transparent text-white px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
@@ -42,7 +46,6 @@
             class="header-link bg-white text-purple-900 px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
             data-bs-toggle="modal" data-bs-target="#registerModal">Cadastro</a>
 
-          <!-- Botão do menu mobile -->
           <button id="mobileMenuButton" class="md:hidden text-white focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -51,14 +54,13 @@
         </div>
       </div>
 
-      <!-- Menu Mobile -->
       <div id="mobileMenu"
         class="md:hidden hidden absolute top-20 left-0 right-0 bg-purple-900/80 backdrop-blur-md py-6 px-4 shadow-lg">
         <div class="flex flex-col space-y-6">
-          <a href="#" class="text-white hover:text-purple-200 transition-colors text-lg">Início</a>
-          <a href="#" class="text-white hover:text-purple-200 transition-colors text-lg">Recursos</a>
-          <a href="#" class="text-white hover:text-purple-200 transition-colors text-lg">Sobre</a>
-          <a href="#" class="text-white hover:text-purple-200 transition-colors text-lg">Contato</a>
+          <a href="#inicio" class="text-white hover:text-purple-200 transition-colors text-lg">Início</a>
+          <a href="#recursos" class="text-white hover:text-purple-200 transition-colors text-lg">Recursos</a>
+          <a href="#sobre" class="text-white hover:text-purple-200 transition-colors text-lg">Sobre</a>
+          <a href="#contato" class="text-white hover:text-purple-200 transition-colors text-lg">Contato</a>
           <div class="pt-4 border-t border-white/20">
             <a href="#"
               class="block bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-600 transition-colors text-center mb-4"
@@ -73,10 +75,8 @@
   </header>
 
   <main>
-    <!-- Hero Section -->
-    <section class="hero-section relative min-h-screen flex items-center justify-center">
+    <section id="inicio" class="hero-section relative min-h-screen flex items-center justify-center">
 
-      <!-- Hero background animado -->
       <div class="hero-background">
         <div class="hero-gradient"></div>
         <div class="floating-elements">
@@ -91,8 +91,6 @@
         <div class="glow-effect" style="top: 20%; left: 30%;"></div>
         <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
       </div>
-      <!-- Hero background fim -->
-
       <div class=" bg-gradient-to-r from-purple-900/50 to-blue-900/50"></div>
       <div class="relative z-10 text-center px-4">
         <div class="text-content-homepage">
@@ -119,7 +117,6 @@
       </div>
     </section>
 
-    <!-- Banner Separador 1 -->
     <div class="relative h-32 overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-r from-purple-900 to-blue-900 transform -skew-y-6"></div>
       <div class="absolute inset-0 flex items-center justify-center">
@@ -127,8 +124,7 @@
       </div>
     </div>
 
-    <!-- Destaques -->
-    <section class="py-20 bg-white">
+    <section id="sobre" class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Por que escolher o Bagunça?</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -157,7 +153,6 @@
       </div>
     </section>
 
-    <!-- Banner Separador 2 -->
     <div class="relative h-32 overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-r from-blue-900 to-purple-900 transform skew-y-6"></div>
       <div class="absolute inset-0 flex items-center justify-center">
@@ -165,8 +160,7 @@
       </div>
     </div>
 
-    <!-- Recursos -->
-    <section class="py-20 bg-gray-50">
+    <section id="recursos" class="py-20 bg-gray-50">
       <div class="max-w-7xl mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Recursos Poderosos</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -212,7 +206,6 @@
       </div>
     </section>
 
-    <!-- Banner Separador 3 -->
     <div class="relative h-32 overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-r from-purple-900 to-blue-900 transform -skew-y-6"></div>
       <div class="absolute inset-0 flex items-center justify-center">
@@ -220,7 +213,6 @@
       </div>
     </div>
 
-    <!-- CTA Section -->
     <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900 text-white">
       <div class="max-w-4xl mx-auto text-center px-4">
         <h2 class="text-4xl font-bold mb-6">Pronto para organizar sua vida?</h2>
@@ -255,6 +247,13 @@
         // Fechar o menu quando clicar fora
         document.addEventListener('click', function (event) {
           if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+            mobileMenu.classList.add('hidden');
+          }
+        });
+
+        // Fechar o menu ao clicar em um link
+        mobileMenu.addEventListener('click', function(event) {
+          if (event.target.tagName === 'A') {
             mobileMenu.classList.add('hidden');
           }
         });
@@ -330,12 +329,11 @@
   </script>
 </body>
 
-<footer class="relative my-5">
+<footer id="contato" class="relative my-5">
   <div class="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-purple-900/50 to-blue-900/30 backdrop-blur-sm">
   </div>
   <div class="relative max-w-screen-xl mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Logo e Descrição -->
       <div class="col-span-1 md:col-span-2">
         <div class="flex items-center mb-4">
           <img src="./src/img/logo-bagunca.svg" class="h-8 mr-3" alt="Logo Bagunça" />
@@ -360,18 +358,16 @@
         </div>
       </div>
 
-      <!-- Links Rápidos -->
       <div>
         <h3 class="text-lg font-semibold mb-4 text-white">Links Rápidos</h3>
         <ul class="space-y-2">
-          <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
-          <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Sobre Nós</a></li>
-          <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
+          <li><a href="#inicio" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
+          <li><a href="#sobre" class="text-gray-200 hover:text-white transition-colors">Sobre</a></li>
+          <li><a href="#recursos" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
           <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li>
         </ul>
       </div>
 
-      <!-- Contato -->
       <div>
         <h3 class="text-lg font-semibold mb-4 text-white">Contato</h3>
         <ul class="space-y-2">
@@ -406,7 +402,6 @@
   </div>
 </footer>
 
-<!-- Modal de Login -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="form modal-content" id="loginForm">
@@ -461,7 +456,6 @@
   </div>
 </div>
 
-<!-- Modal de Cadastro -->
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="form modal-content" id="cadastroForm">
