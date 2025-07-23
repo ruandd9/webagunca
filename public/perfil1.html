@@ -312,6 +312,11 @@
         function changeTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             
+            // Atualizar logo baseado no tema (se a função global existir)
+            if (window.updateLogo) {
+                window.updateLogo(theme);
+            }
+            
             // Atualizar visual dos botões de tema
             document.querySelectorAll('.theme-button').forEach(button => {
                 if (button.getAttribute('data-theme') === theme) {
