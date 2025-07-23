@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+    <script src="../src/js/features/auth/auth.js"></script>
+    <script>
+        // Verificar se o usuário está logado
+        if (!auth.isUserLoggedIn()) {
+            window.location.href = '../index.html';
+        }
+    </script>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./chat-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-comments mr-3"></i>
+                    Chat
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-11 mt-16 md:mt-0">
+            <!-- Header -->
+            <header class="py-2 mb-5">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div class="flex items-center space-x-4 md:space-x-11">
+                        <div class="nav-dropdown relative">
+                            <a href="#" class="text-white text-lg flex items-center space-x-2">
+                                <i class="fas fa-cog"></i>
+                                <span>Configurações</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 relative">
+                        <div class="dropdown">
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="#" onclick="auth.logoutUser()">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <hr class="mb-10">
+
+            <!-- Profile Section -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:space-x-8">
+                        <div class="relative">
+                            <img src="../src/img/image.png" alt="Profile picture" id="profileImage" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover">
+                            <label for="imageUpload" class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                        </div>
+
+                        <div class="flex-1 w-full">
+                            <h2 class="text-xl md:text-2xl font-bold mb-4 text-center md:text-left">Informações do Perfil</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Nome</label>
+                                        <input type="text" id="nomeCompleto" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Nome de usuário</label>
+                                        <input type="text" id="nomeUsuario" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Email</label>
+                                        <input type="email" id="email" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-1">Telefone</label>
+                                        <input type="tel" id="telefone" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Section -->
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold mb-6">Preferências</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Notificações</h3>
+                            <div class="space-y-4">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Notificações por email</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Notificações do navegador</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Sons de notificação</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Privacidade</h3>
+                            <div class="space-y-4">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" checked class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Perfil público</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" class="form-checkbox text-blue-500 h-5 w-5">
+                                    <span>Mostrar atividade online</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Section -->
+                <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold mb-6">Tema</h2>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="theme-button w-12 h-12 rounded-full bg-gray-900 ring-2 ring-blue-500" data-theme="dark" onclick="changeTheme('dark')">
+                            <span class="sr-only">Tema Escuro</span>
+                        </button>
+                        <button class="theme-button w-12 h-12 rounded-full bg-white" data-theme="light" onclick="changeTheme('light')">
+                            <span class="sr-only">Tema Claro</span>
+                        </button>
+                        <button class="theme-button w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" data-theme="colorful" onclick="changeTheme('colorful')">
+                            <span class="sr-only">Tema Colorido</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col md:flex-row gap-4 justify-end">
+                    <button class="px-6 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors w-full md:w-auto">
+                        Cancelar
+                    </button>
+                    <button class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-full md:w-auto">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/js/features/profile/profile.js"></script>
+    <script src="../src/js/features/profile/settings.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Função para carregar dados do usuário
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            if (userData) {
+                // Atualizar campos do perfil
+                document.getElementById('nomeCompleto').value = userData.nomeCompleto || '';
+                document.getElementById('nomeUsuario').value = userData.nomeUsuario || '';
+                document.getElementById('email').value = userData.email || '';
+                document.getElementById('telefone').value = userData.telefone || '';
+
+                // Carregar imagem do perfil se existir
+                if (userData.profileImage) {
+                    document.getElementById('profileImage').src = userData.profileImage;
+                }
+
+                // Atualizar checkboxes de notificações
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes[0].checked = userData.notificacoes?.email ?? true;
+                checkboxes[1].checked = userData.notificacoes?.navegador ?? true;
+                checkboxes[2].checked = userData.notificacoes?.som ?? false;
+                checkboxes[3].checked = userData.privacidade?.perfilPublico ?? true;
+                checkboxes[4].checked = userData.privacidade?.mostrarOnline ?? false;
+
+                // Atualizar tema
+                if (userData.tema) {
+                    changeTheme(userData.tema);
+                }
+
+                // Atualizar iniciais do usuário
+                updateUserInitials();
+            }
+        }
+
+        // Função para lidar com o upload de imagem
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    document.getElementById('profileImage').src = imageData;
+                    
+                    // Salvar a imagem no localStorage
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    userData.profileImage = imageData;
+                    localStorage.setItem('userData', JSON.stringify(userData));
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Função para salvar as alterações
+        function saveChanges() {
+            // Obter os valores atuais dos campos
+            const nomeCompleto = document.getElementById('nomeCompleto').value;
+            const nomeUsuario = document.getElementById('nomeUsuario').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+            const profileImage = document.getElementById('profileImage').src;
+
+            // Obter os valores dos checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            
+            // Criar objeto com os dados atualizados
+            const formData = {
+                nomeCompleto: nomeCompleto,
+                nomeUsuario: nomeUsuario,
+                email: email,
+                telefone: telefone,
+                profileImage: profileImage,
+                notificacoes: {
+                    email: checkboxes[0].checked,
+                    navegador: checkboxes[1].checked,
+                    som: checkboxes[2].checked
+                },
+                privacidade: {
+                    perfilPublico: checkboxes[3].checked,
+                    mostrarOnline: checkboxes[4].checked
+                },
+                tema: document.documentElement.getAttribute('data-theme') || 'dark'
+            };
+
+            // Salvar no localStorage
+            localStorage.setItem('userData', JSON.stringify(formData));
+            
+            // Atualizar iniciais do usuário
+            updateUserInitials();
+            
+            // Feedback visual
+            const saveButton = document.querySelector('button.bg-blue-500');
+            const originalText = saveButton.textContent;
+            saveButton.textContent = 'Salvo!';
+            saveButton.classList.add('bg-green-500');
+            
+            setTimeout(() => {
+                saveButton.textContent = originalText;
+                saveButton.classList.remove('bg-green-500');
+            }, 2000);
+        }
+
+        // Função para mudar o tema
+        function changeTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Atualizar logo baseado no tema (se a função global existir)
+            if (window.updateLogo) {
+                window.updateLogo(theme);
+            }
+            
+            // Atualizar visual dos botões de tema
+            document.querySelectorAll('.theme-button').forEach(button => {
+                if (button.getAttribute('data-theme') === theme) {
+                    button.classList.add('ring-2', 'ring-blue-500');
+                } else {
+                    button.classList.remove('ring-2', 'ring-blue-500');
+                }
+            });
+
+            // Salvar o tema no localStorage
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            userData.tema = theme;
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        // Carregar dados quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            
+            // Adicionar evento de clique ao botão de salvar
+            const saveButton = document.querySelector('button.bg-blue-500');
+            if (saveButton) {
+                saveButton.addEventListener('click', saveChanges);
+            }
+
+            // Adicionar eventos de input para salvar automaticamente após digitação
+            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]');
+            inputs.forEach(input => {
+                input.addEventListener('change', saveChanges);
+            });
+
+            // Adicionar eventos de mudança para os checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', saveChanges);
+            });
+        });
+    </script>
+</body>
+</html>

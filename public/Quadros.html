@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+    <link rel="stylesheet" href="../src/css/tutorial.css">
+    <style>
+        /* Estilos globais para scrollbar */
+        .cursor-grabbing {
+            cursor: grabbing !important;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #4B5563; /* cinza mais escuro */
+        }
+
+        .sortable-drag {
+            cursor: grabbing;
+            transform: rotate(2deg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+        user-select: none; /* impede seleção de texto */
+        }
+
+        .board-container * {
+        user-select: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Estilos para drag & drop */
+        .dragging-over {
+            background-color: rgba(55, 65, 81, 0.5);
+            border: 2px dashed #4B5563;
+            border-radius: 0.5rem;
+            min-height: 100px;
+        }
+        
+        .card {
+            transition: opacity 0.2s ease-in-out;
+            margin-bottom: 0.75rem;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Estilos para a lixeira */
+        #trash {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #trash.dragging-over {
+            transform: scale(1.2);
+            background-color: #DC2626;
+            border: none;
+        }
+
+        .delete-list-btn {
+            opacity: 0.6;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .delete-list-btn:hover {
+            opacity: 1;
+        }
+
+        /* Estilos para o modal de filtros */
+        .filter-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 40;
+        }
+
+        .filter-overlay.active {
+            display: block;
+        }
+
+        #filter-menu {
+            z-index: 50;
+            transition: all 0.3s ease-in-out;
+            background-color: #1F2937;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #filter-menu.hidden {
+            display: none;
+        }
+
+        /* Estilos para as listas corrigidos */
+        .list {
+            width: 280px;
+            min-width: 280px;
+            max-height: calc(100vh - 200px);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-content {
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+            min-height: 50px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+            flex-grow: 1;
+            mask-image: linear-gradient(to top, transparent, black 5px, black calc(100% - 5px), transparent);
+            -webkit-mask-image: linear-gradient(to top, transparent, black 5px, black calc(100% - 5px), transparent);
+        }
+
+        .list-content.has-many-cards {
+            max-height: calc(100vh - 250px);
+        }
+
+        .board-container {
+            align-items: flex-start;
+            padding-bottom: 20px;
+        }
+
+        /* Estilo para o scroll horizontal fixo */
+        .horizontal-scroll-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: rgba(31, 41, 55, 0.8);
+            z-index: 30;
+        }
+
+        .horizontal-scroll {
+            height: 100%;
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 6px;
+            transition: width 0.2s ease;
+        }
+
+        @media (max-width: 768px) {
+            .list {
+                width: 220px;
+                min-width: 220px;
+            }
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                transition: 0.3s;
+                z-index: 50;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .flex-col.lg\:flex-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .board-container {
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+
+            .add-list-btn {
+                min-width: 250px;
+                width: 100%;
+            }
+
+            .flex.items-center.space-x-4 {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .flex.-space-x-2 {
+                margin-left: 0.5rem;
+            }
+
+            .flex.flex-col.lg\:flex-row.items-start.lg\:items-center.space-y-4.lg\:space-y-0.lg\:space-x-4 {
+                width: 100%;
+                gap: 1rem;
+            }
+
+            .relative {
+                width: 100%;
+            }
+
+            #search-input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .board-container {
+                overflow-x: auto;
+                padding-bottom: 1rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                display: flex;
+                gap: 1rem;
+                padding: 0.5rem;
+            }
+
+            .add-list-btn {
+                min-width: 220px;
+                max-width: 220px;
+                flex-shrink: 0;
+            }
+
+            .card {
+                touch-action: none;
+            }
+        }
+
+        /* Estilos para as etiquetas dos cartões */
+        .card .flex.space-x-2 {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card .px-2.py-1.text-xs.rounded {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .card .flex.space-x-2 {
+                gap: 0.125rem;
+            }
+
+            .card .px-2.py-1.text-xs.rounded {
+                font-size: 0.625rem;
+                padding: 0.125rem 0.375rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card .flex.space-x-2 {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Estilos para o modal de edição e comentários */
+        .fixed.inset-0.bg-black.bg-opacity-50 {
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .fixed.inset-0.bg-black.bg-opacity-50 > div {
+            margin: 2rem auto;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+
+        .space-y-6 {
+            max-height: calc(100vh - 12rem);
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .fixed.inset-0.bg-black.bg-opacity-50 {
+                padding: 0.5rem;
+            }
+
+            .fixed.inset-0.bg-black.bg-opacity-50 > div {
+                margin: 1rem auto;
+                max-height: calc(100vh - 2rem);
+                width: 100%;
+            }
+
+            .space-y-6 {
+                max-height: calc(100vh - 10rem);
+            }
+        }
+
+        /* Estilos para o dropdown do usuário */
+        .dropdown {
+            top: 20px;
+            right: 20px;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .dropdown-content a {
+            display: block;
+            color: #E5E7EB;
+            padding: 8px 0;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            color: #FFFFFF;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Estilo para o botão de adicionar lista */
+        .add-list-btn {
+            width: 280px;
+            min-width: 280px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .add-list-btn {
+                width: 220px;
+                min-width: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorial-overlay">
+        <div class="tutorial-tooltip" id="tutorial-tooltip">
+            <div class="tutorial-content"></div>
+            <div class="tutorial-navigation">
+                <button class="tutorial-button secondary" id="tutorial-prev">Anterior</button>
+                <div class="tutorial-progress" id="tutorial-progress"></div>
+                <button class="tutorial-button primary" id="tutorial-next">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Fixo para Iniciar Tutorial -->
+    <button id="start-tutorial-btn" class="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition-colors z-50">
+        <i class="fas fa-graduation-cap mr-2"></i>Iniciar Tutorial
+    </button>
+
+    <!-- Overlay para mobile -->
+    <div class="sidebar-overlay"></div>
+
+    <div class="flex h-screen">
+        <!-- Botão do menu mobile -->
+        <button class="lg:hidden fixed top-4 right-4 z-50 p-2 bg-gray-800 rounded-lg" id="mobile-menu-button">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Overlay para o modal de filtros -->
+        <div class="filter-overlay" id="filter-overlay"></div>
+
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-gray-800 p-4 h-full fixed lg:relative">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" style="width: 30px; height: 30px;">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./chat-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-comments mr-3"></i>
+                    Chat
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 p-8 lg:ml-0 overflow-x-hidden">
+            <!-- Header -->
+            <header class="py-4 mb-6">
+                <div class="flex flex-col space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <h1 class="text-2xl font-bold">Projeto Website</h1>
+                            <button class="text-gray-400 hover:text-white">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <div class="flex -space-x-2">
+                                <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                                <img src="https://ui-avatars.com/api/?name=Jane+Smith" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                                <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <!-- Filtros -->
+                            <div class="relative inline-block" id="filter-dropdown">
+                                <button class="px-3 py-2 bg-gray-700 rounded-lg text-sm flex items-center space-x-2 hover:bg-gray-600" id="filter-button">
+                                    <i class="fas fa-filter"></i>
+                                    <span>Filtrar</span>
+                                    <span id="active-filters-count" class="ml-2 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full hidden">0</span>
+                                </button>
+                            </div>
+
+                            <!-- Modal de Filtros -->
+                            <div id="filter-menu" class="hidden fixed md:absolute md:bottom-0 md:right-0 md:mb-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 bg-gray-800 rounded-lg shadow-lg p-4 z-50">
+                                <h3 class="text-sm font-medium mb-3">Filtrar por etiquetas</h3>
+                                <div class="space-y-2" id="label-filters">
+                                </div>
+                                <div class="mt-4 space-y-2">
+                                    <button class="w-full px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 text-sm hidden" id="clear-filters">
+                                        Limpar filtros
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Pesquisa -->
+                            <div class="relative">
+                                <input type="text" 
+                                       id="search-input"
+                                       class="w-48 px-3 py-2 bg-gray-700 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Pesquisar...">
+                                <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown do usuário -->
+                        <!-- <div class="dropdown">
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="../index.html">Sair</a>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <!-- Tags filtradas ativas -->
+                    <div id="active-filters" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Board -->
+            <div class="board-container flex space-x-6 overflow-x-auto pb-4" id="board-container">
+                <!-- Para Fazer -->
+                <div id="para-fazer" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Para Fazer</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Fazendo -->
+                <div id="fazendo" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Fazendo</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Concluído -->
+                <div id="concluido" class="list w-80 bg-gray-800 rounded-lg p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Concluído</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                </div>
+
+                <!-- Botão de adicionar lista -->
+                <button class="add-list-btn w-80 bg-gray-800 bg-opacity-50 rounded-lg p-4 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Adicionar lista
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Card -->
+    <div id="edit-card-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Editar Cartão</h2>
+                <button class="text-gray-400 hover:text-white" onclick="closeEditCardModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Título</label>
+                    <input type="text" id="edit-card-title" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Descrição</label>
+                    <textarea id="edit-card-description" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Etiquetas</label>
+                    <div id="edit-card-labels" class="flex flex-wrap gap-2">
+                        <!-- Labels serão inseridas aqui via JavaScript -->
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Comentários</label>
+                    <div id="edit-card-comments" class="space-y-2">
+                        <!-- Comentários serão inseridos aqui via JavaScript -->
+                    </div>
+                    <div class="mt-2">
+                        <input type="text" id="new-comment" class="w-full px-3 py-2 bg-gray-700 rounded-lg text-white" placeholder="Adicionar comentário...">
+                    </div>
+                </div>
+                <div class="flex justify-between pt-4">
+                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" onclick="deleteCard()">
+                        <i class="fas fa-trash mr-2"></i>Excluir Cartão
+                    </button>
+                    <div class="space-x-2">
+                        <button class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600" onclick="closeEditCardModal()">Cancelar</button>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="saveCardChanges()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Estado global do quadro
+        window.boardState = {
+            lists: {
+                'para-fazer': [],
+                'fazendo': [],
+                'concluido': []
+            }
+        };
+
+        // Variável para armazenar o card atual sendo editado
+        let currentEditingCard = null;
+
+        // Função para atualizar o scroll horizontal
+        function updateHorizontalScroll() {
+            const boardContainer = document.getElementById('board-container');
+            const scrollContainer = document.getElementById('horizontal-scroll');
+            
+            if (boardContainer && scrollContainer) {
+                const scrollWidth = boardContainer.scrollWidth;
+                const clientWidth = boardContainer.clientWidth;
+                const scrollLeft = boardContainer.scrollLeft;
+                const scrollRatio = clientWidth / scrollWidth;
+                
+                scrollContainer.style.width = `${scrollRatio * 100}%`;
+                scrollContainer.style.transform = `translateX(${(scrollLeft / scrollWidth) * 100}%)`;
+            }
+        }
+
+        // Função para abrir o modal de edição
+        function openEditCardModal(card) {
+            currentEditingCard = card;
+            const modal = document.getElementById('edit-card-modal');
+            const titleInput = document.getElementById('edit-card-title');
+            const descriptionInput = document.getElementById('edit-card-description');
+            const labelsContainer = document.getElementById('edit-card-labels');
+            const commentsContainer = document.getElementById('edit-card-comments');
+
+            // Preencher os campos com os dados do card
+            titleInput.value = card.querySelector('h3').textContent;
+            descriptionInput.value = card.querySelector('p')?.textContent || '';
+
+            // Limpar e preencher as etiquetas
+            labelsContainer.innerHTML = '';
+            const cardLabels = card.getAttribute('data-labels')?.split(',') || [];
+            Object.entries(window.labels).forEach(([key, label]) => {
+                const labelElement = document.createElement('label');
+                labelElement.className = 'flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = key;
+                checkbox.checked = cardLabels.includes(key);
+                checkbox.className = 'edit-label-checkbox';
+                const labelColor = document.createElement('span');
+                labelColor.className = `w-8 h-2 rounded ${label.color}`;
+                const labelText = document.createElement('span');
+                labelText.textContent = label.text;
+                labelElement.appendChild(checkbox);
+                labelElement.appendChild(labelColor);
+                labelElement.appendChild(labelText);
+                labelsContainer.appendChild(labelElement);
+            });
+
+            // Limpar e preencher os comentários
+            commentsContainer.innerHTML = '';
+            const comments = card.getAttribute('data-comments')?.split('|') || [];
+            comments.forEach(comment => {
+                if (comment) {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'bg-gray-700 p-2 rounded';
+                    commentElement.textContent = comment;
+                    commentsContainer.appendChild(commentElement);
+                }
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        // Função para fechar o modal de edição
+        function closeEditCardModal() {
+            const modal = document.getElementById('edit-card-modal');
+            modal.classList.add('hidden');
+            currentEditingCard = null;
+        }
+
+        // Função para salvar as alterações do card
+        function saveCardChanges() {
+            if (!currentEditingCard) return;
+
+            const titleInput = document.getElementById('edit-card-title');
+            const descriptionInput = document.getElementById('edit-card-description');
+            const selectedLabels = Array.from(document.querySelectorAll('.edit-label-checkbox:checked')).map(checkbox => checkbox.value);
+            const newComment = document.getElementById('new-comment').value;
+
+            // Atualizar o card
+            currentEditingCard.querySelector('h3').textContent = titleInput.value;
+            const descriptionElement = currentEditingCard.querySelector('p');
+            if (descriptionElement) {
+                descriptionElement.textContent = descriptionInput.value;
+            } else if (descriptionInput.value) {
+                const p = document.createElement('p');
+                p.className = 'text-sm text-gray-400 mt-2';
+                p.textContent = descriptionInput.value;
+                currentEditingCard.appendChild(p);
+            }
+
+            // Atualizar etiquetas
+            currentEditingCard.setAttribute('data-labels', selectedLabels.join(','));
+            const labelsContainer = currentEditingCard.querySelector('.flex.gap-2');
+            if (labelsContainer) {
+                labelsContainer.innerHTML = selectedLabels.map(label => `
+                    <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
+                        ${window.labels[label].text}
+                    </span>
+                `).join('');
+            }
+
+            // Adicionar novo comentário se houver
+            if (newComment) {
+                const currentComments = currentEditingCard.getAttribute('data-comments')?.split('|') || [];
+                currentComments.push(newComment);
+                currentEditingCard.setAttribute('data-comments', currentComments.join('|'));
+                document.getElementById('new-comment').value = '';
+            }
+
+            // Salvar estado
+            saveBoardState();
+            closeEditCardModal();
+        }
+
+        // Função para excluir o card
+        function deleteCard() {
+            if (!currentEditingCard) return;
+        
+            if (confirm('Tem certeza que deseja excluir este cartão?')) {
+                const listContent = currentEditingCard.closest('.list-content');
+                currentEditingCard.remove();
+                
+                // Verifica se agora tem menos de 6 cartões
+                if (listContent.querySelectorAll('.card').length < 6) {
+                    listContent.classList.remove('has-many-cards');
+                }
+                
+                saveBoardState();
+                closeEditCardModal();
+            }
+        }
+
+        // Função para salvar o estado do quadro
+        function saveBoardState() {
+            const state = {
+                lists: {}
+            };
+
+            document.querySelectorAll('.list').forEach(list => {
+                const listId = list.id;
+                const cards = Array.from(list.querySelectorAll('.card')).map(card => ({
+                    title: card.querySelector('h3').textContent,
+                    description: card.querySelector('p')?.textContent || '',
+                    labels: card.getAttribute('data-labels')?.split(',') || [],
+                    comments: card.getAttribute('data-comments')?.split('|') || []
+                }));
+                state.lists[listId] = cards;
+            });
+
+            localStorage.setItem('boardState', JSON.stringify(state));
+        }
+
+        // Configuração das etiquetas
+        window.labels = {
+            design: { text: 'Design', color: 'bg-blue-500' },
+            frontend: { text: 'Frontend', color: 'bg-purple-500' },
+            backend: { text: 'Backend', color: 'bg-yellow-500' },
+            feature: { text: 'Feature', color: 'bg-green-500' },
+            urgent: { text: 'Urgente', color: 'bg-red-500' },
+            uiux: { text: 'UI/UX', color: 'bg-indigo-500' }
+        };
+
+        // Função para filtrar cartões
+        function filterCards() {
+            const searchText = document.getElementById('search-input').value.toLowerCase();
+            const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked')).map(checkbox => checkbox.value);
+            
+            // Esconder todos os cartões primeiro
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.display = 'none';
+            });
+
+            // Mostrar cartões que correspondem aos filtros
+            document.querySelectorAll('.card').forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                const cardLabels = card.getAttribute('data-labels') ? card.getAttribute('data-labels').split(',') : [];
+                
+                const matchesSearch = searchText === '' || cardText.includes(searchText);
+                const matchesLabels = selectedLabels.length === 0 || selectedLabels.some(label => cardLabels.includes(label));
+                
+                if (matchesSearch && matchesLabels) {
+                    card.style.display = 'block';
+                }
+            });
+
+            // Atualizar contador de filtros ativos
+            const activeFiltersCount = document.getElementById('active-filters-count');
+            const totalActiveFilters = (searchText ? 1 : 0) + selectedLabels.length;
+            activeFiltersCount.textContent = totalActiveFilters;
+            activeFiltersCount.classList.toggle('hidden', totalActiveFilters === 0);
+
+            // Atualizar tags ativas
+            const activeFiltersContainer = document.getElementById('active-filters');
+            activeFiltersContainer.innerHTML = '';
+
+            if (searchText) {
+                const searchTag = document.createElement('span');
+                searchTag.className = 'px-2 py-1 bg-gray-700 rounded text-sm flex items-center gap-1';
+                searchTag.innerHTML = `<i class="fas fa-search"></i> ${searchText}`;
+                activeFiltersContainer.appendChild(searchTag);
+            }
+
+            selectedLabels.forEach(label => {
+                const labelTag = document.createElement('span');
+                labelTag.className = `px-2 py-1 ${window.labels[label].color} rounded text-sm`;
+                labelTag.textContent = window.labels[label].text;
+                activeFiltersContainer.appendChild(labelTag);
+            });
+        }
+
+        // Função para adicionar um cartão
+        function addCard(listId, title, description, labels = []) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+        
+            const listContent = list.querySelector('.list-content');
+            const cards = listContent.querySelectorAll('.card');
+            
+            // Verifica se já tem 6 cartões para adicionar a classe de scroll
+            if (cards.length >= 6) {
+                listContent.classList.add('has-many-cards');
+            }
+        
+            const card = document.createElement('div');
+            card.className = 'card bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600';
+            card.setAttribute('draggable', 'true');
+            card.setAttribute('data-labels', labels.join(','));
+            card.setAttribute('data-comments', '');
+            
+            card.innerHTML = `
+                <h3 class="font-medium">${title}</h3>
+                ${description ? `<p class="text-sm text-gray-400 mt-2">${description}</p>` : ''}
+                ${labels.length > 0 ? `
+                    <div class="flex gap-2 mt-3">
+                        ${labels.map(label => `
+                            <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
+                                ${window.labels[label].text}
+                            </span>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            `;
+        
+            card.addEventListener('click', () => {
+                openEditCardModal(card);
+            });
+        
+            listContent.appendChild(card);
+            filterCards();
+        }
+
+        // Carregar tema e estado do quadro
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar tema
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+            }
+
+            // Configuração do modal de filtros
+            const filterButton = document.getElementById('filter-button');
+            const filterMenu = document.getElementById('filter-menu');
+            const filterOverlay = document.getElementById('filter-overlay');
+
+            filterButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.innerWidth <= 768) {
+                    filterMenu.classList.remove('hidden');
+                    filterOverlay.classList.add('active');
+                } else {
+                    filterMenu.classList.toggle('hidden');
+                }
+            });
+
+            filterOverlay.addEventListener('click', () => {
+                filterMenu.classList.add('hidden');
+                filterOverlay.classList.remove('active');
+            });
+
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!filterButton.contains(e.target) && !filterMenu.contains(e.target)) {
+                    filterMenu.classList.add('hidden');
+                    if (window.innerWidth <= 768) {
+                        filterOverlay.classList.remove('active');
+                    }
+                }
+            });
+
+            // Configurar scroll horizontal
+            const boardContainer = document.getElementById('board-container');
+            if (boardContainer) {
+                boardContainer.addEventListener('scroll', updateHorizontalScroll);
+                window.addEventListener('resize', updateHorizontalScroll);
+                updateHorizontalScroll();
+            }
+
+            // Carregar estado do quadro
+            const savedState = localStorage.getItem('boardState');
+            if (savedState) {
+                window.boardState = JSON.parse(savedState);
+            }
+
+            // Renderizar o quadro inicial
+            if (typeof window.renderBoard === 'function') {
+                window.renderBoard();
+            }
+
+            // Inicializar botões
+            const addListButton = document.querySelector('.add-list-btn');
+            if (addListButton) {
+                addListButton.addEventListener('click', () => {
+                    if (typeof window.showAddListModal === 'function') {
+                        window.showAddListModal();
+                    }
+                });
+            }
+
+            const addCardButtons = document.querySelectorAll('.add-card-btn');
+            addCardButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const listId = button.closest('.list').id;
+                    if (typeof window.showAddCardModal === 'function') {
+                        window.showAddCardModal(listId);
+                    }
+                });
+            });
+
+            // Renderizar os filtros de etiquetas
+            const labelFiltersContainer = document.getElementById('label-filters');
+            if (labelFiltersContainer) {
+                Object.entries(window.labels).forEach(([key, label]) => {
+                    const labelFilter = document.createElement('label');
+                    labelFilter.className = 'flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer';
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = key;
+                    checkbox.className = 'filter-label';
+                    checkbox.addEventListener('change', filterCards);
+                    const labelColor = document.createElement('span');
+                    labelColor.className = `w-8 h-2 rounded ${label.color}`;
+                    const labelText = document.createElement('span');
+                    labelText.textContent = label.text;
+                    labelFilter.appendChild(checkbox);
+                    labelFilter.appendChild(labelColor);
+                    labelFilter.appendChild(labelText);
+                    labelFiltersContainer.appendChild(labelFilter);
+                });
+            }
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterCards);
+            }
+
+            // Menu mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+
+            mobileMenuButton.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            document.querySelectorAll('.list-content').forEach(list => {
+                new Sortable(list, {
+                    group: 'shared', // permite mover entre listas
+                    animation: 150,  // animação suave
+                    ghostClass: 'sortable-ghost', // classe aplicada ao "cartão sombra"
+                    dragClass: 'sortable-drag',   // classe aplicada ao cartão sendo arrastado
+                    onEnd: () => {
+                        saveBoardState(); // salva novo estado após movimentação
+                    }
+                });
+            });
+        });
+
+    // Função para permitir que o usuário possa fazer o drag de movimentação do projeto
+    (function enableDragToScroll() {
+        const container = document.getElementById('board-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('cursor-grabbing');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 1.5; // Multiplicador para ajustar a velocidade
+            container.scrollLeft = scrollLeft - walk;
+        });
+    })();
+
+    const container = document.getElementById('board-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('cursor-grabbing');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+
+            // BLOQUEAR SELEÇÃO DE TEXTO TEMPORARIAMENTE
+            document.body.style.userSelect = 'none';
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+
+            // RESTAURAR SELEÇÃO
+            document.body.style.userSelect = '';
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('cursor-grabbing');
+            document.body.style.userSelect = '';
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="../src/js/features/board/board.js"></script>
+    <script src="../src/js/features/board/modals.js"></script>
+    <script src="../src/js/features/board/quadros.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
+    <script src="../src/js/features/tutorial/tutorial.js"></script>
+    <script>
+        // Função para iniciar o tutorial
+        function startTutorial() {
+            console.log('Iniciando tutorial...');
+            // Inicializar o tutorial
+            new Tutorial();
+        }
+
+        // Iniciar o tutorial quando a página estiver completamente carregada
+        window.addEventListener('load', () => {
+            console.log('Página carregada');
+            // Adicionar evento ao botão de tutorial
+            const startTutorialBtn = document.getElementById('start-tutorial-btn');
+            if (startTutorialBtn) {
+                startTutorialBtn.addEventListener('click', startTutorial);
+            }
+        });
+
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+</body>
+
+</html>

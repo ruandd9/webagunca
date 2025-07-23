@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendario
+                </a>
+                <a href="./notifications.html" class="flex items-center text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./chat-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-comments mr-3"></i>
+                    Chat
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-11 mt-16 md:mt-0 overflow-y-auto">
+            <!-- Header -->
+            <header class="py-2 mb-5">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div class="flex items-center space-x-4 md:space-x-11">
+                        <div class="nav-dropdown relative">
+                            <a href="#" class="text-white text-lg flex items-center space-x-2">
+                                <i class="fas fa-bell"></i>
+                                <span>Notificações</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 relative">
+                        <div class="dropdown">
+                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+                            <div class="dropdown-content">
+                                <h3 class="text-lg mb-2">Profile</h3>
+                                <a href="./perfil1.html">Ver Perfil</a>
+                                <a href="./perfil1.html">Configurações</a>
+                                <a href="./sobreNos.html">Ajuda</a>
+                                <hr class="my-2">
+                                <a href="../index.html">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <hr class="mb-10">
+
+            <!-- Notifications Section -->
+            <div class="max-w-4xl mx-auto">
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap gap-2 md:gap-4 mb-8">
+                    <button class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors active flex-1 md:flex-none text-sm md:text-base" onclick="filterNotifications('all')">
+                        Todas
+                    </button>
+                    <button class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors flex-1 md:flex-none text-sm md:text-base" onclick="filterNotifications('unread')">
+                        Não lidas
+                    </button>
+                    <button class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors flex-1 md:flex-none text-sm md:text-base" onclick="filterNotifications('mentions')">
+                        Menções
+                    </button>
+                </div>
+
+                <!-- Notifications List -->
+                <div class="space-y-4">
+                    <!-- Unread Notifications -->
+                    <div class="notification bg-gray-800 p-4 rounded-lg border-l-4 border-blue-500">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-plus text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm">
+                                    <span class="font-bold">Raphael Melo</span> adicionou você ao quadro 
+                                    <span class="text-blue-400">"Design System"</span>
+                                </p>
+                                <span class="text-xs text-gray-400">Agora mesmo</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-white flex-shrink-0">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="notification bg-gray-800 p-4 rounded-lg border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-at text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm">
+                                    <span class="font-bold">Ruan Lobo</span> mencionou você em um comentário no card 
+                                    <span class="text-blue-400">"Implementar autenticação"</span>
+                                </p>
+                                <span class="text-xs text-gray-400">Há 1 hora</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-white flex-shrink-0">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Read Notifications -->
+                    <div class="notification bg-gray-800 p-4 rounded-lg opacity-75">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm">
+                                    O prazo do card <span class="text-blue-400">"Criar página de login"</span> 
+                                    vence em 2 dias
+                                </p>
+                                <span class="text-xs text-gray-400">Há 3 horas</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-white flex-shrink-0">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="notification bg-gray-800 p-4 rounded-lg opacity-75">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm">
+                                    <span class="font-bold">Yan Basílio</span> moveu o card 
+                                    <span class="text-blue-400">"Configurar ambiente"</span> para Concluído
+                                </p>
+                                <span class="text-xs text-gray-400">Há 5 horas</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-white flex-shrink-0">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="notification bg-gray-800 p-4 rounded-lg opacity-75">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-list-alt text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm">
+                                    <span class="font-bold">Talisson Leandro</span> criou uma nova lista 
+                                    <span class="text-blue-400">"Code Review"</span> no quadro 
+                                    <span class="text-blue-400">"Projeto Website"</span>
+                                </p>
+                                <span class="text-xs text-gray-400">Ontem às 15:30</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-white flex-shrink-0">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="mt-8 text-center">
+                    <button class="w-full md:w-auto px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        Carregar mais
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/js/features/notifications/notifications.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Adicionar event listeners para os botões de filtro
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover classe active de todos os botões
+                document.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                // Adicionar classe active ao botão clicado
+                this.classList.add('active');
+            });
+        });
+
+        // Função para filtrar notificações
+        function filterNotifications(type) {
+            const notifications = document.querySelectorAll('.notification');
+            
+            notifications.forEach(notification => {
+                switch(type) {
+                    case 'unread':
+                        notification.style.display = notification.classList.contains('border-l-4') ? 'block' : 'none';
+                        break;
+                    case 'mentions':
+                        notification.style.display = notification.querySelector('.fa-at') ? 'block' : 'none';
+                        break;
+                    default:
+                        notification.style.display = 'block';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

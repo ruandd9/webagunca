@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Bagunça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/themes.css">
+    <link rel="stylesheet" href="../src/css/principal-home.css">
+    <link rel="stylesheet" href="../src/css/chat-modern.css"> <!-- css da pagina-->
+    <script src="../src/js/features/auth/auth.js"></script>
+    <script>
+        // Verificar se o usuário está logado
+        if (!auth.isUserLoggedIn()) {
+            window.location.href = '../index.html';
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 right-4 z-50 bg-gray-800 p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar Principal -->
+        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
+            <div class="flex items-center mb-8">
+                <div class="p-2 rounded">
+                    <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
+                </div>
+            </div>
+            <nav class="space-y-4">
+                <a href="./board-page.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-columns mr-3"></i>
+                    Quadros
+                </a>
+                <a href="./perfil1.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-cog mr-3"></i>
+                    Configurações
+                </a>
+                <a href="./calendario.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Calendário
+                </a>
+                <a href="./notifications.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-bell mr-3"></i>
+                    Notificações
+                </a>
+                <a href="./chat-page.html" class="flex items-center text-white">
+                    <i class="fas fa-comments mr-3"></i>
+                    Chat
+                </a>
+                <a href="./sobreNos.html" class="flex items-center text-gray-400 hover:text-white">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Informações
+                </a>
+            </nav>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="flex-1 flex flex-col h-screen">
+            <!-- Header -->
+            <div class="flex-1 p-4 md:p-11 md:mt-0 flex flex-col h-full">
+                <header class="py-2">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                        <div class="flex items-center space-x-4 md:space-x-11">
+                            <div class="nav-dropdown relative">
+                                <a href="#" class="text-white text-lg flex items-center space-x-2">
+                                    <i class="fas fa-comments mr-3"></i>
+                                    <span>Chat</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 relative">
+                            <div class="dropdown">
+                                <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px;">YF</div>
+                                <div class="dropdown-content" style="z-index: 100;">
+                                    <h3 class="text-lg mb-2">Profile</h3>
+                                    <a href="./perfil1.html">Ver Perfil</a>
+                                    <a href="./perfil1.html">Configurações</a>
+                                    <a href="./sobreNos.html">Ajuda</a>
+                                    <hr class="my-2">
+                                    <a href="#" onclick="auth.logoutUser()">Sair</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <hr class="mb-7">
+
+                <!-- Container do Chat -->
+                <div class="chat-container h-full">
+                    <!-- Sidebar do Chat -->
+                    <aside id="chatContactSidebar" class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <div class="contact-avatar">
+                                <img src="../src/img/logoBag.png" alt="Logo" class="w-8 h-8">
+                            </div>
+                            <div class="flex-1">
+                                <h1 class="text-lg font-semibold">Bagunça</h1>
+                            </div>
+                            <button class="action-button">
+                                <i class="fas fa-ellipsis-vertical"></i>
+                            </button>
+                        </div>
+
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Pesquisar ou começar uma nova conversa">
+                        </div>
+
+                        <div class="contacts-list">
+                            <!-- Os contatos serão inseridos aqui via JavaScript -->
+                        </div>
+
+                        <!-- Botão Adicionar Contato -->
+                        <div class="add-contact-button">
+                            <button class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors duration-200">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Adicionar Contato</span>
+                            </button>
+                        </div>
+                    </aside>
+
+                    <!-- Área de Mensagens -->
+                    <main id="chatConversationArea" class="chat-messages-area h-full hidden-mobile">
+                        <div class="chat-header my-2 shadow-lg mx-2 bg-gray-800 rounded-lg">
+                            <button id="backToContactsBtn" class="action-button md:hidden">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <div class="contact-avatar">
+                                <span>RM</span>
+                                <div class="online-indicator"></div>
+                            </div>
+                            <div class="flex-1">
+                                <h2 class="font-semibold">Raphael Marques</h2>
+                                <p class="text-sm text-gray-400">online</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="action-button">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                                <button class="action-button">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                                <div class="relative">
+                                    <button class="action-button" id="theme-button">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <div class="theme-dropdown" id="theme-dropdown">
+                                        <div class="theme-option" data-theme="default">
+                                            <span class="color-preview" style="background-color: var(--bg-dark)"></span>
+                                            <span>Padrão</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="light">
+                                            <span class="color-preview" style="background-color: #F3F4F6"></span>
+                                            <span>Claro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-blue">
+                                            <span class="color-preview" style="background-color: #1f457e"></span>
+                                            <span>Azul Escuro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-purple">
+                                            <span class="color-preview" style="background-color: #1e1b4b"></span>
+                                            <span>Roxo Escuro</span>
+                                        </div>
+                                        <div class="theme-option" data-theme="dark-green">
+                                            <span class="color-preview" style="background-color: #1b2d1b"></span>
+                                            <span>Verde Escuro</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Container de mensagens -->
+                        <div class="messages-container">
+                            <!-- Mensagem de saída (sua) -->
+                            <div class="message-wrapper outgoing">
+                                <div class="message-avatar">YF</div>
+                                <div class="message outgoing">
+                                    <div class="message-content">
+                                        Olá! Como está o desenvolvimento do projeto?
+                                    </div>
+                                    <span class="message-time">14:30</span>
+                                </div>
+                            </div>
+
+                            <!-- Mensagem de entrada (outra pessoa) -->
+                            <div class="message-wrapper incoming">
+                                <div class="message-avatar">RM</div>
+                                <div class="message incoming">
+                                    <div class="message-content">
+                                        Tudo bem! Estou finalizando as últimas alterações.
+                                    </div>
+                                    <span class="message-time">14:31</span>
+                                </div>
+                            </div>
+
+                            <!-- Mensagem de saída (sua) -->
+                            <div class="message-wrapper outgoing">
+                                <div class="message-avatar">YF</div>
+                                <div class="message outgoing">
+                                    <div class="message-content">
+                                        Ótimo! Podemos revisar amanhã?
+                                    </div>
+                                    <span class="message-time">14:32</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-area">
+                            <button class="action-button">
+                                <i class="far fa-smile"></i>
+                            </button>
+                            <button class="action-button">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="text" class="chat-input" placeholder="Digite uma mensagem">
+                            <button class="send-button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar/Editar Contato -->
+    <div id="contactModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modalTitle" class="text-xl font-semibold">Adicionar Novo Contato</h2>
+                <button id="closeModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="contactForm" class="space-y-4">
+                <input type="hidden" id="contactId">
+                <div>
+                    <label for="firstName" class="block text-sm font-medium text-gray-300 mb-1">Nome</label>
+                    <input type="text" id="firstName" name="firstName" required
+                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label for="lastName" class="block text-sm font-medium text-gray-300 mb-1">Sobrenome</label>
+                    <input type="text" id="lastName" name="lastName" required
+                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Cor do Perfil</label>
+                    <div class="grid grid-cols-5 gap-2 mt-2">
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-blue-500 hover:ring-2 hover:ring-white" data-color="blue-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-green-500 hover:ring-2 hover:ring-white" data-color="green-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-purple-500 hover:ring-2 hover:ring-white" data-color="purple-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-red-500 hover:ring-2 hover:ring-white" data-color="red-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-yellow-500 hover:ring-2 hover:ring-white" data-color="yellow-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-pink-500 hover:ring-2 hover:ring-white" data-color="pink-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-indigo-500 hover:ring-2 hover:ring-white" data-color="indigo-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-orange-500 hover:ring-2 hover:ring-white" data-color="orange-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-teal-500 hover:ring-2 hover:ring-white" data-color="teal-500"></button>
+                        <button type="button" class="color-option w-8 h-8 rounded-full bg-gray-500 hover:ring-2 hover:ring-white" data-color="gray-500"></button>
+                    </div>
+                    <input type="hidden" id="profileColor" value="blue-500">
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="deleteContact" class="px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 bg-gray-700 rounded-md hover:bg-gray-600 hidden">
+                        Excluir Contato
+                    </button>
+                    <button type="button" id="cancelContact"
+                        class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 rounded-md hover:bg-gray-600">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent-hover">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Menu de Contexto para Contatos -->
+    <div id="contactContextMenu" class="fixed hidden bg-gray-800 rounded-lg shadow-lg py-2 z-50 min-w-[200px]">
+        <button class="edit-contact w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white">
+            <i class="fas fa-edit mr-2"></i> Editar Contato
+        </button>
+        <button class="delete-contact w-full px-4 py-2 text-left text-red-400 hover:bg-gray-700 hover:text-red-300">
+            <i class="fas fa-trash-alt mr-2"></i> Excluir Contato
+        </button>
+    </div>
+
+    <script src="../src/js/features/chat/chat.js"></script>
+    <script src="../src/js/features/board/modals.js"></script>
+    <script src="../src/js/features/user/userInitials.js"></script>
+    <script src="../src/js/features/themes/themeManager.js"></script>
+    <script>
+        // Variáveis para controle do menu mobile
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        let isSidebarOpen = false;
+
+        // Toggle mobile menu
+        mobileMenuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+            } else {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Fechar sidebar ao clicar fora em dispositivos móveis
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 768) { // Apenas em dispositivos móveis
+                if (!sidebar.contains(event.target) && !mobileMenuButton.contains(event.target) && isSidebarOpen) {
+                    isSidebarOpen = false;
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        });
+
+        // Prevenir que o clique dentro da sidebar feche o menu
+        sidebar.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    </script>
+
+    <!-- Estilos para a lista de contatos -->
+    <style>
+        .chat-sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 320px;
+            border-right: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            overflow-y: auto;
+        }
+
+        .chat-sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .search-container {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 4rem;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        .contacts-list {
+            padding: 0.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .add-contact-button {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+            background-color: var(--bg-dark);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 40;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            #sidebar.translate-x-0 {
+                transform: translateX(0);
+            }
+
+            #mobile-menu-button {
+                display: block;
+            }
+        }
+    </style>
+</body>
+</html>

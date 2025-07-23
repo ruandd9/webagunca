@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./src/css/index.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="./src/css/hero-animation.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <title>inicial-page</title>
+  <style>
+    html {
+      scroll-behavior: smooth;
+      /* Ajuste o valor abaixo para a altura do seu header fixo */
+      scroll-padding-top: 80px; 
+    }
+  </style>
+</head>
+
+<body>
+  <header class="w-full z-50 fixed top-0 left-0 bg-indigo-400 backdrop-blur-md">
+    <div class="max-w-screen-xl mx-auto px-2 md:px-4">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center me-5">
+          <img src="./src/img/logo-bagunca.svg" class="h-8 mr-2" alt="Logo Bagunça" />
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-5">
+          <a href="#inicio" class="header-link text-white hover:text-purple-200 transition-colors px-2">Início</a>
+          <a href="#recursos" class="header-link text-white hover:text-purple-200 transition-colors px-2">Recursos</a>
+          <a href="#sobre" class="header-link text-white hover:text-purple-200 transition-colors px-2">Sobre</a>
+          <a href="#contato" class="header-link text-white hover:text-purple-200 transition-colors px-2">Contato</a>
+        </nav>
+
+        <div class="flex items-center space-x-6 ml-auto ms-4">
+          <a href="#" id="loginLink"
+            class="header-link border-2 border-white bg-transparent text-white px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
+            data-bs-target="#loginModal" data-bs-toggle="modal">Login</a>
+          <a href="#" id="registerLink"
+            class="header-link bg-white text-purple-900 px-8 py-2.5 rounded-full font-semibold hover:bg-purple-100 transition-colors hidden md:block"
+            data-bs-toggle="modal" data-bs-target="#registerModal">Cadastro</a>
+
+          <button id="mobileMenuButton" class="md:hidden text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileMenu"
+        class="md:hidden hidden absolute top-20 left-0 right-0 bg-purple-900/80 backdrop-blur-md py-6 px-4 shadow-lg">
+        <div class="flex flex-col space-y-6">
+          <a href="#inicio" class="text-white hover:text-purple-200 transition-colors text-lg">Início</a>
+          <a href="#recursos" class="text-white hover:text-purple-200 transition-colors text-lg">Recursos</a>
+          <a href="#sobre" class="text-white hover:text-purple-200 transition-colors text-lg">Sobre</a>
+          <a href="#contato" class="text-white hover:text-purple-200 transition-colors text-lg">Contato</a>
+          <div class="pt-4 border-t border-white/20">
+            <a href="#"
+              class="block bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-600 transition-colors text-center mb-4"
+              data-bs-target="#loginModal" data-bs-toggle="modal">Login</a>
+            <a href="#"
+              class="block bg-white text-purple-900 px-6 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors text-center"
+              data-bs-toggle="modal" data-bs-target="#registerModal">Cadastro</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero-section relative min-h-screen flex items-center justify-center">
+
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="floating-elements">
+          <div class="floating-element"></div>
+          <div class="floating-element"></div>
+          <div class="floating-element"></div>
+        </div>
+        <div class="particles" id="particles"></div>
+        <div class="glow-effect" style="top: 20%; left: 30%;"></div>
+        <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
+        <div class="particles" id="particles"></div>
+        <div class="glow-effect" style="top: 20%; left: 30%;"></div>
+        <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
+      </div>
+      <div class=" bg-gradient-to-r from-purple-900/50 to-blue-900/50"></div>
+      <div class="relative z-10 text-center px-4">
+        <div class="text-content-homepage">
+          <div class="text-content-homepage-header text-white">
+            <h2 class="text-3xl md:text-4xl font-light mb-4">ARRUME SUA VIDA COM</h2>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 md:mb-6">BAGUNÇA</h1>
+          </div>
+          <p class="text-xl text-gray-200 max-w-2xl mx-auto mb-8">
+            Organize suas tarefas e projetos de forma simples e eficiente.
+            No Bagunça, ajudamos você a transformar o caos em ordem, facilitando o acompanhamento do seu progresso.
+            Simplifique sua vida e alcance suas metas com nosso sistema de Kanban.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center my-5">
+            <a href="./public/board-page.html"
+              class="header-link bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors">
+              Começar Agora
+            </a>
+            <a href="./public/board-page.html"
+              class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-colors">
+              Saiba Mais
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="relative h-32 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-900 to-blue-900 transform -skew-y-6"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <h3 class="text-2xl font-bold text-white">Transforme sua produtividade</h3>
+      </div>
+    </div>
+
+    <section id="sobre" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Por que escolher o Bagunça?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-tasks text-3xl text-purple-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Organização Intuitiva</h3>
+            <p class="text-gray-600">Interface simples e intuitiva para gerenciar suas tarefas de forma eficiente.</p>
+          </div>
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-users text-3xl text-blue-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Trabalho em Equipe</h3>
+            <p class="text-gray-600">Colabore facilmente com sua equipe e mantenha todos na mesma página.</p>
+          </div>
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-chart-line text-3xl text-green-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Acompanhamento</h3>
+            <p class="text-gray-600">Monitore seu progresso e alcance suas metas de forma mais eficiente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="relative h-32 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900 to-purple-900 transform skew-y-6"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <h3 class="text-2xl font-bold text-white">Recursos que fazem a diferença</h3>
+      </div>
+    </div>
+
+    <section id="recursos" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Recursos Poderosos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-columns text-xl text-purple-600"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">Quadros Kanban</h3>
+                <p class="text-gray-600">Organize suas tarefas em colunas visuais para melhor acompanhamento.</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-bell text-xl text-blue-600"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">Notificações Inteligentes</h3>
+                <p class="text-gray-600">Mantenha-se atualizado com alertas personalizados sobre suas tarefas.</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-calendar-alt text-xl text-green-600"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">Calendário Integrado</h3>
+                <p class="text-gray-600">Visualize suas tarefas em um calendário para melhor planejamento.</p>
+              </div>
+            </div>
+          </div>
+          <div class="relative">
+            <img src="./image.png" alt="Preview do Dashboard" class="rounded-lg shadow-xl">
+            <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <span class="text-sm font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="relative h-32 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-900 to-blue-900 transform -skew-y-6"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <h3 class="text-2xl font-bold text-white">Comece sua jornada hoje</h3>
+      </div>
+    </div>
+
+    <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900 text-white">
+      <div class="max-w-4xl mx-auto text-center px-4">
+        <h2 class="text-4xl font-bold mb-6">Pronto para organizar sua vida?</h2>
+        <p class="text-xl mb-8 text-gray-200">Junte-se a milhares de pessoas que já transformaram sua produtividade com
+          o Bagunça.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="./public/board-page.html"
+            class="bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors">
+            Começar Agora
+          </a>
+          <a href="./public/board-page.html"
+            class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-colors">
+            Fazer um Tour
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="./src/js/ui/index.js"></script>
+  <script src="./src/js/ui/particles.js"></script>
+  <script src="./src/js/features/auth/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function () {
+          mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fechar o menu quando clicar fora
+        document.addEventListener('click', function (event) {
+          if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+            mobileMenu.classList.add('hidden');
+          }
+        });
+
+        // Fechar o menu ao clicar em um link
+        mobileMenu.addEventListener('click', function(event) {
+          if (event.target.tagName === 'A') {
+            mobileMenu.classList.add('hidden');
+          }
+        });
+      }
+
+      // Manipulador do formulário de login
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+        
+        try {
+          const userData = auth.loginUser(email, senha);
+          // Redirecionar para a página do board após login bem-sucedido
+          window.location.href = './public/board-page.html';
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      // Manipulador do formulário de cadastro
+      document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const nomeCompleto = document.getElementById('nomeCompleto').value;
+        const senha = document.getElementById('senha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+        const termos = document.getElementById('termos').checked;
+
+        try {
+          // Validar senhas
+          if (senha !== confirmarSenha) {
+            throw new Error('As senhas não coincidem');
+          }
+
+          // Validar termos
+          if (!termos) {
+            throw new Error('Você precisa aceitar os termos e condições');
+          }
+
+          // Registrar usuário
+          const userData = auth.registerUser(email, nomeCompleto, senha);
+          
+          // Fechar modal de cadastro
+          const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+          registerModal.hide();
+
+          // Redirecionar para a página do board
+          window.location.href = './public/board-page.html';
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      // Adicionar link para login no texto de cadastro
+      document.querySelector('#registerModal .p .span').addEventListener('click', function() {
+        const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        registerModal.hide();
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      });
+
+      // Adicionar link para cadastro no texto de login
+      document.querySelector('#loginModal .p .span').addEventListener('click', function() {
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        loginModal.hide();
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
+      });
+    });
+  </script>
+</body>
+
+<footer id="contato" class="relative my-5">
+  <div class="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-purple-900/50 to-blue-900/30 backdrop-blur-sm">
+  </div>
+  <div class="relative max-w-screen-xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="col-span-1 md:col-span-2">
+        <div class="flex items-center mb-4">
+          <img src="./src/img/logo-bagunca.svg" class="h-8 mr-3" alt="Logo Bagunça" />
+        </div>
+        <p class="text-gray-200 mb-4">
+          Organize suas tarefas e projetos de forma simples e eficiente.
+          Transforme o caos em ordem com nosso sistema de Kanban.
+        </p>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-200 hover:text-white transition-colors">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="text-gray-200 hover:text-white transition-colors">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-200 hover:text-white transition-colors">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="text-gray-200 hover:text-white transition-colors">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-white">Links Rápidos</h3>
+        <ul class="space-y-2">
+          <li><a href="#inicio" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
+          <li><a href="#sobre" class="text-gray-200 hover:text-white transition-colors">Sobre</a></li>
+          <li><a href="#recursos" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
+          <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-white">Contato</h3>
+        <ul class="space-y-2">
+          <li class="flex items-center text-gray-200">
+            <i class="fas fa-envelope mr-2"></i>
+            contato@bagunca.com
+          </li>
+          <li class="flex items-center text-gray-200">
+            <i class="fas fa-phone mr-2"></i>
+            (61) 99999-9999
+          </li>
+          <li class="flex items-center text-gray-200">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            Brasilia, DF
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="my-8 border-gray-400" />
+
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="text-gray-200 text-sm">
+        © 2024 <a href="#" class="hover:text-white transition-colors">Bagunça™</a>. Todos os direitos reservados.
+      </div>
+      <div class="flex space-x-6 mt-4 md:mt-0">
+        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Termos de Uso</a>
+        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Política de Privacidade</a>
+        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="form modal-content" id="loginForm">
+      <div class="d-flex flex-column mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
+          <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <legend class="fw-bold-5 h3">Login</legend>
+      </div>
+      <div class="">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" class="form-control" required>
+        </div>
+
+        <button type="submit" class="button-submit">Entrar</button>
+        <p class="p mb-3">Ou</p>
+        <div class="flex-row">
+          <div>
+            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
+              <span>Login com o Google</span>
+            </button>
+          </div>
+          <div class="flex-row">
+            <div>
+              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
+                <span>Login com o Facebook</span>
+              </button>
+            </div>
+            <div class="flex-row">
+              <div>
+                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                  <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
+                  <span>Login com o GitHub</span>
+                </button>
+              </div>
+              <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="form modal-content" id="cadastroForm">
+      <div class="d-flex flex-column mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
+          <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <legend class="fw-bold-5 h3">Cadastro</legend>
+      </div>
+      <div class="">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" required>
+        </div>
+
+        <div class="">
+          <div class="form-group">
+            <label for="nomeCompleto">Nome completo</label>
+            <input type="text" id="nomeCompleto" class="form-control" required>
+          </div>
+
+          <div class="">
+            <div class="form-group">
+              <label for="senha">Criar senha</label>
+              <input type="password" id="senha" class="form-control" required>
+            </div>
+
+            <div class="">
+              <div class="form-group">
+                <label for="confirmarSenha">Confirmar senha</label>
+                <input type="password" id="confirmarSenha" class="form-control" required>
+              </div>
+
+              <div>
+                <div>
+                  <label class="checkbox-container">
+                    <input class="custom-checkbox" type="checkbox" id="termos" required>
+                    <span class="checkmark"></span>
+                    <p class="termos-servicos">Eu concordo com os <b><u>termos & condições</u></b> e a <b><u>política de
+                          privacidade</u></b></p>
+                  </label>
+                </div>
+
+                <button type="submit" class="button-submit">Criar conta</button>
+                <p class="p mb-3">Ou</p>
+                <div class="flex-row">
+                  <div>
+                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                      <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
+                      <span>Login com o Google</span>
+                    </button>
+                  </div>
+                  <div class="flex-row">
+                    <div>
+                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
+                        <span>Login com o Facebook</span>
+                      </button>
+                    </div>
+                    <div class="flex-row">
+                      <div>
+                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                          <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
+                          <span>Login com o GitHub</span>
+                        </button>
+                      </div>
+                      <p class="p">Ja tem uma conta? <span class="span"><b>Fazer login</b></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+
+</html>
