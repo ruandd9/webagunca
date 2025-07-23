@@ -18,7 +18,23 @@
     html {
       scroll-behavior: smooth;
       /* Ajuste o valor abaixo para a altura do seu header fixo */
-      scroll-padding-top: 80px; 
+      scroll-padding-top: 80px;
+    }
+    
+    /* Garantir que o backdrop dos modais funcione corretamente */
+    .modal-backdrop {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+      z-index: 1040 !important;
+    }
+    
+    .modal {
+      z-index: 1050 !important;
+    }
+    
+    /* Garantir que os modais de termos e privacidade tenham o backdrop correto */
+    #termosModal.modal,
+    #privacidadeModal.modal {
+      background-color: rgba(0, 0, 0, 0.5);
     }
   </style>
 </head>
@@ -252,7 +268,7 @@
         });
 
         // Fechar o menu ao clicar em um link
-        mobileMenu.addEventListener('click', function(event) {
+        mobileMenu.addEventListener('click', function (event) {
           if (event.target.tagName === 'A') {
             mobileMenu.classList.add('hidden');
           }
@@ -260,12 +276,12 @@
       }
 
       // Manipulador do formulário de login
-      document.getElementById('loginForm').addEventListener('submit', function(e) {
+      document.getElementById('loginForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('loginEmail').value;
         const senha = document.getElementById('loginSenha').value;
-        
+
         try {
           const userData = auth.loginUser(email, senha);
           // Redirecionar para a página do board após login bem-sucedido
@@ -276,9 +292,9 @@
       });
 
       // Manipulador do formulário de cadastro
-      document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+      document.getElementById('cadastroForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const nomeCompleto = document.getElementById('nomeCompleto').value;
         const senha = document.getElementById('senha').value;
@@ -298,7 +314,7 @@
 
           // Registrar usuário
           const userData = auth.registerUser(email, nomeCompleto, senha);
-          
+
           // Fechar modal de cadastro
           const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
           registerModal.hide();
@@ -311,7 +327,7 @@
       });
 
       // Adicionar link para login no texto de cadastro
-      document.querySelector('#registerModal .p .span').addEventListener('click', function() {
+      document.querySelector('#registerModal .p .span').addEventListener('click', function () {
         const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
         registerModal.hide();
         const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
@@ -319,11 +335,28 @@
       });
 
       // Adicionar link para cadastro no texto de login
-      document.querySelector('#loginModal .p .span').addEventListener('click', function() {
+      document.querySelector('#loginModal .p .span').addEventListener('click', function () {
         const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
         loginModal.hide();
         const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
         registerModal.show();
+      });
+
+      // Funcionalidade para voltar ao modal de cadastro quando fechar os modais de termos/privacidade
+      const termosModal = document.getElementById('termosModal');
+      const privacidadeModal = document.getElementById('privacidadeModal');
+      const registerModal = document.getElementById('registerModal');
+
+      // Quando o modal de termos for fechado, voltar para o cadastro
+      termosModal.addEventListener('hidden.bs.modal', function () {
+        const registerModalInstance = new bootstrap.Modal(registerModal);
+        registerModalInstance.show();
+      });
+
+      // Quando o modal de privacidade for fechado, voltar para o cadastro
+      privacidadeModal.addEventListener('hidden.bs.modal', function () {
+        const registerModalInstance = new bootstrap.Modal(registerModal);
+        registerModalInstance.show();
       });
     });
   </script>
@@ -428,21 +461,27 @@
         <p class="p mb-3">Ou</p>
         <div class="flex-row">
           <div>
-            <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+            <button
+              class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
+              disabled style="opacity: 0.5; cursor: not-allowed;">
               <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
               <span>Login com o Google</span>
             </button>
           </div>
           <div class="flex-row">
             <div>
-              <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <button
+                class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                disabled style="opacity: 0.5; cursor: not-allowed;">
                 <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
                 <span>Login com o Facebook</span>
               </button>
             </div>
             <div class="flex-row">
               <div>
-                <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                <button
+                  class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                  disabled style="opacity: 0.5; cursor: not-allowed;">
                   <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
                   <span>Login com o GitHub</span>
                 </button>
@@ -496,8 +535,11 @@
                   <label class="checkbox-container">
                     <input class="custom-checkbox" type="checkbox" id="termos" required>
                     <span class="checkmark"></span>
-                    <p class="termos-servicos">Eu concordo com os <b><u>termos & condições</u></b> e a <b><u>política de
-                          privacidade</u></b></p>
+                    <p class="termos-servicos">Eu concordo com os <b><u><a href="#" data-bs-toggle="modal"
+                            data-bs-target="#termosModal" style="color: inherit; text-decoration: underline;">termos &
+                            condições</a></u></b> e a <b><u><a href="#" data-bs-toggle="modal"
+                            data-bs-target="#privacidadeModal"
+                            style="color: inherit; text-decoration: underline;">política de privacidade</a></u></b></p>
                   </label>
                 </div>
 
@@ -505,21 +547,27 @@
                 <p class="p mb-3">Ou</p>
                 <div class="flex-row">
                   <div>
-                    <button class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                    <button
+                      class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
+                      disabled style="opacity: 0.5; cursor: not-allowed;">
                       <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
                       <span>Login com o Google</span>
                     </button>
                   </div>
                   <div class="flex-row">
                     <div>
-                      <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                      <button
+                        class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                        disabled style="opacity: 0.5; cursor: not-allowed;">
                         <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
                         <span>Login com o Facebook</span>
                       </button>
                     </div>
                     <div class="flex-row">
                       <div>
-                        <button class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <button
+                          class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                          disabled style="opacity: 0.5; cursor: not-allowed;">
                           <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
                           <span>Login com o GitHub</span>
                         </button>
@@ -534,6 +582,297 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal Termos e Condições -->
+<div class="modal fade" id="termosModal" tabindex="-1" aria-labelledby="termosModalLabel" aria-hidden="true"
+  data-bs-backdrop="true" data-bs-keyboard="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termosModalLabel">Termos e Condições</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <h6>1. Aceitação dos Termos</h6>
+        <p>Ao acessar e usar o Bagunça, você concorda em cumprir estes termos e condições de uso. Se você não concordar
+          com qualquer parte destes termos, não deve usar nosso serviço.</p>
+
+        <h6>2. Descrição do Serviço</h6>
+        <p>O Bagunça é uma plataforma de gerenciamento de tarefas e projetos que utiliza o sistema Kanban para
+          organização e acompanhamento de atividades.</p>
+
+        <h6>3. Conta de Usuário</h6>
+        <p>Para usar nossos serviços, você deve criar uma conta fornecendo informações precisas e atualizadas. Você é
+          responsável por manter a confidencialidade de sua senha e por todas as atividades que ocorrem em sua conta.
+        </p>
+
+        <h6>4. Uso Aceitável</h6>
+        <p>Você concorda em usar o serviço apenas para fins legais e de acordo com estes termos. É proibido:</p>
+        <ul>
+          <li>Usar o serviço para atividades ilegais ou não autorizadas</li>
+          <li>Interferir ou interromper o serviço ou servidores</li>
+          <li>Tentar obter acesso não autorizado ao sistema</li>
+          <li>Transmitir vírus ou códigos maliciosos</li>
+        </ul>
+
+        <h6>5. Propriedade Intelectual</h6>
+        <p>O conteúdo, recursos e funcionalidades do Bagunça são propriedade da empresa e são protegidos por direitos
+          autorais, marcas registradas e outras leis de propriedade intelectual.</p>
+
+        <h6>6. Limitação de Responsabilidade</h6>
+        <p>O Bagunça não será responsável por danos diretos, indiretos, incidentais, especiais ou consequenciais
+          resultantes do uso ou incapacidade de usar o serviço.</p>
+
+        <h6>7. Modificações</h6>
+        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Política de Privacidade -->
+<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
+  data-bs-backdrop="true" data-bs-keyboard="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <h6>1. Informações que Coletamos</h6>
+        <p>Coletamos informações que você nos fornece diretamente, como:</p>
+        <ul>
+          <li>Nome completo e endereço de email</li>
+          <li>Informações de perfil</li>
+          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
+          <li>Informações de uso e navegação</li>
+        </ul>
+
+        <h6>2. Como Usamos suas Informações</h6>
+        <p>Utilizamos suas informações para:</p>
+        <ul>
+          <li>Fornecer e melhorar nossos serviços</li>
+          <li>Personalizar sua experiência</li>
+          <li>Comunicar-nos com você sobre o serviço</li>
+          <li>Garantir a segurança da plataforma</li>
+          <li>Cumprir obrigações legais</li>
+        </ul>
+
+        <h6>3. Compartilhamento de Informações</h6>
+        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
+        <ul>
+          <li>Com seu consentimento explícito</li>
+          <li>Para cumprir obrigações legais</li>
+          <li>Para proteger nossos direitos e segurança</li>
+          <li>Com provedores de serviços que nos auxiliam</li>
+        </ul>
+
+        <h6>4. Segurança dos Dados</h6>
+        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+
+        <h6>5. Seus Direitos</h6>
+        <p>Você tem o direito de:</p>
+        <ul>
+          <li>Acessar suas informações pessoais</li>
+          <li>Corrigir dados incorretos</li>
+          <li>Solicitar a exclusão de seus dados</li>
+          <li>Portabilidade dos dados</li>
+          <li>Retirar seu consentimento</li>
+        </ul>
+
+        <h6>6. Cookies</h6>
+        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
+
+        <h6>7. Alterações na Política</h6>
+        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>ões</h6>
+        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Política de Privacidade -->
+<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
+  data-bs-backdrop="true" data-bs-keyboard="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <h6>1. Informações que Coletamos</h6>
+        <p>Coletamos informações que você nos fornece diretamente, como:</p>
+        <ul>
+          <li>Nome completo e endereço de email</li>
+          <li>Informações de perfil</li>
+          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
+          <li>Informações de uso e navegação</li>
+        </ul>
+
+        <h6>2. Como Usamos suas Informações</h6>
+        <p>Utilizamos suas informações para:</p>
+        <ul>
+          <li>Fornecer e melhorar nossos serviços</li>
+          <li>Personalizar sua experiência</li>
+          <li>Comunicar-nos com você sobre o serviço</li>
+          <li>Garantir a segurança da plataforma</li>
+          <li>Cumprir obrigações legais</li>
+        </ul>
+
+        <h6>3. Compartilhamento de Informações</h6>
+        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
+        <ul>
+          <li>Com seu consentimento explícito</li>
+          <li>Para cumprir obrigações legais</li>
+          <li>Para proteger nossos direitos e segurança</li>
+          <li>Com provedores de serviços que nos auxiliam</li>
+        </ul>
+
+        <h6>4. Segurança dos Dados</h6>
+        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+
+        <h6>5. Seus Direitos</h6>
+        <p>Você tem o direito de:</p>
+        <ul>
+          <li>Acessar suas informações pessoais</li>
+          <li>Corrigir dados incorretos</li>
+          <li>Solicitar a exclusão de seus dados</li>
+          <li>Portabilidade dos dados</li>
+          <li>Retirar seu consentimento</li>
+        </ul>
+
+        <h6>6. Cookies</h6>
+        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
+
+        <h6>7. Alterações na Política</h6>
+        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>ões</h6>
+        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>ões</h6>
+        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor
+          imediatamente após a publicação.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Política de Privacidade -->
+<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
+  data-bs-backdrop="true" data-bs-keyboard="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <h6>1. Informações que Coletamos</h6>
+        <p>Coletamos informações que você nos fornece diretamente, como:</p>
+        <ul>
+          <li>Nome completo e endereço de email</li>
+          <li>Informações de perfil</li>
+          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
+          <li>Informações de uso e navegação</li>
+        </ul>
+
+        <h6>2. Como Usamos suas Informações</h6>
+        <p>Utilizamos suas informações para:</p>
+        <ul>
+          <li>Fornecer e melhorar nossos serviços</li>
+          <li>Personalizar sua experiência</li>
+          <li>Comunicar-nos com você sobre o serviço</li>
+          <li>Garantir a segurança da plataforma</li>
+          <li>Cumprir obrigações legais</li>
+        </ul>
+
+        <h6>3. Compartilhamento de Informações</h6>
+        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
+        <ul>
+          <li>Com seu consentimento explícito</li>
+          <li>Para cumprir obrigações legais</li>
+          <li>Para proteger nossos direitos e segurança</li>
+          <li>Com provedores de serviços que nos auxiliam</li>
+        </ul>
+
+        <h6>4. Segurança dos Dados</h6>
+        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+
+        <h6>5. Seus Direitos</h6>
+        <p>Você tem o direito de:</p>
+        <ul>
+          <li>Acessar suas informações pessoais</li>
+          <li>Corrigir dados incorretos</li>
+          <li>Solicitar a exclusão de seus dados</li>
+          <li>Portabilidade dos dados</li>
+          <li>Retirar seu consentimento</li>
+        </ul>
+
+        <h6>6. Cookies</h6>
+        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
+
+        <h6>7. Alterações na Política</h6>
+        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
+
+        <h6>8. Contato</h6>
+        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
   </div>
 </div>
 </body>
