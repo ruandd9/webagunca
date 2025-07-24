@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +26,8 @@
         </button>
 
         <!-- Sidebar -->
-        <div id="sidebar" class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
+        <div id="sidebar"
+            class="transform -translate-x-full md:translate-x-0 fixed md:relative w-64 bg-gray-800 p-4 h-full transition-transform duration-200 ease-in-out z-40">
             <div class="flex items-center mb-8">
                 <div class="p-2 rounded">
                     <img src="../src/img/logoBag.png" alt="Logo Bagunça" class="w-8 h-8">
@@ -74,7 +76,9 @@
                     </div>
                     <div class="flex items-center space-x-4 relative">
                         <div class="dropdown">
-                            <div id="userInitials" class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center" style="width: 40px; height: 40px; text-align: center;"></div>
+                            <div id="userInitials"
+                                class="bg-blue-500 text-white p-2 rounded-full cursor-pointer flex items-center justify-center"
+                                style="width: 40px; height: 40px; text-align: center;"></div>
                             <div class="dropdown-content">
                                 <h3 class="text-lg mb-2">Profile</h3>
                                 <a href="./perfil1.html">Ver Perfil</a>
@@ -95,34 +99,42 @@
                 <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
                     <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:space-x-8">
                         <div class="relative">
-                            <img src="../src/img/image.png" alt="Profile picture" id="profileImage" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover">
-                            <label for="imageUpload" class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer">
+                            <img src="../src/img/image.png" alt="Profile picture" id="profileImage"
+                                class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover">
+                            <label for="imageUpload"
+                                class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer">
                                 <i class="fas fa-camera"></i>
                             </label>
-                            <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <input type="file" id="imageUpload" accept="image/*" class="hidden"
+                                onchange="handleImageUpload(event)">
                         </div>
 
                         <div class="flex-1 w-full">
-                            <h2 class="text-xl md:text-2xl font-bold mb-4 text-center md:text-left">Informações do Perfil</h2>
+                            <h2 class="text-xl md:text-2xl font-bold mb-4 text-center md:text-left">Informações do
+                                Perfil</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm text-gray-400 mb-1">Nome</label>
-                                        <input type="text" id="nomeCompleto" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                        <input type="text" id="nomeCompleto"
+                                            class="w-full bg-gray-700 rounded px-4 py-2 text-white">
                                     </div>
                                     <div>
                                         <label class="block text-sm text-gray-400 mb-1">Nome de usuário</label>
-                                        <input type="text" id="nomeUsuario" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                        <input type="text" id="nomeUsuario"
+                                            class="w-full bg-gray-700 rounded px-4 py-2 text-white">
                                     </div>
                                 </div>
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm text-gray-400 mb-1">Email</label>
-                                        <input type="email" id="email" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                        <input type="email" id="email"
+                                            class="w-full bg-gray-700 rounded px-4 py-2 text-white">
                                     </div>
                                     <div>
                                         <label class="block text-sm text-gray-400 mb-1">Telefone</label>
-                                        <input type="tel" id="telefone" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+                                        <input type="tel" id="telefone"
+                                            class="w-full bg-gray-700 rounded px-4 py-2 text-white">
                                     </div>
                                 </div>
                             </div>
@@ -172,13 +184,16 @@
                 <div class="bg-gray-800 rounded-lg p-4 md:p-8 mb-8">
                     <h2 class="text-xl md:text-2xl font-bold mb-6">Tema</h2>
                     <div class="flex flex-wrap gap-4">
-                        <button class="theme-button w-12 h-12 rounded-full bg-gray-900 ring-2 ring-blue-500" data-theme="dark" onclick="changeTheme('dark')">
+                        <button class="theme-button w-12 h-12 rounded-full bg-gray-900 ring-2 ring-blue-500"
+                            data-theme="dark" onclick="changeTheme('dark')">
                             <span class="sr-only">Tema Escuro</span>
                         </button>
-                        <button class="theme-button w-12 h-12 rounded-full bg-white" data-theme="light" onclick="changeTheme('light')">
+                        <button class="theme-button w-12 h-12 rounded-full bg-white" data-theme="light"
+                            onclick="changeTheme('light')">
                             <span class="sr-only">Tema Claro</span>
                         </button>
-                        <button class="theme-button w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" data-theme="colorful" onclick="changeTheme('colorful')">
+                        <button class="theme-button w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
+                            data-theme="colorful" onclick="changeTheme('colorful')">
                             <span class="sr-only">Tema Colorido</span>
                         </button>
                     </div>
@@ -186,10 +201,12 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col md:flex-row gap-4 justify-end">
-                    <button class="px-6 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors w-full md:w-auto">
+                    <button
+                        class="px-6 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors w-full md:w-auto">
                         Cancelar
                     </button>
-                    <button class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-full md:w-auto">
+                    <button
+                        class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-full md:w-auto">
                         Salvar Alterações
                     </button>
                 </div>
@@ -203,7 +220,7 @@
     <script src="../src/js/features/themes/themeManager.js"></script>
     <script>
         // Toggle mobile menu
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
         });
@@ -246,10 +263,10 @@
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const imageData = e.target.result;
                     document.getElementById('profileImage').src = imageData;
-                    
+
                     // Salvar a imagem no localStorage
                     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
                     userData.profileImage = imageData;
@@ -270,7 +287,7 @@
 
             // Obter os valores dos checkboxes
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            
+
             // Criar objeto com os dados atualizados
             const formData = {
                 nomeCompleto: nomeCompleto,
@@ -292,16 +309,16 @@
 
             // Salvar no localStorage
             localStorage.setItem('userData', JSON.stringify(formData));
-            
+
             // Atualizar iniciais do usuário
             updateUserInitials();
-            
+
             // Feedback visual
             const saveButton = document.querySelector('button.bg-blue-500');
             const originalText = saveButton.textContent;
             saveButton.textContent = 'Salvo!';
             saveButton.classList.add('bg-green-500');
-            
+
             setTimeout(() => {
                 saveButton.textContent = originalText;
                 saveButton.classList.remove('bg-green-500');
@@ -311,12 +328,12 @@
         // Função para mudar o tema
         function changeTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            
+
             // Atualizar logo baseado no tema (se a função global existir)
             if (window.updateLogo) {
                 window.updateLogo(theme);
             }
-            
+
             // Atualizar visual dos botões de tema
             document.querySelectorAll('.theme-button').forEach(button => {
                 if (button.getAttribute('data-theme') === theme) {
@@ -335,7 +352,7 @@
         // Carregar dados quando a página carregar
         document.addEventListener('DOMContentLoaded', () => {
             loadUserData();
-            
+
             // Adicionar evento de clique ao botão de salvar
             const saveButton = document.querySelector('button.bg-blue-500');
             if (saveButton) {
@@ -356,4 +373,5 @@
         });
     </script>
 </body>
+
 </html>
