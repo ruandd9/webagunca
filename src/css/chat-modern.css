@@ -500,48 +500,6 @@ body {
     background-color: var(--accent-hover);
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .chat-container {
-        grid-template-columns: 1fr;
-        height: 100vh;
-        position: relative; /* Adicionado para posicionamento absoluto dos filhos */
-    }
-
-    #chatContactSidebar,
-    #chatConversationArea {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    #chatContactSidebar {
-        transform: translateX(0%); /* Visível por padrão em mobile */
-        z-index: 20;
-    }
-
-    #chatConversationArea {
-        transform: translateX(100%); /* Escondido por padrão em mobile */
-        z-index: 10;
-    }
-
-    body.show-chat-conversation #chatContactSidebar {
-        transform: translateX(-100%);
-    }
-
-    body.show-chat-conversation #chatConversationArea {
-        transform: translateX(0%);
-        z-index: 30; /* Garante que a conversa esteja acima */
-    }
-
-    .chat-sidebar.md\:block {
-        display: block; /* Garante que a sidebar do chat esteja visível em telas maiores */
-    }
-}
-
 /* Container de mensagem com avatar */
 .message-wrapper {
     display: flex;
@@ -570,55 +528,6 @@ body {
     margin-top: 8px;
 }
 
-/* Ajustes responsivos */
-@media (max-width: 768px) {
-    .message-wrapper {
-        margin: 6px 0;
-        gap: 8px;
-    }
-
-    .message-wrapper + .message-wrapper.outgoing,
-    .message-wrapper + .message-wrapper.incoming {
-        margin-top: 12px;
-    }
-
-    .message {
-        padding: 8px 12px;
-    }
-
-    .message-content {
-        font-size: 0.9375rem;
-        line-height: 1.4;
-    }
-
-    .message-time {
-        font-size: 0.6875rem;
-        margin-top: 4px;
-    }
-
-    .message-avatar {
-        width: 28px;
-        height: 28px;
-        font-size: 0.8125rem;
-    }
-}
-
-/* Ajustes para telas muito pequenas */
-@media (max-width: 480px) {
-    .message-wrapper {
-        margin: 8px 0;
-        gap: 10px;
-    }
-
-    .message-wrapper + .message-wrapper.outgoing,
-    .message-wrapper + .message-wrapper.incoming {
-        margin-top: 16px;
-    }
-
-    .messages-container {
-        padding: 16px 12px;
-    }
-}
 
 /* Avatar da mensagem */
 .message-avatar {
@@ -669,8 +578,76 @@ body {
     font-size: 1rem;
 }
 
-/* Ajuste responsivo para o botão */
+
+/* --- RESPONSIVIDADE --- */
+
+/* Telas de tablet e mobile (geral) */
 @media (max-width: 768px) {
+    .chat-container {
+        grid-template-columns: 1fr;
+        height: 100vh;
+        position: relative;
+    }
+
+    #chatContactSidebar,
+    #chatConversationArea {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #chatContactSidebar {
+        transform: translateX(0%);
+        z-index: 20;
+    }
+
+    #chatConversationArea {
+        transform: translateX(100%);
+        z-index: 10;
+    }
+
+    body.show-chat-conversation #chatContactSidebar {
+        transform: translateX(-100%);
+    }
+
+    body.show-chat-conversation #chatConversationArea {
+        transform: translateX(0%);
+        z-index: 30;
+    }
+
+    .message-wrapper {
+        margin: 6px 0;
+        gap: 8px;
+    }
+
+    .message-wrapper + .message-wrapper.outgoing,
+    .message-wrapper + .message-wrapper.incoming {
+        margin-top: 12px;
+    }
+
+    .message {
+        padding: 8px 12px;
+    }
+
+    .message-content {
+        font-size: 0.9375rem;
+        line-height: 1.4;
+    }
+
+    .message-time {
+        font-size: 0.6875rem;
+        margin-top: 4px;
+    }
+
+    .message-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8125rem;
+    }
+    
     .add-contact-button {
         padding: 12px;
     }
@@ -678,4 +655,54 @@ body {
     .add-contact-button button {
         padding: 10px 14px;
     }
-} 
+}
+
+/* Telas pequenas */
+@media (max-width: 480px) {
+    .message-wrapper {
+        margin: 8px 0;
+        gap: 10px;
+    }
+
+    .message-wrapper + .message-wrapper.outgoing,
+    .message-wrapper + .message-wrapper.incoming {
+        margin-top: 16px;
+    }
+
+    .messages-container {
+        padding: 16px 12px;
+    }
+}
+
+/* Ajustes finos para Xiaomi Mi 8 Lite e telas similares */
+@media (max-width: 412px) {
+    /* Reduz espaçamento na lista de contatos para caber mais informação */
+    .contact-item {
+        padding: 18px 16px;
+        gap: 10px;
+    }
+
+    /* Reduz o tamanho do avatar na lista de contatos */
+    .contact-avatar {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Reduz espaçamento nos cabeçalhos */
+    .chat-header,
+    .chat-sidebar-header {
+        gap: 8px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* Otimiza a área de digitação */
+    .chat-input-area {
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .send-button {
+        padding: 10px;
+    }
+}

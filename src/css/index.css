@@ -454,6 +454,29 @@ footer {
   }
 }
 
+/* Responsividade para Xiaomi Mi 8 Lite e telas similares */
+@media (max-width: 412px) {
+  .header-home ul {
+    gap: 0.5rem; /* Reduz o espaçamento no header */
+    justify-content: space-around;
+  }
+
+  .text-content-homepage {
+    margin-top: 5vh;
+  }
+
+  .text-content-homepage h1 {
+    font-size: 60px; /* Ajuste fino para telas mais estreitas */
+    letter-spacing: -1.5px;
+    transform: scaleX(1);
+  }
+
+  .text-content-homepage h2 {
+    font-size: 1.2rem;
+  }
+}
+
+
 /* geral */
 @media (min-width: 1024px) {
   footer .flex {

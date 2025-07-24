@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
@@ -13,15 +13,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-  <title>inicial-page</title>
+  <title>Bagunça - Organize sua vida</title>
   <style>
     html {
       scroll-behavior: smooth;
-      /* Ajuste o valor abaixo para a altura do seu header fixo */
       scroll-padding-top: 80px;
     }
     
-    /* Garantir que o backdrop dos modais funcione corretamente */
     .modal-backdrop {
       background-color: rgba(0, 0, 0, 0.5) !important;
       z-index: 1040 !important;
@@ -31,7 +29,6 @@
       z-index: 1050 !important;
     }
     
-    /* Garantir que os modais de termos e privacidade tenham o backdrop correto */
     #termosModal.modal,
     #privacidadeModal.modal {
       background-color: rgba(0, 0, 0, 0.5);
@@ -92,7 +89,6 @@
 
   <main>
     <section id="inicio" class="hero-section relative min-h-screen flex items-center justify-center">
-
       <div class="hero-background">
         <div class="hero-gradient"></div>
         <div class="floating-elements">
@@ -103,11 +99,8 @@
         <div class="particles" id="particles"></div>
         <div class="glow-effect" style="top: 20%; left: 30%;"></div>
         <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
-        <div class="particles" id="particles"></div>
-        <div class="glow-effect" style="top: 20%; left: 30%;"></div>
-        <div class="glow-effect" style="bottom: 20%; right: 30%;"></div>
       </div>
-      <div class=" bg-gradient-to-r from-purple-900/50 to-blue-900/50"></div>
+      <div class="bg-gradient-to-r from-purple-900/50 to-blue-900/50"></div>
       <div class="relative z-10 text-center px-4">
         <div class="text-content-homepage">
           <div class="text-content-homepage-header text-white">
@@ -247,6 +240,376 @@
       </div>
     </section>
   </main>
+
+  <footer id="contato" class="relative my-5">
+    <div class="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-purple-900/50 to-blue-900/30 backdrop-blur-sm">
+    </div>
+    <div class="relative max-w-screen-xl mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center mb-4">
+            <img src="./src/img/logo-bagunca.svg" class="h-8 mr-3" alt="Logo Bagunça" />
+          </div>
+          <p class="text-gray-200 mb-4">
+            Organize suas tarefas e projetos de forma simples e eficiente.
+            Transforme o caos em ordem com nosso sistema de Kanban.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-200 hover:text-white transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-200 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-200 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-200 hover:text-white transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-white">Links Rápidos</h3>
+          <ul class="space-y-2">
+            <li><a href="#inicio" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
+            <li><a href="#sobre" class="text-gray-200 hover:text-white transition-colors">Sobre</a></li>
+            <li><a href="#recursos" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
+            <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-white">Contato</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center text-gray-200">
+              <i class="fas fa-envelope mr-2"></i>
+              contato@bagunca.com
+            </li>
+            <li class="flex items-center text-gray-200">
+              <i class="fas fa-phone mr-2"></i>
+              (61) 99999-9999
+            </li>
+            <li class="flex items-center text-gray-200">
+              <i class="fas fa-map-marker-alt mr-2"></i>
+              Brasilia, DF
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="my-8 border-gray-400" />
+
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-gray-200 text-sm">
+          © 2024 <a href="#" class="hover:text-white transition-colors">Bagunça™</a>. Todos os direitos reservados.
+        </div>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="./public/termos-condicoes.html" target="_blank" class="text-gray-200 hover:text-white transition-colors text-sm">Termos de Uso</a>
+          <a href="./public/politica-privacidade.html" target="_blank" class="text-gray-200 hover:text-white transition-colors text-sm">Política de Privacidade</a>
+          <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Login -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="form modal-content" id="loginForm">
+        <div class="d-flex flex-column mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
+            <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <legend class="fw-bold-5 h3">Login</legend>
+        </div>
+        <div class="">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label for="loginSenha">Senha</label>
+            <input type="password" id="loginSenha" class="form-control" required>
+          </div>
+
+          <button type="submit" class="button-submit">Entrar</button>
+          <p class="p mb-3">Ou</p>
+          <div class="flex-row">
+            <div>
+              <button
+                class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
+                disabled style="opacity: 0.5; cursor: not-allowed;">
+                <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
+                <span>Login com o Google</span>
+              </button>
+            </div>
+            <div class="flex-row">
+              <div>
+                <button
+                  class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                  disabled style="opacity: 0.5; cursor: not-allowed;">
+                  <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
+                  <span>Login com o Facebook</span>
+                </button>
+              </div>
+              <div class="flex-row">
+                <div>
+                  <button
+                    class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                    disabled style="opacity: 0.5; cursor: not-allowed;">
+                    <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
+                    <span>Login com o GitHub</span>
+                  </button>
+                </div>
+                <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Cadastro -->
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="form modal-content" id="cadastroForm">
+        <div class="d-flex flex-column mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
+            <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <legend class="fw-bold-5 h3">Cadastro</legend>
+        </div>
+        <div class="">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" class="form-control" required>
+          </div>
+
+          <div class="">
+            <div class="form-group">
+              <label for="nomeCompleto">Nome completo</label>
+              <input type="text" id="nomeCompleto" class="form-control" required>
+            </div>
+
+            <div class="">
+              <div class="form-group">
+                <label for="senha">Criar senha</label>
+                <input type="password" id="senha" class="form-control" required>
+              </div>
+
+              <div class="">
+                <div class="form-group">
+                  <label for="confirmarSenha">Confirmar senha</label>
+                  <input type="password" id="confirmarSenha" class="form-control" required>
+                </div>
+
+                <div>
+                  <div>
+                    <label class="checkbox-container">
+                      <input class="custom-checkbox" type="checkbox" id="termos" required>
+                      <span class="checkmark"></span>
+                      <p class="termos-servicos">Eu concordo com os <b><u><a href="#" data-bs-toggle="modal"
+                              data-bs-target="#termosModal" style="color: inherit; text-decoration: underline;">termos &
+                              condições</a></u></b> e a <b><u><a href="#" data-bs-toggle="modal"
+                              data-bs-target="#privacidadeModal"
+                              style="color: inherit; text-decoration: underline;">política de privacidade</a></u></b></p>
+                    </label>
+                  </div>
+
+                  <button type="submit" class="button-submit">Criar conta</button>
+                  <p class="p mb-3">Ou</p>
+                  <div class="flex-row">
+                    <div>
+                      <button
+                        class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
+                        disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
+                        <span>Login com o Google</span>
+                      </button>
+                    </div>
+                    <div class="flex-row">
+                      <div>
+                        <button
+                          class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                          disabled style="opacity: 0.5; cursor: not-allowed;">
+                          <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
+                          <span>Login com o Facebook</span>
+                        </button>
+                      </div>
+                      <div class="flex-row">
+                        <div>
+                          <button
+                            class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
+                            disabled style="opacity: 0.5; cursor: not-allowed;">
+                            <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
+                            <span>Login com o GitHub</span>
+                          </button>
+                        </div>
+                        <p class="p">Ja tem uma conta? <span class="span"><b>Fazer login</b></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Termos e Condições -->
+  <div class="modal fade" id="termosModal" tabindex="-1" aria-labelledby="termosModalLabel" aria-hidden="true"
+    data-bs-backdrop="true" data-bs-keyboard="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="termosModalLabel">Termos e Condições</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+          <div style="background-color: #e3f2fd; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+            <strong>📋 Conformidade LGPD:</strong> Estes termos estão em total conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
+          </div>
+
+          <h6>1. Aceitação dos Termos</h6>
+          <p>Ao acessar e utilizar a plataforma Bagunça, você concorda em cumprir estes Termos e Condições de Uso. Se não concordar, não utilize nosso serviço.</p>
+
+          <h6>2. Descrição do Serviço</h6>
+          <p>O Bagunça é uma plataforma digital de gerenciamento de tarefas e projetos que utiliza metodologia Kanban para organização, acompanhamento e colaboração.</p>
+
+          <h6>3. Cadastro e Proteção de Dados</h6>
+          <p>Para utilizar nossos serviços, você deve:</p>
+          <ul>
+            <li>Ter pelo menos 18 anos ou consentimento dos responsáveis</li>
+            <li>Fornecer informações verdadeiras e atualizadas</li>
+            <li>Manter confidencialidade de suas credenciais</li>
+          </ul>
+          <p><strong>Dados coletados:</strong> Nome, e-mail, senha criptografada (conforme nossa Política de Privacidade).</p>
+
+          <h6>4. Uso Aceitável</h6>
+          <p>É expressamente proibido:</p>
+          <ul>
+            <li>Utilizar para atividades ilegais ou não autorizadas</li>
+            <li>Compartilhar conteúdo ofensivo ou discriminatório</li>
+            <li>Tentar acesso não autorizado ao sistema</li>
+            <li>Interferir no funcionamento do serviço</li>
+            <li>Transmitir vírus ou códigos maliciosos</li>
+          </ul>
+
+          <h6>5. Seus Direitos (LGPD)</h6>
+          <p>Conforme a LGPD, você tem direito a:</p>
+          <ul>
+            <li>Acessar e corrigir seus dados pessoais</li>
+            <li>Solicitar exclusão de dados desnecessários</li>
+            <li>Portabilidade dos dados</li>
+            <li>Revogar consentimento</li>
+          </ul>
+
+          <h6>6. Propriedade Intelectual</h6>
+          <p>Todos os direitos sobre o Bagunça (código, design, marca) são protegidos por leis de propriedade intelectual.</p>
+
+          <h6>7. Limitação de Responsabilidade</h6>
+          <p>O Bagunça não será responsável por danos diretos, indiretos ou consequenciais, perda de dados ou interrupções do serviço.</p>
+
+          <h6>8. Contato</h6>
+          <p><strong>Jurídico:</strong> juridico@bagunca.com | <strong>DPO:</strong> dpo@bagunca.com</p>
+          
+          <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px; margin-top: 1rem;">
+            <small><strong>Versão completa:</strong> <a href="./public/termos-condicoes.html" target="_blank">Clique aqui para ler os Termos completos</a></small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Política de Privacidade -->
+  <div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
+    data-bs-backdrop="true" data-bs-keyboard="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+          <div style="background-color: #e3f2fd; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+            <strong>🛡️ Conformidade LGPD:</strong> Esta política está em total conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018).
+          </div>
+
+          <h6>1. Controlador e DPO</h6>
+          <p><strong>Controlador:</strong> Bagunça Tecnologia Ltda.</p>
+          <p><strong>DPO:</strong> dpo@bagunca.com | (61) 99999-9998</p>
+
+          <h6>2. Dados Coletados e Bases Legais</h6>
+          <p><strong>Dados essenciais (execução de contrato):</strong></p>
+          <ul>
+            <li>Nome completo e e-mail (autenticação)</li>
+            <li>Senha criptografada (segurança)</li>
+          </ul>
+          <p><strong>Dados opcionais (consentimento):</strong></p>
+          <ul>
+            <li>Foto de perfil, preferências</li>
+            <li>Dados de marketing (opt-in)</li>
+          </ul>
+
+          <h6>3. Finalidades do Tratamento</h6>
+          <ul>
+            <li>Prestação do serviço Kanban</li>
+            <li>Autenticação e segurança</li>
+            <li>Comunicações essenciais</li>
+            <li>Suporte técnico</li>
+            <li>Melhoria do serviço (legítimo interesse)</li>
+          </ul>
+
+          <h6>4. Não Compartilhamento</h6>
+          <p><strong>Não vendemos, alugamos ou comercializamos seus dados.</strong></p>
+          <p>Compartilhamento limitado apenas para:</p>
+          <ul>
+            <li>Prestadores de serviço (hospedagem)</li>
+            <li>Obrigação legal</li>
+            <li>Com seu consentimento expresso</li>
+          </ul>
+
+          <h6>5. Seus Direitos (Art. 18 LGPD)</h6>
+          <ul>
+            <li><strong>Acesso:</strong> Confirmar e acessar seus dados</li>
+            <li><strong>Correção:</strong> Corrigir dados inexatos</li>
+            <li><strong>Eliminação:</strong> Excluir dados desnecessários</li>
+            <li><strong>Portabilidade:</strong> Receber dados estruturados</li>
+            <li><strong>Revogação:</strong> Retirar consentimento</li>
+          </ul>
+
+          <h6>6. Segurança e Retenção</h6>
+          <p><strong>Medidas:</strong> Criptografia, acesso restrito, monitoramento</p>
+          <p><strong>Retenção:</strong> Dados mantidos enquanto conta ativa</p>
+
+          <h6>7. Exercer Direitos</h6>
+          <p><strong>Contato:</strong> direitos@bagunca.com | Resposta em 15 dias</p>
+          <p><strong>ANPD:</strong> www.gov.br/anpd</p>
+
+          <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 5px; margin-top: 1rem;">
+            <small><strong>Versão completa:</strong> <a href="./public/politica-privacidade.html" target="_blank">Clique aqui para ler a Política completa</a></small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="./src/js/ui/index.js"></script>
   <script src="./src/js/ui/particles.js"></script>
   <script src="./src/js/features/auth/auth.js"></script>
@@ -260,14 +623,12 @@
           mobileMenu.classList.toggle('hidden');
         });
 
-        // Fechar o menu quando clicar fora
         document.addEventListener('click', function (event) {
           if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
             mobileMenu.classList.add('hidden');
           }
         });
 
-        // Fechar o menu ao clicar em um link
         mobileMenu.addEventListener('click', function (event) {
           if (event.target.tagName === 'A') {
             mobileMenu.classList.add('hidden');
@@ -284,7 +645,6 @@
 
         try {
           const userData = auth.loginUser(email, senha);
-          // Redirecionar para a página do board após login bem-sucedido
           window.location.href = './public/board-page.html';
         } catch (error) {
           alert(error.message);
@@ -302,31 +662,26 @@
         const termos = document.getElementById('termos').checked;
 
         try {
-          // Validar senhas
           if (senha !== confirmarSenha) {
             throw new Error('As senhas não coincidem');
           }
 
-          // Validar termos
           if (!termos) {
             throw new Error('Você precisa aceitar os termos e condições');
           }
 
-          // Registrar usuário
           const userData = auth.registerUser(email, nomeCompleto, senha);
 
-          // Fechar modal de cadastro
           const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
           registerModal.hide();
 
-          // Redirecionar para a página do board
           window.location.href = './public/board-page.html';
         } catch (error) {
           alert(error.message);
         }
       });
 
-      // Adicionar link para login no texto de cadastro
+      // Links entre modais
       document.querySelector('#registerModal .p .span').addEventListener('click', function () {
         const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
         registerModal.hide();
@@ -334,7 +689,6 @@
         loginModal.show();
       });
 
-      // Adicionar link para cadastro no texto de login
       document.querySelector('#loginModal .p .span').addEventListener('click', function () {
         const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
         loginModal.hide();
@@ -347,534 +701,17 @@
       const privacidadeModal = document.getElementById('privacidadeModal');
       const registerModal = document.getElementById('registerModal');
 
-      // Quando o modal de termos for fechado, voltar para o cadastro
       termosModal.addEventListener('hidden.bs.modal', function () {
         const registerModalInstance = new bootstrap.Modal(registerModal);
         registerModalInstance.show();
       });
 
-      // Quando o modal de privacidade for fechado, voltar para o cadastro
       privacidadeModal.addEventListener('hidden.bs.modal', function () {
         const registerModalInstance = new bootstrap.Modal(registerModal);
         registerModalInstance.show();
       });
     });
   </script>
-</body>
-
-<footer id="contato" class="relative my-5">
-  <div class="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-purple-900/50 to-blue-900/30 backdrop-blur-sm">
-  </div>
-  <div class="relative max-w-screen-xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <div class="col-span-1 md:col-span-2">
-        <div class="flex items-center mb-4">
-          <img src="./src/img/logo-bagunca.svg" class="h-8 mr-3" alt="Logo Bagunça" />
-        </div>
-        <p class="text-gray-200 mb-4">
-          Organize suas tarefas e projetos de forma simples e eficiente.
-          Transforme o caos em ordem com nosso sistema de Kanban.
-        </p>
-        <div class="flex space-x-4">
-          <a href="#" class="text-gray-200 hover:text-white transition-colors">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" class="text-gray-200 hover:text-white transition-colors">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="#" class="text-gray-200 hover:text-white transition-colors">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" class="text-gray-200 hover:text-white transition-colors">
-            <i class="fab fa-linkedin-in"></i>
-          </a>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-semibold mb-4 text-white">Links Rápidos</h3>
-        <ul class="space-y-2">
-          <li><a href="#inicio" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
-          <li><a href="#sobre" class="text-gray-200 hover:text-white transition-colors">Sobre</a></li>
-          <li><a href="#recursos" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
-          <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-semibold mb-4 text-white">Contato</h3>
-        <ul class="space-y-2">
-          <li class="flex items-center text-gray-200">
-            <i class="fas fa-envelope mr-2"></i>
-            contato@bagunca.com
-          </li>
-          <li class="flex items-center text-gray-200">
-            <i class="fas fa-phone mr-2"></i>
-            (61) 99999-9999
-          </li>
-          <li class="flex items-center text-gray-200">
-            <i class="fas fa-map-marker-alt mr-2"></i>
-            Brasilia, DF
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <hr class="my-8 border-gray-400" />
-
-    <div class="flex flex-col md:flex-row justify-between items-center">
-      <div class="text-gray-200 text-sm">
-        © 2024 <a href="#" class="hover:text-white transition-colors">Bagunça™</a>. Todos os direitos reservados.
-      </div>
-      <div class="flex space-x-6 mt-4 md:mt-0">
-        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Termos de Uso</a>
-        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Política de Privacidade</a>
-        <a href="#" class="text-gray-200 hover:text-white transition-colors text-sm">Cookies</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="form modal-content" id="loginForm">
-      <div class="d-flex flex-column mb-2">
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
-          <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
-            aria-label="Close"></button>
-        </div>
-        <legend class="fw-bold-5 h3">Login</legend>
-      </div>
-      <div class="">
-        <div class="form-group">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-          <label for="loginSenha">Senha</label>
-          <input type="password" id="loginSenha" class="form-control" required>
-        </div>
-
-        <button type="submit" class="button-submit">Entrar</button>
-        <p class="p mb-3">Ou</p>
-        <div class="flex-row">
-          <div>
-            <button
-              class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
-              disabled style="opacity: 0.5; cursor: not-allowed;">
-              <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
-              <span>Login com o Google</span>
-            </button>
-          </div>
-          <div class="flex-row">
-            <div>
-              <button
-                class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
-                disabled style="opacity: 0.5; cursor: not-allowed;">
-                <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
-                <span>Login com o Facebook</span>
-              </button>
-            </div>
-            <div class="flex-row">
-              <div>
-                <button
-                  class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
-                  disabled style="opacity: 0.5; cursor: not-allowed;">
-                  <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
-                  <span>Login com o GitHub</span>
-                </button>
-              </div>
-              <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="form modal-content" id="cadastroForm">
-      <div class="d-flex flex-column mb-2">
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="fw-medium bem-vindo mb-0">BEM VINDO</p>
-          <button type="button" class="btn-close border-0 bg-transparent p-0" data-bs-dismiss="modal"
-            aria-label="Close"></button>
-        </div>
-        <legend class="fw-bold-5 h3">Cadastro</legend>
-      </div>
-      <div class="">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" class="form-control" required>
-        </div>
-
-        <div class="">
-          <div class="form-group">
-            <label for="nomeCompleto">Nome completo</label>
-            <input type="text" id="nomeCompleto" class="form-control" required>
-          </div>
-
-          <div class="">
-            <div class="form-group">
-              <label for="senha">Criar senha</label>
-              <input type="password" id="senha" class="form-control" required>
-            </div>
-
-            <div class="">
-              <div class="form-group">
-                <label for="confirmarSenha">Confirmar senha</label>
-                <input type="password" id="confirmarSenha" class="form-control" required>
-              </div>
-
-              <div>
-                <div>
-                  <label class="checkbox-container">
-                    <input class="custom-checkbox" type="checkbox" id="termos" required>
-                    <span class="checkmark"></span>
-                    <p class="termos-servicos">Eu concordo com os <b><u><a href="#" data-bs-toggle="modal"
-                            data-bs-target="#termosModal" style="color: inherit; text-decoration: underline;">termos &
-                            condições</a></u></b> e a <b><u><a href="#" data-bs-toggle="modal"
-                            data-bs-target="#privacidadeModal"
-                            style="color: inherit; text-decoration: underline;">política de privacidade</a></u></b></p>
-                  </label>
-                </div>
-
-                <button type="submit" class="button-submit">Criar conta</button>
-                <p class="p mb-3">Ou</p>
-                <div class="flex-row">
-                  <div>
-                    <button
-                      class="d-flex justify-center align-items-center gap-2 btn btn-outline-body shadow my-3 social-login-btn disabled"
-                      disabled style="opacity: 0.5; cursor: not-allowed;">
-                      <img src="src/img/icons-sign/icon-goooooogle.svg" alt="">
-                      <span>Login com o Google</span>
-                    </button>
-                  </div>
-                  <div class="flex-row">
-                    <div>
-                      <button
-                        class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
-                        disabled style="opacity: 0.5; cursor: not-allowed;">
-                        <img src="src/img/icons-sign/icon-facebaks.svg" alt="">
-                        <span>Login com o Facebook</span>
-                      </button>
-                    </div>
-                    <div class="flex-row">
-                      <div>
-                        <button
-                          class="d-flex justify-center align-items-center gap-2 btn btn-body shadow my-3 social-login-btn disabled"
-                          disabled style="opacity: 0.5; cursor: not-allowed;">
-                          <img src="src/img/icons-sign/icon-pornHub.svg" alt="">
-                          <span>Login com o GitHub</span>
-                        </button>
-                      </div>
-                      <p class="p">Ja tem uma conta? <span class="span"><b>Fazer login</b></span></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Modal Termos e Condições -->
-<div class="modal fade" id="termosModal" tabindex="-1" aria-labelledby="termosModalLabel" aria-hidden="true"
-  data-bs-backdrop="true" data-bs-keyboard="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="termosModalLabel">Termos e Condições</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-        <h6>1. Aceitação dos Termos</h6>
-        <p>Ao acessar e usar o Bagunça, você concorda em cumprir estes termos e condições de uso. Se você não concordar
-          com qualquer parte destes termos, não deve usar nosso serviço.</p>
-
-        <h6>2. Descrição do Serviço</h6>
-        <p>O Bagunça é uma plataforma de gerenciamento de tarefas e projetos que utiliza o sistema Kanban para
-          organização e acompanhamento de atividades.</p>
-
-        <h6>3. Conta de Usuário</h6>
-        <p>Para usar nossos serviços, você deve criar uma conta fornecendo informações precisas e atualizadas. Você é
-          responsável por manter a confidencialidade de sua senha e por todas as atividades que ocorrem em sua conta.
-        </p>
-
-        <h6>4. Uso Aceitável</h6>
-        <p>Você concorda em usar o serviço apenas para fins legais e de acordo com estes termos. É proibido:</p>
-        <ul>
-          <li>Usar o serviço para atividades ilegais ou não autorizadas</li>
-          <li>Interferir ou interromper o serviço ou servidores</li>
-          <li>Tentar obter acesso não autorizado ao sistema</li>
-          <li>Transmitir vírus ou códigos maliciosos</li>
-        </ul>
-
-        <h6>5. Propriedade Intelectual</h6>
-        <p>O conteúdo, recursos e funcionalidades do Bagunça são propriedade da empresa e são protegidos por direitos
-          autorais, marcas registradas e outras leis de propriedade intelectual.</p>
-
-        <h6>6. Limitação de Responsabilidade</h6>
-        <p>O Bagunça não será responsável por danos diretos, indiretos, incidentais, especiais ou consequenciais
-          resultantes do uso ou incapacidade de usar o serviço.</p>
-
-        <h6>7. Modificações</h6>
-        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Política de Privacidade -->
-<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
-  data-bs-backdrop="true" data-bs-keyboard="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-        <h6>1. Informações que Coletamos</h6>
-        <p>Coletamos informações que você nos fornece diretamente, como:</p>
-        <ul>
-          <li>Nome completo e endereço de email</li>
-          <li>Informações de perfil</li>
-          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
-          <li>Informações de uso e navegação</li>
-        </ul>
-
-        <h6>2. Como Usamos suas Informações</h6>
-        <p>Utilizamos suas informações para:</p>
-        <ul>
-          <li>Fornecer e melhorar nossos serviços</li>
-          <li>Personalizar sua experiência</li>
-          <li>Comunicar-nos com você sobre o serviço</li>
-          <li>Garantir a segurança da plataforma</li>
-          <li>Cumprir obrigações legais</li>
-        </ul>
-
-        <h6>3. Compartilhamento de Informações</h6>
-        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
-        <ul>
-          <li>Com seu consentimento explícito</li>
-          <li>Para cumprir obrigações legais</li>
-          <li>Para proteger nossos direitos e segurança</li>
-          <li>Com provedores de serviços que nos auxiliam</li>
-        </ul>
-
-        <h6>4. Segurança dos Dados</h6>
-        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
-
-        <h6>5. Seus Direitos</h6>
-        <p>Você tem o direito de:</p>
-        <ul>
-          <li>Acessar suas informações pessoais</li>
-          <li>Corrigir dados incorretos</li>
-          <li>Solicitar a exclusão de seus dados</li>
-          <li>Portabilidade dos dados</li>
-          <li>Retirar seu consentimento</li>
-        </ul>
-
-        <h6>6. Cookies</h6>
-        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
-
-        <h6>7. Alterações na Política</h6>
-        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-</body>
-
-</html>ões</h6>
-        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Política de Privacidade -->
-<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
-  data-bs-backdrop="true" data-bs-keyboard="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-        <h6>1. Informações que Coletamos</h6>
-        <p>Coletamos informações que você nos fornece diretamente, como:</p>
-        <ul>
-          <li>Nome completo e endereço de email</li>
-          <li>Informações de perfil</li>
-          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
-          <li>Informações de uso e navegação</li>
-        </ul>
-
-        <h6>2. Como Usamos suas Informações</h6>
-        <p>Utilizamos suas informações para:</p>
-        <ul>
-          <li>Fornecer e melhorar nossos serviços</li>
-          <li>Personalizar sua experiência</li>
-          <li>Comunicar-nos com você sobre o serviço</li>
-          <li>Garantir a segurança da plataforma</li>
-          <li>Cumprir obrigações legais</li>
-        </ul>
-
-        <h6>3. Compartilhamento de Informações</h6>
-        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
-        <ul>
-          <li>Com seu consentimento explícito</li>
-          <li>Para cumprir obrigações legais</li>
-          <li>Para proteger nossos direitos e segurança</li>
-          <li>Com provedores de serviços que nos auxiliam</li>
-        </ul>
-
-        <h6>4. Segurança dos Dados</h6>
-        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
-
-        <h6>5. Seus Direitos</h6>
-        <p>Você tem o direito de:</p>
-        <ul>
-          <li>Acessar suas informações pessoais</li>
-          <li>Corrigir dados incorretos</li>
-          <li>Solicitar a exclusão de seus dados</li>
-          <li>Portabilidade dos dados</li>
-          <li>Retirar seu consentimento</li>
-        </ul>
-
-        <h6>6. Cookies</h6>
-        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
-
-        <h6>7. Alterações na Política</h6>
-        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>ões</h6>
-        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>ões</h6>
-        <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor
-          imediatamente após a publicação.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para dúvidas sobre estes termos, entre em contato conosco em: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Política de Privacidade -->
-<div class="modal fade" id="privacidadeModal" tabindex="-1" aria-labelledby="privacidadeModalLabel" aria-hidden="true"
-  data-bs-backdrop="true" data-bs-keyboard="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="privacidadeModalLabel">Política de Privacidade</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-        <h6>1. Informações que Coletamos</h6>
-        <p>Coletamos informações que você nos fornece diretamente, como:</p>
-        <ul>
-          <li>Nome completo e endereço de email</li>
-          <li>Informações de perfil</li>
-          <li>Conteúdo que você cria (tarefas, projetos, comentários)</li>
-          <li>Informações de uso e navegação</li>
-        </ul>
-
-        <h6>2. Como Usamos suas Informações</h6>
-        <p>Utilizamos suas informações para:</p>
-        <ul>
-          <li>Fornecer e melhorar nossos serviços</li>
-          <li>Personalizar sua experiência</li>
-          <li>Comunicar-nos com você sobre o serviço</li>
-          <li>Garantir a segurança da plataforma</li>
-          <li>Cumprir obrigações legais</li>
-        </ul>
-
-        <h6>3. Compartilhamento de Informações</h6>
-        <p>Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto:</p>
-        <ul>
-          <li>Com seu consentimento explícito</li>
-          <li>Para cumprir obrigações legais</li>
-          <li>Para proteger nossos direitos e segurança</li>
-          <li>Com provedores de serviços que nos auxiliam</li>
-        </ul>
-
-        <h6>4. Segurança dos Dados</h6>
-        <p>Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações contra acesso não autorizado, alteração, divulgação ou destruição.</p>
-
-        <h6>5. Seus Direitos</h6>
-        <p>Você tem o direito de:</p>
-        <ul>
-          <li>Acessar suas informações pessoais</li>
-          <li>Corrigir dados incorretos</li>
-          <li>Solicitar a exclusão de seus dados</li>
-          <li>Portabilidade dos dados</li>
-          <li>Retirar seu consentimento</li>
-        </ul>
-
-        <h6>6. Cookies</h6>
-        <p>Utilizamos cookies para melhorar sua experiência, analisar o uso do site e personalizar conteúdo. Você pode controlar o uso de cookies através das configurações do seu navegador.</p>
-
-        <h6>7. Alterações na Política</h6>
-        <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas através do email ou da plataforma.</p>
-
-        <h6>8. Contato</h6>
-        <p>Para questões sobre privacidade, entre em contato: contato@bagunca.com</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
 </body>
 
 </html>
