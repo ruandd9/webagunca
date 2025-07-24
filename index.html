@@ -37,7 +37,7 @@
 </head>
 
 <body>
-  <header class="w-full z-50 fixed top-0 left-0 bg-indigo-400 backdrop-blur-md">
+  <header class="w-full z-50 top-0 left-0 bg-indigo-400 backdrop-blur-md">
     <div class="max-w-screen-xl mx-auto px-2 md:px-4">
       <div class="flex items-center justify-between h-20">
         <div class="flex items-center me-5">
@@ -85,7 +85,7 @@
         </div>
       </div>
     </div>
-  </header>
+</header>
 
   <main>
     <section id="inicio" class="hero-section relative min-h-screen flex items-center justify-center">
@@ -114,10 +114,11 @@
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center my-5">
             <a href="./public/board-page.html"
-              class="header-link bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors">
+              class="header-link bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors"
+              data-bs-toggle="modal" data-bs-target="#registerModal">
               Começar Agora
             </a>
-            <a href="./public/board-page.html"
+            <a href="#contato"
               class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-colors">
               Saiba Mais
             </a>
@@ -229,7 +230,8 @@
           o Bagunça.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="./public/board-page.html"
-            class="bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors">
+            class="bg-white text-purple-900 px-8 py-3 rounded-full font-semibold hover:bg-purple-100 transition-colors"
+            data-bs-toggle="modal" data-bs-target="#registerModal">
             Começar Agora
           </a>
           <a href="./public/board-page.html"
@@ -276,7 +278,8 @@
             <li><a href="#inicio" class="text-gray-200 hover:text-white transition-colors">Início</a></li>
             <li><a href="#sobre" class="text-gray-200 hover:text-white transition-colors">Sobre</a></li>
             <li><a href="#recursos" class="text-gray-200 hover:text-white transition-colors">Recursos</a></li>
-            <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li>
+            <!-- <li><a href="#" class="text-gray-200 hover:text-white transition-colors">Preços</a></li> -->
+             <!-- Por enquanto não adicionar link de preços -->
           </ul>
         </div>
 
@@ -285,11 +288,11 @@
           <ul class="space-y-2">
             <li class="flex items-center text-gray-200">
               <i class="fas fa-envelope mr-2"></i>
-              contato@bagunca.com
+              baguncasuporte@gmail.com
             </li>
             <li class="flex items-center text-gray-200">
               <i class="fas fa-phone mr-2"></i>
-              (61) 99999-9999
+              (61) 4002-8922
             </li>
             <li class="flex items-center text-gray-200">
               <i class="fas fa-map-marker-alt mr-2"></i>
@@ -303,7 +306,7 @@
 
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="text-gray-200 text-sm">
-          © 2024 <a href="#" class="hover:text-white transition-colors">Bagunça™</a>. Todos os direitos reservados.
+          © 2025 <a href="#" class="hover:text-white transition-colors">Bagunça™</a>. Todos os direitos reservados.
         </div>
         <div class="flex space-x-6 mt-4 md:mt-0">
           <a href="./public/termos-condicoes.html" target="_blank" class="text-gray-200 hover:text-white transition-colors text-sm">Termos de Uso</a>
@@ -366,7 +369,7 @@
                     <span>Login com o GitHub</span>
                   </button>
                 </div>
-                <p class="p">Não tem uma conta? <span class="span"><b>Fazer cadastro</b></span></p>
+                <p class="p">Não tem uma conta? <span class="span"><b style="cursor: pointer;">Fazer cadastro</b></span></p>
               </div>
             </div>
           </div>
@@ -453,7 +456,7 @@
                             <span>Login com o GitHub</span>
                           </button>
                         </div>
-                        <p class="p">Ja tem uma conta? <span class="span"><b>Fazer login</b></span></p>
+                        <p class="p">Ja tem uma conta? <span class="span"><b style="cursor: pointer;">Fazer login</b></span></p>
                       </div>
                     </div>
                   </div>
