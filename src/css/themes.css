@@ -127,3 +127,33 @@ button:not(.theme-button):not(.color-option) {
 button:hover:not(.theme-button):not(.color-option) {
     background-color: var(--bg-tertiary) !important;
 }
+
+/* Estilos específicos para botões de tema */
+.theme-button {
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.theme-button:hover {
+    transform: scale(1.05);
+}
+
+/* Garantir visibilidade das bordas dos botões de tema */
+:root[data-theme="light"] .theme-button[data-theme="dark"] {
+    border-color: #4B5563 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #374151 !important; /* Fundo cinza mais claro para melhor visibilidade */
+}
+
+:root[data-theme="dark"] .theme-button[data-theme="light"] {
+    border-color: #D1D5DB !important;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="colorful"] .theme-button[data-theme="dark"] {
+    border-color: #6B7280 !important;
+}
+
+:root[data-theme="colorful"] .theme-button[data-theme="light"] {
+    border-color: #E5E7EB !important;
+}
