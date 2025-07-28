@@ -652,8 +652,17 @@
         }
 
         // Função para abrir o modal de edição
-        function openEditCardModal(card) {
-            currentEditingCard = card;
+        function openEditCardModal(cardElement) {
+            // Se for um objeto de dados do cartão (do board.js), usar showCardModal
+            if (typeof cardElement === 'object' && cardElement.id) {
+                if (typeof window.showCardModal === 'function') {
+                    window.showCardModal(cardElement);
+                    return;
+                }
+            }
+            
+            // Compatibilidade com cartões HTML antigos
+            currentEditingCard = cardElement;
             const modal = document.getElementById('edit-card-modal');
             const titleInput = document.getElementById('edit-card-title');
             const descriptionInput = document.getElementById('edit-card-description');
@@ -661,12 +670,12 @@
             const commentsContainer = document.getElementById('edit-card-comments');
 
             // Preencher os campos com os dados do card
-            titleInput.value = card.querySelector('h3').textContent;
-            descriptionInput.value = card.querySelector('p')?.textContent || '';
+            titleInput.value = cardElement.querySelector('h3').textContent;
+            descriptionInput.value = cardElement.querySelector('p')?.textContent || '';
 
             // Limpar e preencher as etiquetas
             labelsContainer.innerHTML = '';
-            const cardLabels = card.getAttribute('data-labels')?.split(',') || [];
+            const cardLabels = cardElement.getAttribute('data-labels')?.split(',') || [];
             Object.entries(window.labels).forEach(([key, label]) => {
                 const labelElement = document.createElement('label');
                 labelElement.className = 'flex items-center space-x-2 p-2 rounded hover:bg-gray-700 cursor-pointer';
@@ -687,7 +696,7 @@
 
             // Limpar e preencher os comentários
             commentsContainer.innerHTML = '';
-            const comments = card.getAttribute('data-comments')?.split('|') || [];
+            const comments = cardElement.getAttribute('data-comments')?.split('|') || [];
             comments.forEach(comment => {
                 if (comment) {
                     const commentElement = document.createElement('div');
@@ -772,21 +781,33 @@
 
         // Função para salvar o estado do quadro
         function saveBoardState() {
+            // Se já temos o estado global, apenas salva no localStorage
+            if (window.boardState && window.boardState.lists) {
+                localStorage.setItem('boardState', JSON.stringify(window.boardState));
+                return;
+            }
+
+            // Fallback: lê do DOM (compatibilidade com sistema antigo)
             const state = {
                 lists: {}
             };
 
             document.querySelectorAll('.list').forEach(list => {
                 const listId = list.id;
-                const cards = Array.from(list.querySelectorAll('.card')).map(card => ({
+                const cards = Array.from(list.querySelectorAll('.card')).map((card, index) => ({
+                    id: card.dataset.cardId || `card_${Date.now()}_${index}`,
                     title: card.querySelector('h3').textContent,
                     description: card.querySelector('p')?.textContent || '',
-                    labels: card.getAttribute('data-labels')?.split(',') || [],
-                    comments: card.getAttribute('data-comments')?.split('|') || []
+                    labels: card.getAttribute('data-labels')?.split(',').filter(l => l) || [],
+                    comments: 0,
+                    attachments: 0,
+                    assignees: [],
+                    deadline: null
                 }));
                 state.lists[listId] = cards;
             });
 
+            window.boardState = state;
             localStorage.setItem('boardState', JSON.stringify(state));
         }
 
@@ -850,43 +871,32 @@
 
         // Função para adicionar um cartão
         function addCard(listId, title, description, labels = []) {
-            const list = document.getElementById(listId);
-            if (!list) return;
-        
-            const listContent = list.querySelector('.list-content');
-            const cards = listContent.querySelectorAll('.card');
+            // Gera um ID único para o cartão
+            const cardId = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             
-            // Verifica se já tem 6 cartões para adicionar a classe de scroll
-            if (cards.length >= 6) {
-                listContent.classList.add('has-many-cards');
+            // Cria o objeto do cartão compatível com board.js
+            const cardData = {
+                id: cardId,
+                title: title,
+                description: description || '',
+                labels: labels || [],
+                comments: 0,
+                attachments: 0,
+                assignees: [],
+                deadline: null
+            };
+            
+            // Adiciona o cartão ao estado global
+            if (!window.boardState.lists[listId]) {
+                window.boardState.lists[listId] = [];
             }
-        
-            const card = document.createElement('div');
-            card.className = 'card bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600';
-            card.setAttribute('draggable', 'true');
-            card.setAttribute('data-labels', labels.join(','));
-            card.setAttribute('data-comments', '');
+            window.boardState.lists[listId].push(cardData);
             
-            card.innerHTML = `
-                <h3 class="font-medium">${title}</h3>
-                ${description ? `<p class="text-sm text-gray-400 mt-2">${description}</p>` : ''}
-                ${labels.length > 0 ? `
-                    <div class="flex gap-2 mt-3">
-                        ${labels.map(label => `
-                            <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
-                                ${window.labels[label].text}
-                            </span>
-                        `).join('')}
-                    </div>
-                ` : ''}
-            `;
-        
-            card.addEventListener('click', () => {
-                openEditCardModal(card);
-            });
-        
-            listContent.appendChild(card);
-            filterCards();
+            // Salva o estado e re-renderiza o quadro
+            saveBoardState();
+            if (typeof window.renderBoard === 'function') {
+                window.renderBoard();
+            }
         }
 
         // Carregar tema e estado do quadro
@@ -942,12 +952,26 @@
             const savedState = localStorage.getItem('boardState');
             if (savedState) {
                 window.boardState = JSON.parse(savedState);
+            } else {
+                // Inicializar com estado vazio se não houver dados salvos
+                window.boardState = {
+                    lists: {
+                        'para-fazer': [],
+                        'fazendo': [],
+                        'concluido': []
+                    }
+                };
             }
 
-            // Renderizar o quadro inicial
-            if (typeof window.renderBoard === 'function') {
-                window.renderBoard();
-            }
+            // Aguardar um pouco para garantir que todos os scripts foram carregados
+            setTimeout(() => {
+                // Renderizar o quadro inicial
+                if (typeof window.renderBoard === 'function') {
+                    window.renderBoard();
+                } else {
+                    console.warn('window.renderBoard não está disponível');
+                }
+            }, 100);
 
             // Inicializar botões
             const addListButton = document.querySelector('.add-list-btn');
@@ -1017,8 +1041,37 @@
                     animation: 150,  // animação suave
                     ghostClass: 'sortable-ghost', // classe aplicada ao "cartão sombra"
                     dragClass: 'sortable-drag',   // classe aplicada ao cartão sendo arrastado
-                    onEnd: () => {
+                    onEnd: (evt) => {
+                        // Atualizar o estado global após movimentação
+                        const fromListId = evt.from.closest('.list').id;
+                        const toListId = evt.to.closest('.list').id;
+                        const cardElement = evt.item;
+                        const cardId = cardElement.dataset.cardId;
+                        
+                        if (cardId && fromListId !== toListId) {
+                            // Encontrar o cartão no estado global
+                            const fromList = window.boardState.lists[fromListId];
+                            const cardIndex = fromList.findIndex(card => card.id === cardId);
+                            
+                            if (cardIndex !== -1) {
+                                // Remover da lista origem
+                                const [movedCard] = fromList.splice(cardIndex, 1);
+                                
+                                // Adicionar na lista destino
+                                window.boardState.lists[toListId].push(movedCard);
+                                
+                                console.log(`Cartão movido de ${fromListId} para ${toListId}`);
+                            }
+                        }
+                        
                         saveBoardState(); // salva novo estado após movimentação
+                        
+                        // Re-renderizar para garantir consistência
+                        setTimeout(() => {
+                            if (typeof window.renderBoard === 'function') {
+                                window.renderBoard();
+                            }
+                        }, 100);
                     }
                 });
             });

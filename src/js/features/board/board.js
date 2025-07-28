@@ -264,9 +264,116 @@ window.deleteList = function(listId) {
     });
 };
 
+// Função para recriar uma lista que existe no estado mas não no DOM
+function recreateListElement(listId) {
+    const boardContainer = document.getElementById('board-container');
+    if (!boardContainer) return null;
+
+    // Mapear IDs para títulos legíveis
+    const listTitles = {
+        'para-fazer': 'Para Fazer',
+        'fazendo': 'Fazendo',
+        'concluido': 'Concluído'
+    };
+
+    const title = listTitles[listId] || listId.charAt(0).toUpperCase() + listId.slice(1);
+
+    // Criar o elemento da lista
+    const listElement = document.createElement('div');
+    listElement.id = listId;
+    listElement.className = 'list w-80 bg-gray-800 rounded-lg p-4 flex flex-col';
+    
+    listElement.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">${title}</h2>
+            <button class="text-gray-400 hover:text-white delete-list-btn">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <div class="list-content space-y-4">
+        </div>
+        <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+            <i class="fas fa-plus mr-2"></i>
+            Adicionar cartão
+        </button>
+    `;
+
+    // Inserir a lista na posição correta (antes do botão "Adicionar lista")
+    const addListBtn = boardContainer.querySelector('.add-list-btn');
+    if (addListBtn) {
+        boardContainer.insertBefore(listElement, addListBtn);
+    } else {
+        boardContainer.appendChild(listElement);
+    }
+
+    // Configurar eventos da nova lista
+    const deleteListBtn = listElement.querySelector('.delete-list-btn');
+    if (deleteListBtn) {
+        deleteListBtn.onclick = () => window.deleteList(listId);
+    }
+
+    const addCardBtn = listElement.querySelector('.add-card-btn');
+    if (addCardBtn) {
+        addCardBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.showAddCardModal(listId);
+        });
+    }
+
+    // Configurar drag & drop para a nova lista
+    const listContent = listElement.querySelector('.list-content');
+    if (listContent) {
+        listContent.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const draggingOver = listContent.querySelector('.dragging-over');
+            if (!draggingOver) {
+                listContent.classList.add('dragging-over');
+            }
+        });
+        
+        listContent.addEventListener('dragleave', (e) => {
+            if (!e.relatedTarget || !listContent.contains(e.relatedTarget)) {
+                listContent.classList.remove('dragging-over');
+            }
+        });
+        
+        listContent.addEventListener('drop', (e) => {
+            e.preventDefault();
+            listContent.classList.remove('dragging-over');
+            
+            if (window.draggedCard && window.originalList) {
+                const targetList = listContent.closest('.list');
+                const targetListId = targetList.id;
+                const sourceListId = window.originalList.id;
+                
+                // Move o cartão para a nova lista
+                const cardId = window.draggedCard.dataset.cardId;
+                const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+                
+                if (cardIndex !== -1) {
+                    const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
+                    window.boardState.lists[targetListId].push(movedCard);
+                    
+                    window.saveBoardState();
+                    window.renderBoard();
+                }
+            }
+        });
+    }
+
+    console.log(`Lista "${title}" (${listId}) recriada no DOM`);
+    return listElement;
+}
+
 window.renderBoard = function() {
     Object.keys(window.boardState.lists).forEach(listId => {
-        const listElement = document.getElementById(listId);
+        let listElement = document.getElementById(listId);
+        
+        // Se a lista não existe no DOM mas existe no estado, recria ela
+        if (!listElement && window.boardState.lists[listId]) {
+            listElement = recreateListElement(listId);
+        }
+        
         if (listElement) {
             // Adiciona evento de excluir lista
             const deleteListBtn = listElement.querySelector('.delete-list-btn');
