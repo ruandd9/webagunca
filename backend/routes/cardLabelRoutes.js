@@ -2,29 +2,26 @@ const express = require('express');
 const router = express.Router();
 const CardLabel = require('../models/CardLabel');
 
-// Criar nova etiqueta para um cartão
+// Rota para criar uma nova etiqueta (label) em um cartão
 router.post('/', async (req, res) => {
   try {
     const { cardId, name, color } = req.body;
-
     if (!cardId || !name || !color) {
-      return res.status(400).json({ mensagem: 'Campos obrigatórios: cardId, name, color.' });
+      return res.status(400).json({ mensagem: 'cardId, name e color são obrigatórios.' });
     }
-
-    const novaEtiqueta = new CardLabel({ cardId, name, color });
-    const etiquetaSalva = await novaEtiqueta.save();
-
-    res.status(201).json({ mensagem: 'Etiqueta criada com sucesso.', label: etiquetaSalva });
+    const novaLabel = new CardLabel({ cardId, name, color });
+    await novaLabel.save();
+    res.status(201).json({ mensagem: 'Etiqueta criada com sucesso!', label: novaLabel });
   } catch (err) {
     res.status(500).json({ mensagem: 'Erro ao criar etiqueta.', erro: err.message });
   }
 });
 
-// Listar etiquetas de um cartão
-router.get('/:cardId', async (req, res) => {
+// Rota para listar todas as etiquetas
+router.get('/', async (req, res) => {
   try {
-    const etiquetas = await CardLabel.find({ cardId: req.params.cardId });
-    res.json(etiquetas);
+    const labels = await CardLabel.find();
+    res.json(labels);
   } catch (err) {
     res.status(500).json({ mensagem: 'Erro ao buscar etiquetas.', erro: err.message });
   }

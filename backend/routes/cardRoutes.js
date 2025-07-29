@@ -2,47 +2,39 @@ const express = require('express');
 const router = express.Router();
 const Card = require('../models/Card');
 
-// Criar novo cartão
+// Rota de teste GET
+router.get('/teste', (req, res) => {
+  res.json({ mensagem: 'GET de teste em /api/cards/teste funcionando!' });
+});
+
+// Rota de teste POST
+router.post('/teste', (req, res) => {
+  const { exemplo } = req.body;
+  res.json({ mensagem: 'POST de teste em /api/cards/teste funcionando!', recebido: exemplo });
+});
+
+// Rota para criar um novo card
 router.post('/', async (req, res) => {
   try {
-    const {
-      boardId,
-      listId,
-      title,
-      description,
-      dueDate,
-      createdBy
-    } = req.body;
-
+    const { boardId, listId, title, description, dueDate, createdBy } = req.body;
     if (!boardId || !listId || !title || !createdBy) {
-      return res.status(400).json({ mensagem: 'Campos obrigatórios: boardId, listId, title, createdBy.' });
+      return res.status(400).json({ mensagem: 'boardId, listId, title e createdBy são obrigatórios.' });
     }
-
-    const novoCard = new Card({
-      boardId,
-      listId,
-      title,
-      description,
-      dueDate,
-      createdBy
-    });
-
-    const cardSalvo = await novoCard.save();
-    res.status(201).json({ mensagem: 'Cartão criado com sucesso.', card: cardSalvo });
+    const novoCard = new Card({ boardId, listId, title, description, dueDate, createdBy });
+    await novoCard.save();
+    res.status(201).json({ mensagem: 'Card criado com sucesso!', card: novoCard });
   } catch (err) {
-    res.status(500).json({ mensagem: 'Erro ao criar cartão.', erro: err.message });
+    res.status(500).json({ mensagem: 'Erro ao criar card.', erro: err.message });
   }
 });
 
-// Listar todos os cartões de uma lista
-router.get('/:listId', async (req, res) => {
+// Rota para listar todos os cards
+router.get('/', async (req, res) => {
   try {
-    const { listId } = req.params;
-
-    const cards = await Card.find({ listId }).sort({ createdAt: 1 });
+    const cards = await Card.find();
     res.json(cards);
   } catch (err) {
-    res.status(500).json({ mensagem: 'Erro ao buscar cartões.', erro: err.message });
+    res.status(500).json({ mensagem: 'Erro ao buscar cards.', erro: err.message });
   }
 });
 

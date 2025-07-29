@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
+const cardRoutes = require('./routes/cardRoutes');
 const boardRoutes = require('./routes/boardRoutes');
 const boardMemberRoutes = require('./routes/boardMemberRoutes');
 const listRoutes = require('./routes/listRoutes');
-const cardRoutes = require('./routes/cardRoutes');
-const cardLabelRoutes = require('./routes/cardLabelRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const cardLabelRoutes = require('./routes/cardLabelRoutes');
 
 // Configura variáveis de ambiente
 dotenv.config();
@@ -31,12 +31,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', userRoutes);
+app.use('/api/cards', cardRoutes);
 app.use('/api/boards', boardRoutes);
 app.use('/api/board-members', boardMemberRoutes);
 app.use('/api/lists', listRoutes);
-app.use('/api/cards', cardRoutes);
-app.use('/api/card-labels', cardLabelRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/card-labels', cardLabelRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
