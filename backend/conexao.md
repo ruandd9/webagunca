@@ -159,4 +159,8 @@
 
 Se precisar mudar o banco, altere o nome após `.net/` na string do `MONGODB_URI`.
 
+##.env
+MONGODB_URI=mongodb+srv://baguncasuporte:baguncadb@webagunca.1dwrpea.mongodb.net/?retryWrites=true&w=majority&appName=webagunca
+PORT=5000
+
 Dúvidas? Consulte o README ou peça ajuda ao suporte do projeto! 
