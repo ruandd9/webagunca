@@ -632,6 +632,8 @@
   <script src="./src/js/features/auth/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      const API_URL = 'http://localhost:5000/api';
+
       const mobileMenuButton = document.getElementById('mobileMenuButton');
       const mobileMenu = document.getElementById('mobileMenu');
 
@@ -654,14 +656,24 @@
       }
 
       // Manipulador do formulário de login
-      document.getElementById('loginForm').addEventListener('submit', function (e) {
+      document.getElementById('loginForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const email = document.getElementById('loginEmail').value;
+        const email = document.getElementById('loginEmail').value.trim();
         const senha = document.getElementById('loginSenha').value;
 
         try {
-          const userData = auth.loginUser(email, senha);
+          const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) throw new Error(data.mensagem || 'Erro ao fazer login');
+
+          localStorage.setItem('userData', JSON.stringify(data)); // salva usuário logado
           window.location.href = './public/board-page.html';
         } catch (error) {
           alert(error.message);
@@ -669,29 +681,32 @@
       });
 
       // Manipulador do formulário de cadastro
-      document.getElementById('cadastroForm').addEventListener('submit', function (e) {
+      document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const nomeCompleto = document.getElementById('nomeCompleto').value;
+        const email = document.getElementById('email').value.trim();
+        const nomeCompleto = document.getElementById('nomeCompleto').value.trim();
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmarSenha').value;
         const termos = document.getElementById('termos').checked;
 
         try {
-          if (senha !== confirmarSenha) {
-            throw new Error('As senhas não coincidem');
-          }
+          if (senha !== confirmarSenha) throw new Error('As senhas não coincidem');
+          if (!termos) throw new Error('Você precisa aceitar os termos e condições');
 
-          if (!termos) {
-            throw new Error('Você precisa aceitar os termos e condições');
-          }
+          const response = await fetch(`${API_URL}/cadastrar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, nomeCompleto, senha })
+          });
 
-          const userData = auth.registerUser(email, nomeCompleto, senha);
+          const data = await response.json();
 
+          if (!response.ok) throw new Error(data.mensagem || 'Erro ao cadastrar');
+
+          alert('Usuário cadastrado com sucesso!');
           const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
           registerModal.hide();
-
           window.location.href = './public/board-page.html';
         } catch (error) {
           alert(error.message);
