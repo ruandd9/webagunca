@@ -15,10 +15,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: 'https://ruandd9.github.io/webagunca/', // Substitua pelo seu GitHub Pages
-  credentials: true
-}));
+app.use(cors({}));
 
 // Conexão com o MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI, {
@@ -45,3 +42,4 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 
 }); 
+
