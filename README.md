@@ -169,4 +169,11 @@ O **Bagunça** foi desenvolvido como parte do Projeto Integrador do SENAC-DF, um
 
 <p align="center">
   Junte-se a nós e transforme a organização de tarefas em algo simples e colaborativo para jovens universitários! 🚀
+<<<<<<< HEAD
 </p>
+=======
+</p>
+
+
+
+>>>>>>> 0295c0dead3f4faf083c4b795022ccde30e36096

@@ -41,4 +41,9 @@ app.use('/api/card-labels', cardLabelRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 
+<<<<<<< HEAD
 }); 
+=======
+}); 
+
+>>>>>>> 0295c0dead3f4faf083c4b795022ccde30e36096
