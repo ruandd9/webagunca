@@ -632,116 +632,148 @@
   <script src="./src/js/features/auth/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const API_URL = 'https://webagunca.onrender.com/';
+        const API_URL = 'http://localhost:5000/api';
 
-      const mobileMenuButton = document.getElementById('mobileMenuButton');
-      const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
 
-      if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function () {
-          mobileMenu.classList.toggle('hidden');
-        });
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
 
-        document.addEventListener('click', function (event) {
-          if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
-            mobileMenu.classList.add('hidden');
-          }
-        });
+            document.addEventListener('click', function (event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
 
-        mobileMenu.addEventListener('click', function (event) {
-          if (event.target.tagName === 'A') {
-            mobileMenu.classList.add('hidden');
-          }
-        });
-      }
-
-      // Manipulador do formulário de login
-      document.getElementById('loginForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const email = document.getElementById('loginEmail').value.trim();
-        const senha = document.getElementById('loginSenha').value;
-
-        try {
-          const response = await fetch(`${API_URL}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, senha })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) throw new Error(data.mensagem || 'Erro ao fazer login');
-
-          localStorage.setItem('userData', JSON.stringify(data)); // salva usuário logado
-          window.location.href = './public/board-page.html';
-        } catch (error) {
-          alert(error.message);
+            mobileMenu.addEventListener('click', function (event) {
+                if (event.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
         }
-      });
 
-      // Manipulador do formulário de cadastro
-      document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
+        // Manipulador do formulário de login
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-        const email = document.getElementById('email').value.trim();
-        const nomeCompleto = document.getElementById('nomeCompleto').value.trim();
-        const senha = document.getElementById('senha').value;
-        const confirmarSenha = document.getElementById('confirmarSenha').value;
-        const termos = document.getElementById('termos').checked;
+            const email = document.getElementById('loginEmail').value.trim();
+            const senha = document.getElementById('loginSenha').value;
 
-        try {
-          if (senha !== confirmarSenha) throw new Error('As senhas não coincidem');
-          if (!termos) throw new Error('Você precisa aceitar os termos e condições');
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
 
-          const response = await fetch(`${API_URL}/cadastrar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, nomeCompleto, senha })
-          });
+                const data = await response.json();
 
-          const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.mensagem || 'Erro ao fazer login');
+                }
 
-          if (!response.ok) throw new Error(data.mensagem || 'Erro ao cadastrar');
+                // Salva o token e o ID do usuário em chaves separadas
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.user._id);
 
-          alert('Usuário cadastrado com sucesso!');
-          const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-          registerModal.hide();
-          window.location.href = './public/board-page.html';
-        } catch (error) {
-          alert(error.message);
+                // Redireciona o usuário para a página de quadros
+                window.location.href = './public/board-page.html';
+
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // Manipulador do formulário de cadastro
+        document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const nomeCompleto = document.getElementById('nomeCompleto').value.trim();
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            const termos = document.getElementById('termos').checked;
+
+            try {
+                if (senha !== confirmarSenha) {
+                    throw new Error('As senhas não coincidem');
+                }
+                if (!termos) {
+                    throw new Error('Você precisa aceitar os termos e condições');
+                }
+
+                const response = await fetch(`${API_URL}/cadastrar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, nomeCompleto, senha })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.mensagem || 'Erro ao cadastrar');
+                }
+
+                alert('Usuário cadastrado com sucesso!');
+                const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                if (registerModal) registerModal.hide();
+
+                // Após o cadastro, faz o login automático para redirecionar o usuário
+                const loginResponse = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+                const loginData = await loginResponse.json();
+
+                if (loginResponse.ok) {
+                    localStorage.setItem('token', loginData.token);
+                    localStorage.setItem('userId', loginData.user._id);
+                    window.location.href = './public/board-page.html';
+                } else {
+                    throw new Error(loginData.mensagem || 'Erro ao fazer login após cadastro');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // Links entre modais
+        document.querySelector('#registerModal .p .span').addEventListener('click', function () {
+            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            if (registerModal) registerModal.hide();
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        });
+
+        document.querySelector('#loginModal .p .span').addEventListener('click', function () {
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            if (loginModal) loginModal.hide();
+            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+            registerModal.show();
+        });
+
+        // Funcionalidade para voltar ao modal de cadastro quando fechar os modais de termos/privacidade
+        const termosModal = document.getElementById('termosModal');
+        const privacidadeModal = document.getElementById('privacidadeModal');
+        const registerModal = document.getElementById('registerModal');
+
+        if (termosModal) {
+            termosModal.addEventListener('hidden.bs.modal', function () {
+                const registerModalInstance = new bootstrap.Modal(registerModal);
+                registerModalInstance.show();
+            });
         }
-      });
 
-      // Links entre modais
-      document.querySelector('#registerModal .p .span').addEventListener('click', function () {
-        const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-        registerModal.hide();
-        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-        loginModal.show();
-      });
-
-      document.querySelector('#loginModal .p .span').addEventListener('click', function () {
-        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-        loginModal.hide();
-        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-        registerModal.show();
-      });
-
-      // Funcionalidade para voltar ao modal de cadastro quando fechar os modais de termos/privacidade
-      const termosModal = document.getElementById('termosModal');
-      const privacidadeModal = document.getElementById('privacidadeModal');
-      const registerModal = document.getElementById('registerModal');
-
-      termosModal.addEventListener('hidden.bs.modal', function () {
-        const registerModalInstance = new bootstrap.Modal(registerModal);
-        registerModalInstance.show();
-      });
-
-      privacidadeModal.addEventListener('hidden.bs.modal', function () {
-        const registerModalInstance = new bootstrap.Modal(registerModal);
-        registerModalInstance.show();
-      });
+        if (privacidadeModal) {
+            privacidadeModal.addEventListener('hidden.bs.modal', function () {
+                const registerModalInstance = new bootstrap.Modal(registerModal);
+                registerModalInstance.show();
+            });
+        }
     });
   </script>
 </body>

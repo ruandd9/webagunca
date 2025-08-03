@@ -1,24 +1,55 @@
 // Inicializa a página quando carregada
 document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '../index.html';
+        return;
+    }
+
     initializeSearch();
-    initializeBoardLinks();
     initializeCreateBoardButton();
     loadBoards();
 });
 
-// Função para carregar os quadros do localStorage
-function loadBoards() {
+// Função para carregar os quadros da API
+async function loadBoards() {
     const boardsContainer = document.querySelector('.grid');
-    const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
+    boardsContainer.innerHTML = ''; // Limpa o container
+
+    const token = localStorage.getItem('token');
     
-    // Limpa o container
-    boardsContainer.innerHTML = '';
-    
-    // Adiciona os quadros salvos
-    savedBoards.forEach(board => {
-        const boardElement = createBoardElement(board);
-        boardsContainer.appendChild(boardElement);
-    });
+    try {
+        const response = await fetch('http://localhost:5000/api/boards', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao buscar quadros da API.');
+        }
+
+        const boards = await response.json();
+
+        if (boards.length === 0) {
+            boardsContainer.innerHTML = `
+                <div class="col-span-full text-center text-gray-500 py-10">
+                    <p>Você ainda não tem nenhum quadro. Crie um novo para começar!</p>
+                </div>
+            `;
+        } else {
+            boards.forEach(board => {
+                const boardElement = createBoardElement(board);
+                boardsContainer.appendChild(boardElement);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar quadros:', error);
+        alert('Erro ao carregar quadros: ' + error.message);
+    }
 }
 
 // Função para criar elemento de quadro
@@ -27,22 +58,23 @@ function createBoardElement(board) {
     div.className = 'board bg-gray-800 p-4 md:p-6 rounded-lg border border-gray-700 hover:border-white cursor-pointer transition-all relative group';
     
     let coverHtml = '';
-    if (board.coverImage) {
-        coverHtml = `<div class="h-24 md:h-32 rounded-lg mb-4 bg-cover bg-center" style="background-image: url('${board.coverImage}')"></div>`;
+    const coverType = board.cover_type || 'color';
+    if (coverType === 'image' && board.cover_value) {
+        coverHtml = `<div class="h-24 md:h-32 rounded-lg mb-4 bg-cover bg-center" style="background-image: url('${board.cover_value}')"></div>`;
     } else {
-        const bgColor = board.backgroundColor || '#3B82F6'; // Azul padrão
+        const bgColor = board.cover_value || '#3B82F6'; // Azul padrão
         coverHtml = `<div class="h-24 md:h-32 rounded-lg mb-4" style="background-color: ${bgColor}"></div>`;
     }
     
     div.innerHTML = `
         ${coverHtml}
         <div class="mb-2">
-            <h3 class="text-lg md:text-xl board-title" data-board-id="${board.id}">${board.title}</h3>
+            <h3 class="text-lg md:text-xl board-title" data-board-id="${board._id}">${board.title}</h3>
         </div>
         <div class="flex flex-col space-y-2">
             <div class="flex items-center space-x-2">
-                <i class="fas ${board.isPrivate ? 'fa-user' : 'fa-user-friends'} text-gray-400"></i>
-                <span class="text-gray-400">${board.isPrivate ? 'Privado' : 'Compartilhado'}</span>
+                <i class="fas ${board.visibility === 'private' ? 'fa-user' : 'fa-user-friends'} text-gray-400"></i>
+                <span class="text-gray-400">${board.visibility === 'private' ? 'Privado' : 'Compartilhado'}</span>
             </div>
             <p class="text-sm text-gray-400">${board.description}</p>
         </div>
@@ -58,7 +90,7 @@ function createBoardElement(board) {
     
     // Adiciona o link para o quadro
     const link = document.createElement('a');
-    link.href = `./Quadros.html?board=${encodeURIComponent(board.id)}`;
+    link.href = `./Quadros.html?board=${encodeURIComponent(board._id)}`;
     link.className = 'absolute inset-0 z-0';
     div.appendChild(link);
     
@@ -66,6 +98,7 @@ function createBoardElement(board) {
     const deleteBtn = div.querySelector('.delete-board');
     const editBtn = div.querySelector('.edit-board');
     
+    // Corrigido: Event listeners que chamam as funções com o objeto do quadro
     deleteBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -121,18 +154,29 @@ function showDeleteBoardConfirmation(board) {
     const cancelBtn = modal.querySelector('.cancel');
     const closeModal = () => modal.remove();
 
-    confirmBtn.addEventListener('click', () => {
-        // Remove o quadro do localStorage
-        const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
-        const updatedBoards = savedBoards.filter(b => b.id !== board.id);
-        localStorage.setItem('boards', JSON.stringify(updatedBoards));
+    confirmBtn.addEventListener('click', async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/boards/${board._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-        // Remove o estado do quadro
-        localStorage.removeItem(`board_${board.id}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao excluir quadro.');
+            }
 
-        // Recarrega os quadros
-        loadBoards();
-        closeModal();
+            alert('Quadro excluído com sucesso!');
+            loadBoards();
+            closeModal();
+        } catch (error) {
+            console.error('Erro na exclusão:', error);
+            alert('Erro ao excluir quadro: ' + error.message);
+            closeModal();
+        }
     });
 
     cancelBtn.addEventListener('click', closeModal);
@@ -156,6 +200,14 @@ function initializeCreateBoardButton() {
 
 // Modal de criar novo quadro
 function showCreateBoardModal() {
+    // Verifica se o token existe antes de exibir o modal
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Você precisa estar logado para criar um quadro. Por favor, faça login novamente.');
+        window.location.href = '../index.html';
+        return;
+    }
+
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
@@ -190,7 +242,7 @@ function showCreateBoardModal() {
                             <span>Cor sólida</span>
                         </div>
                         <div class="color-options grid grid-cols-6 gap-2">
-                            <button class="color-option w-8 h-8 rounded-full bg-blue-500 hover:scale-110 transition-transform" data-color="#3B82F6"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-blue-500 hover:scale-110 transition-transform ring-2 ring-white" data-color="#3B82F6"></button>
                             <button class="color-option w-8 h-8 rounded-full bg-purple-500 hover:scale-110 transition-transform" data-color="#8B5CF6"></button>
                             <button class="color-option w-8 h-8 rounded-full bg-green-500 hover:scale-110 transition-transform" data-color="#10B981"></button>
                             <button class="color-option w-8 h-8 rounded-full bg-red-500 hover:scale-110 transition-transform" data-color="#EF4444"></button>
@@ -238,6 +290,9 @@ function showCreateBoardModal() {
     const fileInput = modal.querySelector('.file-input');
     const previewArea = modal.querySelector('.preview-area');
     const previewImg = previewArea.querySelector('img');
+
+    // As variáveis `userId` e `token` já são declaradas no início da função
+    const userId = localStorage.getItem('userId');
 
     // Função para auto-ajustar altura do textarea
     const autoResizeTextarea = (textarea) => {
@@ -306,76 +361,55 @@ function showCreateBoardModal() {
         }
 
         const coverType = modal.querySelector('input[name="coverType"]:checked').value;
-        const board = {
-            id: Date.now().toString(),
-            title,
-            description: descriptionInput.value.trim(),
-            isPrivate: typeSelect.value === 'private',
-            createdAt: new Date().toISOString()
-        };
+        const visibility = typeSelect.value === 'private' ? 'private' : 'shared';
+        let cover_value = '';
 
-        // Adiciona informações de capa
         if (coverType === 'image') {
             if (selectedFileBase64) {
-                board.coverImage = selectedFileBase64;
+                cover_value = selectedFileBase64;
             } else if (imageUrlInput.value.trim()) {
-                board.coverImage = imageUrlInput.value.trim();
+                cover_value = imageUrlInput.value.trim();
             }
         } else {
-            board.backgroundColor = selectedColor;
+            cover_value = selectedColor;
         }
 
-        // Salva o novo quadro
-        const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
-        savedBoards.push(board);
-        localStorage.setItem('boards', JSON.stringify(savedBoards));
-
-        // Inicializa o estado do quadro
-        const boardState = {
-            lists: {
-                'para-fazer': [],
-                'fazendo': [],
-                'concluido': []
+        fetch("http://localhost:5000/api/boards", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify({
+                title,
+                description: descriptionInput.value.trim(),
+                visibility,
+                cover_type: coverType,
+                cover_value
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
             }
-        };
-        localStorage.setItem(`board_${board.id}`, JSON.stringify(boardState));
-
-        // Recarrega os quadros
-        loadBoards();
-        closeModal();
-    });
-}
-
-// Inicializa a busca de quadros
-function initializeSearch() {
-    const searchInput = document.querySelector('input[placeholder="Pesquisar quadros..."]');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const boards = document.querySelectorAll('.board');
-            
-            boards.forEach(board => {
-                const title = board.querySelector('h3').textContent.toLowerCase();
-                const description = board.querySelector('.text-gray-400').textContent.toLowerCase();
-                
-                if (title.includes(query) || description.includes(query)) {
-                    board.style.display = '';
-                } else {
-                    board.style.display = 'none';
-                }
+            if (response.status === 401) {
+                throw new Error('Sessão expirada. Por favor, faça login novamente.');
+            }
+            return response.json().then(errorData => {
+                throw new Error(errorData.mensagem || 'Erro desconhecido ao criar quadro.');
             });
-        });
-    }
-}
-
-// Inicializa os links dos quadros
-function initializeBoardLinks() {
-    const boards = document.querySelectorAll('.board');
-    boards.forEach(board => {
-        board.addEventListener('click', (e) => {
-            e.preventDefault();
-            const boardId = board.getAttribute('href').split('=')[1];
-            window.location.href = `./Quadros.html?board=${boardId}`;
+        })
+        .then(data => {
+            alert(data.mensagem);
+            loadBoards(); // Recarrega os quadros da API
+            closeModal();
+        })
+        .catch(error => {
+            alert("Erro na requisição: " + error.message);
+            console.error(error);
+            if (error.message.includes('Sessão expirada')) {
+                 window.location.href = '../index.html';
+            }
         });
     });
 }
@@ -383,6 +417,8 @@ function initializeBoardLinks() {
 function showEditBoardModal(board) {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    
+    // Configura o modal com os dados do quadro
     modal.innerHTML = `
         <div class="bg-gray-800 rounded-lg p-6 w-[500px] max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start mb-4">
@@ -403,38 +439,38 @@ function showEditBoardModal(board) {
                 <div>
                     <label class="block text-sm font-medium mb-1">Tipo de quadro</label>
                     <select class="w-full bg-gray-700 text-white rounded px-3 py-2">
-                        <option value="private" ${board.isPrivate ? 'selected' : ''}>Privado</option>
-                        <option value="shared" ${!board.isPrivate ? 'selected' : ''}>Compartilhado</option>
+                        <option value="private" ${board.visibility === 'private' ? 'selected' : ''}>Privado</option>
+                        <option value="shared" ${board.visibility === 'shared' ? 'selected' : ''}>Compartilhado</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Capa do quadro</label>
                     <div class="space-y-2">
                         <div class="flex items-center space-x-2">
-                            <input type="radio" name="coverType" value="color" ${!board.coverImage ? 'checked' : ''} class="cover-type">
+                            <input type="radio" name="coverType" value="color" ${board.cover_type === 'color' ? 'checked' : ''} class="cover-type">
                             <span>Cor sólida</span>
                         </div>
                         <div class="color-options grid grid-cols-6 gap-2">
-                            <button class="color-option w-8 h-8 rounded-full bg-blue-500 hover:scale-110 transition-transform ${board.backgroundColor === '#3B82F6' ? 'ring-2 ring-white' : ''}" data-color="#3B82F6"></button>
-                            <button class="color-option w-8 h-8 rounded-full bg-purple-500 hover:scale-110 transition-transform ${board.backgroundColor === '#8B5CF6' ? 'ring-2 ring-white' : ''}" data-color="#8B5CF6"></button>
-                            <button class="color-option w-8 h-8 rounded-full bg-green-500 hover:scale-110 transition-transform ${board.backgroundColor === '#10B981' ? 'ring-2 ring-white' : ''}" data-color="#10B981"></button>
-                            <button class="color-option w-8 h-8 rounded-full bg-red-500 hover:scale-110 transition-transform ${board.backgroundColor === '#EF4444' ? 'ring-2 ring-white' : ''}" data-color="#EF4444"></button>
-                            <button class="color-option w-8 h-8 rounded-full bg-yellow-500 hover:scale-110 transition-transform ${board.backgroundColor === '#F59E0B' ? 'ring-2 ring-white' : ''}" data-color="#F59E0B"></button>
-                            <button class="color-option w-8 h-8 rounded-full bg-pink-500 hover:scale-110 transition-transform ${board.backgroundColor === '#EC4899' ? 'ring-2 ring-white' : ''}" data-color="#EC4899"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-blue-500 hover:scale-110 transition-transform ${board.cover_value === '#3B82F6' ? 'ring-2 ring-white' : ''}" data-color="#3B82F6"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-purple-500 hover:scale-110 transition-transform ${board.cover_value === '#8B5CF6' ? 'ring-2 ring-white' : ''}" data-color="#8B5CF6"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-green-500 hover:scale-110 transition-transform ${board.cover_value === '#10B981' ? 'ring-2 ring-white' : ''}" data-color="#10B981"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-red-500 hover:scale-110 transition-transform ${board.cover_value === '#EF4444' ? 'ring-2 ring-white' : ''}" data-color="#EF4444"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-yellow-500 hover:scale-110 transition-transform ${board.cover_value === '#F59E0B' ? 'ring-2 ring-white' : ''}" data-color="#F59E0B"></button>
+                            <button class="color-option w-8 h-8 rounded-full bg-pink-500 hover:scale-110 transition-transform ${board.cover_value === '#EC4899' ? 'ring-2 ring-white' : ''}" data-color="#EC4899"></button>
                         </div>
                         <div class="flex items-center space-x-2 mt-2">
-                            <input type="radio" name="coverType" value="image" ${board.coverImage ? 'checked' : ''} class="cover-type">
+                            <input type="radio" name="coverType" value="image" ${board.cover_type === 'image' ? 'checked' : ''} class="cover-type">
                             <span>Imagem de capa</span>
                         </div>
-                        <div class="image-option ${!board.coverImage ? 'hidden' : ''} space-y-2">
-                            <input type="text" class="w-full bg-gray-700 text-white rounded px-3 py-2" placeholder="URL da imagem..." value="${board.coverImage && !board.coverImage.startsWith('data:') ? board.coverImage : ''}">
+                        <div class="image-option ${board.cover_type !== 'image' ? 'hidden' : ''} space-y-2">
+                            <input type="text" class="w-full bg-gray-700 text-white rounded px-3 py-2" placeholder="URL da imagem..." value="${board.cover_type === 'image' && board.cover_value && !board.cover_value.startsWith('data:') ? board.cover_value : ''}">
                             <p class="text-sm text-gray-400 mt-1">Cole aqui a URL de uma imagem para usar como capa</p>
                             <div class="flex items-center space-x-2 mt-2">
                                 <input type="file" accept="image/*" class="file-input bg-gray-700 text-white rounded px-3 py-2">
                                 <span class="text-sm text-gray-400">ou escolha um arquivo</span>
                             </div>
-                            <div class="preview-area mt-2 ${!board.coverImage ? 'hidden' : ''}">
-                                <img src="${board.coverImage || ''}" alt="Preview" class="w-full h-20 object-cover rounded">
+                            <div class="preview-area mt-2 ${board.cover_type !== 'image' || !board.cover_value ? 'hidden' : ''}">
+                                <img src="${board.cover_value || ''}" alt="Preview" class="w-full h-20 object-cover rounded">
                             </div>
                         </div>
                     </div>
@@ -449,7 +485,6 @@ function showEditBoardModal(board) {
 
     document.body.appendChild(modal);
 
-    // Event listeners
     const closeBtn = modal.querySelector('.close-modal');
     const cancelBtn = modal.querySelector('.cancel');
     const saveBtn = modal.querySelector('.save');
@@ -464,19 +499,17 @@ function showEditBoardModal(board) {
     const previewArea = modal.querySelector('.preview-area');
     const previewImg = previewArea.querySelector('img');
 
-    // Função para auto-ajustar altura do textarea
+    // Funções auxiliares
     const autoResizeTextarea = (textarea) => {
         textarea.style.height = 'auto';
         textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
     };
 
-    // Aplica auto-resize no textarea de descrição
     descriptionInput.addEventListener('input', () => autoResizeTextarea(descriptionInput));
-    // Ajusta altura inicial baseada no conteúdo existente
     setTimeout(() => autoResizeTextarea(descriptionInput), 0);
 
-    let selectedColor = board.backgroundColor || '#3B82F6';
-    let selectedFileBase64 = '';
+    let selectedColor = board.cover_value && board.cover_type === 'color' ? board.cover_value : '#3B82F6';
+    let selectedFileBase64 = board.cover_value && board.cover_type === 'image' && board.cover_value.startsWith('data:') ? board.cover_value : '';
 
     const closeModal = () => modal.remove();
 
@@ -536,7 +569,7 @@ function showEditBoardModal(board) {
         }
     });
 
-    saveBtn.addEventListener('click', () => {
+    saveBtn.addEventListener('click', async () => {
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
@@ -544,46 +577,50 @@ function showEditBoardModal(board) {
         }
 
         const coverType = modal.querySelector('input[name="coverType"]:checked').value;
-        const updatedBoard = {
-            ...board,
-            title,
-            description: descriptionInput.value.trim(),
-            isPrivate: typeSelect.value === 'private',
-            updatedAt: new Date().toISOString()
-        };
+        const visibility = typeSelect.value;
+        let cover_value = '';
 
-        // Remove propriedades de capa antigas
-        delete updatedBoard.coverImage;
-        delete updatedBoard.backgroundColor;
-
-        // Adiciona informações de capa
         if (coverType === 'image') {
             if (selectedFileBase64) {
-                updatedBoard.coverImage = selectedFileBase64;
+                cover_value = selectedFileBase64;
             } else if (imageUrlInput.value.trim()) {
-                updatedBoard.coverImage = imageUrlInput.value.trim();
+                cover_value = imageUrlInput.value.trim();
             }
         } else {
-            updatedBoard.backgroundColor = selectedColor;
+            cover_value = selectedColor;
         }
 
-        // Salva as alterações no localStorage
-        const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
-        const boardIndex = savedBoards.findIndex(b => b.id === board.id);
-        if (boardIndex !== -1) {
-            savedBoards[boardIndex] = updatedBoard;
-            localStorage.setItem('boards', JSON.stringify(savedBoards));
-        }
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/boards/${board._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title,
+                    description: descriptionInput.value.trim(),
+                    visibility,
+                    cover_type: coverType,
+                    cover_value
+                })
+            });
 
-        // Recarrega os quadros
-        loadBoards();
-        closeModal();
-        
-        // Mostra mensagem de sucesso
-        showSuccessMessage('Quadro atualizado com sucesso!');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao atualizar quadro.');
+            }
+
+            alert('Quadro atualizado com sucesso!');
+            loadBoards();
+            closeModal();
+        } catch (error) {
+            console.error('Erro na atualização:', error);
+            alert('Erro ao atualizar quadro: ' + error.message);
+        }
     });
 }
-
 // Função para mostrar mensagem de sucesso
 function showSuccessMessage(message) {
     const toast = document.createElement('div');
@@ -609,4 +646,37 @@ function showSuccessMessage(message) {
             toast.remove();
         }, 300);
     }, 3000);
+}
+// Inicializa a busca de quadros
+function initializeSearch() {
+    const searchInput = document.querySelector('input[placeholder="Pesquisar quadros..."]');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const boards = document.querySelectorAll('.board');
+            
+            boards.forEach(board => {
+                const title = board.querySelector('h3').textContent.toLowerCase();
+                const description = board.querySelector('.text-gray-400').textContent.toLowerCase();
+                
+                if (title.includes(query) || description.includes(query)) {
+                    board.style.display = '';
+                } else {
+                    board.style.display = 'none';
+                }
+            });
+        });
+    }
+}
+
+// Inicializa os links dos quadros
+function initializeBoardLinks() {
+    const boards = document.querySelectorAll('.board');
+    boards.forEach(board => {
+        board.addEventListener('click', (e) => {
+            e.preventDefault();
+            const boardId = board.getAttribute('href').split('=')[1];
+            window.location.href = `./Quadros.html?board=${boardId}`;
+        });
+    });
 }

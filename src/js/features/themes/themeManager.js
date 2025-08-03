@@ -95,6 +95,11 @@ function setupThemeObserver() {
 
 // Aplicar o tema quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
+    // Aplicar o tamanho de fonte salvo
+    if (typeof fontManager !== 'undefined') {
+        fontManager.applySavedFontSize();
+    }
+    
     applySavedTheme();
     
     // Configurar observer para mudanças de tema

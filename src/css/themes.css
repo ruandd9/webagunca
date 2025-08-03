@@ -34,6 +34,30 @@
     --border: #6D28D9;
 }
 
+/* Tema Escuro de Alto Contraste (Novo) */
+:root[data-theme="high-contrast-dark"] {
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
+    --bg-tertiary: #111111;
+    --text-primary: #FFFFFF;
+    --text-secondary: #CCCCCC;
+    --accent: #FFFF00;
+    --accent-hover: #EBEB00;
+    --border: #FFFFFF;
+}
+
+/* Tema Claro de Alto Contraste (Novo) */
+:root[data-theme="high-contrast-light"] {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F0F0F0;
+    --bg-tertiary: #E0E0E0;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --accent: #0000FF;
+    --accent-hover: #0000CC;
+    --border: #000000;
+}
+
 /* Aplicação dos temas */
 body {
     background-color: var(--bg-primary) !important;
@@ -132,7 +156,27 @@ button:hover:not(.theme-button):not(.color-option) {
 .theme-button {
     transition: all 0.2s ease-in-out;
     position: relative;
+    /* Adicionando cor de fundo para garantir que não seja sobrescrita */
+    background-color: #374151 !important;
 }
+
+/* Corrigindo a cor de fundo dos botões de tema */
+.theme-button[data-theme="light"] {
+    background-color: #FFFFFF !important;
+}
+
+.theme-button[data-theme="colorful"] {
+    background-image: linear-gradient(to right, #8B5CF6, #EC4899) !important;
+}
+
+.theme-button[data-theme="high-contrast-dark"] {
+    background-color: #000000 !important;
+}
+
+.theme-button[data-theme="high-contrast-light"] {
+    background-color: #FFFFFF !important;
+}
+
 
 .theme-button:hover {
     transform: scale(1.05);
@@ -142,7 +186,6 @@ button:hover:not(.theme-button):not(.color-option) {
 :root[data-theme="light"] .theme-button[data-theme="dark"] {
     border-color: #4B5563 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #374151 !important; /* Fundo cinza mais claro para melhor visibilidade */
 }
 
 :root[data-theme="dark"] .theme-button[data-theme="light"] {
@@ -156,4 +199,23 @@ button:hover:not(.theme-button):not(.color-option) {
 
 :root[data-theme="colorful"] .theme-button[data-theme="light"] {
     border-color: #E5E7EB !important;
+}
+
+/* Ajuste para botões de tema de alto contraste */
+:root[data-theme="high-contrast-dark"] .theme-button[data-theme="light"],
+:root[data-theme="high-contrast-dark"] .theme-button[data-theme="colorful"] {
+    border-color: #111111 !important;
+}
+
+:root[data-theme="high-contrast-light"] .theme-button[data-theme="dark"],
+:root[data-theme="high-contrast-light"] .theme-button[data-theme="colorful"] {
+    border-color: #D1D5DB !important;
+}
+
+/* Acessibilidade - Aumento da fonte */
+.font-size-lg {
+    font-size: 1.25rem !important;
+}
+.font-size-xl {
+    font-size: 1.5rem !important;
 }

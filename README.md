@@ -58,17 +58,54 @@ Desenvolvido no SENAC-DF, o **Bagunça** reflete o compromisso da instituição 
 <h2 align="center">💻 Tecnologias Utilizadas</h2>
 
 <p align="center">
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/Font_Awesome-339AF0?style=flat-square&logo=font-awesome&logoColor=white" alt="Font Awesome"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white" alt="Express.js"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/MongoDB_Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB Atlas"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+<a href="https://shields.io"><img src="https://img.shields.io/badge/Font_Awesome-339AF0?style=flat-square&logo=font-awesome&logoColor=white" alt="Font Awesome"></a>
 </p>
 
-- 🌐 **HTML5 e CSS3**: Estrutura e design da interface.
-- ⚡ **JavaScript**: Interatividade e funcionalidades dinâmicas.
-- 🎨 **Tailwind CSS**: Estilização moderna e responsiva.
-- ✨ **Font Awesome**: Ícones para uma experiência visual mais rica.
+🌐 HTML5 e CSS3: Estrutura e design da interface.
+
+⚡ JavaScript: Interatividade e funcionalidades dinâmicas.
+
+💻 Node.js e Express: Ambiente de execução e framework para o backend.
+
+💾 MongoDB Atlas: Banco de dados NoSQL para persistência dos dados.
+
+🎨 Tailwind CSS: Estilização moderna e responsiva.
+
+✨ Font Awesome: Ícones para uma experiência visual mais rica.
+
+---
+
+<h2 align="center">📦 Dependências do Backend</h2>
+
+```bash
+cd backend
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken
+```
+
+### 🔍 Descrição das Dependências Instaladas
+
+- **express**: Framework web para Node.js, usado para criar a API REST de forma simples e robusta.
+- **mongoose**: ODM (Object Data Modeling) para MongoDB, facilita a modelagem e manipulação de dados no banco.
+- **cors**: Middleware que permite a comunicação entre o frontend e o backend mesmo estando em domínios diferentes.
+- **dotenv**: Carrega variáveis de ambiente definidas em um arquivo `.env` para dentro do `process.env`. Ideal para manter senhas e URLs fora do código.
+- **bcryptjs**: Biblioteca para encriptação de senhas. Protege os dados dos usuários usando hashing seguro.
+- **jsonwebtoken**: Utilizada para gerar e verificar tokens JWT, permitindo autenticação segura em rotas protegidas da API.
+
+
+⚠️ Dica: após a instalação, não se esqueça de criar um arquivo .env no diretório do backend com suas variáveis de ambiente, como MONGO_URI e JWT_SECRET.
+
+```bash arquivo .env
+MONGODB_URI=mongodb+srv://baguncasuporte:baguncadb@webagunca.1dwrpea.mongodb.net/?retryWrites=true&w=majority&appName=webagunca
+PORT=5000
+JWT_SECRET=baguncaDBSuporteBagunca12345
+```
 
 ---
 

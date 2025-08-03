@@ -1,36 +1,52 @@
-/**
- * Atualiza as iniciais do usuário no elemento com ID 'userInitials'
- */
-function updateUserInitials() {
-    const userInitialsElement = document.getElementById('userInitials');
-    if (!userInitialsElement) return;
+// src/js/features/user/userInitials.js
 
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (!userData || !userData.nomeCompleto) {
-        userInitialsElement.textContent = 'U';
-        return;
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        // Inicializa as iniciais do usuário e a imagem de perfil
+        loadUserInitials();
     }
+});
 
-    const names = userData.nomeCompleto.split(' ');
-    let initials = '';
+// Função para buscar os dados do usuário e atualizar as iniciais
+async function loadUserInitials() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
-    if (names.length >= 2) {
-        // Pega a primeira letra do primeiro nome e a primeira letra do último nome
-        initials = (names[0][0] + names[names.length - 1][0]).toUpperCase();
-    } else if (names.length === 1) {
-        // Se tiver apenas um nome, pega as duas primeiras letras
-        initials = names[0].substring(0, 2).toUpperCase();
+    try {
+        const response = await fetch('http://localhost:5000/api/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            updateUserInitials(user.nomeCompleto);
+        } else {
+            console.error('Erro ao buscar dados do usuário para as iniciais.');
+        }
+    } catch (error) {
+        console.error('Erro de conexão ao buscar dados do usuário:', error);
     }
-
-    userInitialsElement.textContent = initials;
 }
 
-// Atualizar as iniciais quando a página carregar
-document.addEventListener('DOMContentLoaded', updateUserInitials);
-
-// Atualizar as iniciais quando houver mudanças no localStorage
-window.addEventListener('storage', (event) => {
-    if (event.key === 'userData') {
-        updateUserInitials();
+// Função para gerar as iniciais do nome
+function getInitials(name) {
+    if (!name) return '';
+    const names = name.split(' ');
+    let initials = names[0].charAt(0).toUpperCase();
+    if (names.length > 1) {
+        initials += names[names.length - 1].charAt(0).toUpperCase();
     }
-}); 
+    return initials;
+}
+
+// Função para atualizar as iniciais no dropdown
+function updateUserInitials(nomeCompleto) {
+    const userInitialsDiv = document.getElementById('userInitials');
+    if (userInitialsDiv) {
+        userInitialsDiv.textContent = getInitials(nomeCompleto);
+    }
+}

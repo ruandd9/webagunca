@@ -10,37 +10,30 @@ function validatePassword(password) {
     return password.length >= 8 && !password.includes(' ');
 }
 
-// Função para registrar um novo usuário
+// Função para registrar um novo usuário localmente
 function registerUser(email, nomeCompleto, senha) {
-    // Validar email
     if (!validateEmail(email)) {
         throw new Error('Email inválido');
     }
-
-    // Validar senha
     if (!validatePassword(senha)) {
         throw new Error('A senha deve ter no mínimo 8 caracteres e não pode conter espaços');
     }
 
-    // Verificar se o usuário já existe
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     if (users.some(user => user.email === email)) {
         throw new Error('Este email já está cadastrado');
     }
 
-    // Criar novo usuário
     const newUser = {
         email,
         nomeCompleto,
-        senha, // Em um ambiente real, a senha deveria ser criptografada
+        senha, // Em ambiente real, use hash
         dataCadastro: new Date().toISOString()
     };
 
-    // Salvar usuário
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 
-    // Criar dados do usuário
     const userData = {
         email,
         nomeCompleto,
@@ -51,27 +44,22 @@ function registerUser(email, nomeCompleto, senha) {
     return userData;
 }
 
-// Função para fazer login
-function loginUser(email, senha) {
-    // Validar email
+// Função para fazer login local
+function loginUserLocal(email, senha) {
     if (!validateEmail(email)) {
         throw new Error('Email inválido');
     }
 
-    // Buscar usuário
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find(u => u.email === email);
 
     if (!user) {
         throw new Error('Usuário não encontrado');
     }
-
-    // Verificar senha
     if (user.senha !== senha) {
         throw new Error('Senha incorreta');
     }
 
-    // Criar dados do usuário
     const userData = {
         email: user.email,
         nomeCompleto: user.nomeCompleto,
@@ -82,15 +70,46 @@ function loginUser(email, senha) {
     return userData;
 }
 
+// Função para fazer login via API (backend)
+async function loginUserApi(email, password) {
+    try {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Salva o ID do usuário e o token JWT.
+            localStorage.setItem('userId', data.user._id);
+            localStorage.setItem('token', data.token);
+            // Redireciona para a página correta após o login
+            window.location.href = './public/board-page.html';
+        } else {
+            alert(data.mensagem || 'Erro ao fazer login');
+        }
+    } catch (error) {
+        alert('Erro na conexão com o servidor.');
+        console.error(error);
+    }
+}
+
+
 // Função para fazer logout
 function logoutUser() {
+    // Remove todas as chaves de autenticação para garantir a saída
     localStorage.removeItem('userData');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
     window.location.href = '../index.html';
 }
 
 // Função para verificar se o usuário está logado
 function isUserLoggedIn() {
-    return !!localStorage.getItem('userData');
+    // A verificação é feita pela existência do token, que é a informação de autenticação
+    return !!localStorage.getItem('token');
 }
 
 // Função para redirecionar se não estiver logado
@@ -103,10 +122,11 @@ function requireLogin() {
 // Exportar funções
 window.auth = {
     registerUser,
-    loginUser,
+    loginUserLocal,
+    loginUserApi,
     logoutUser,
     isUserLoggedIn,
     requireLogin,
     validateEmail,
     validatePassword
-}; 
+};
