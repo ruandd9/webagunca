@@ -101,6 +101,12 @@ npm install express mongoose cors dotenv bcryptjs jsonwebtoken
 
 ⚠️ Dica: após a instalação, não se esqueça de criar um arquivo .env no diretório do backend com suas variáveis de ambiente, como MONGO_URI e JWT_SECRET.
 
+```bash arquivo .env
+MONGODB_URI=mongodb+srv://baguncasuporte:baguncadb@webagunca.1dwrpea.mongodb.net/?retryWrites=true&w=majority&appName=webagunca
+PORT=5000
+JWT_SECRET=baguncaDBSuporteBagunca12345
+```
+
 ---
 
 <h2 align="center">📸 Prévia do Design</h2>
@@ -164,5 +170,6 @@ O **Bagunça** foi desenvolvido como parte do Projeto Integrador do SENAC-DF, um
 <p align="center">
   Junte-se a nós e transforme a organização de tarefas em algo simples e colaborativo para jovens universitários! 🚀
 </p>
+
 
 
