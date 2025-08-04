@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema({
   criadoEm: {
     type: Date,
     default: Date.now
+  },
+  profileImage: {
+    type: String,
+    default: '' // base64 ou url
+  },
+  profileImageType: {
+    type: String,
+    default: '' // ex: 'image/png', 'image/jpeg'
   }
 });
 
