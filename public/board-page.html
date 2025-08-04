@@ -110,7 +110,7 @@
             </div>
         
             <div class="flex justify-center md:justify-start space-x-4 mt-11 mb-11">
-                <button disabled class="bg-gray-800 border border-gray-700 px-4 md:px-6 py-4 md:py-6 rounded-lg flex items-center space-x-2 transition-all w-full md:w-auto opacity-50 cursor-not-allowed">
+                <button class="bg-gray-800 border border-gray-700 px-4 md:px-6 py-4 md:py-6 rounded-lg flex items-center space-x-2 transition-all w-full md:w-auto hover:bg-gray-700 add-members-btn">
                     <i class="fas fa-user-plus mr-2"></i>
                     <span>Adicionar Membros a um quadro existente</span>
                 </button>
@@ -128,6 +128,102 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
         });
+
+        // Botão de adicionar membros
+        document.querySelector('.add-members-btn').addEventListener('click', function() {
+            // Mostrar modal para selecionar quadro
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-gray-800 rounded-lg p-6 w-[500px]">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-lg font-semibold">Selecionar Quadro</h2>
+                        <button class="text-gray-400 hover:text-white close-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-gray-400">Selecione um quadro para adicionar membros:</p>
+                        <div class="boards-list space-y-2 max-h-60 overflow-y-auto">
+                            <div class="text-center text-gray-400 py-4">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Carregando quadros...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Carregar quadros
+            loadBoardsForMembers(modal);
+
+            // Event listeners
+            const closeBtn = modal.querySelector('.close-modal');
+            const closeModal = () => modal.remove();
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+
+        // Função para carregar quadros para seleção de membros
+        async function loadBoardsForMembers(modal) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:5000/api/boards', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar quadros.');
+                }
+
+                const boards = await response.json();
+                const boardsList = modal.querySelector('.boards-list');
+
+                if (boards.length === 0) {
+                    boardsList.innerHTML = `
+                        <div class="text-center text-gray-400 py-4">
+                            Nenhum quadro encontrado.
+                        </div>
+                    `;
+                } else {
+                    boardsList.innerHTML = boards.map(board => `
+                        <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg hover:bg-gray-600 cursor-pointer select-board" data-board-id="${board._id}">
+                            <div>
+                                <div class="font-medium">${board.title}</div>
+                                <div class="text-sm text-gray-400">${board.description || 'Sem descrição'}</div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    `).join('');
+
+                    // Adicionar eventos para selecionar quadro
+                    boardsList.querySelectorAll('.select-board').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const boardId = btn.dataset.boardId;
+                            modal.remove();
+                            window.location.href = `Quadros.html?board=${boardId}`;
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar quadros:', error);
+                const boardsList = modal.querySelector('.boards-list');
+                boardsList.innerHTML = `
+                    <div class="text-center text-red-400 py-4">
+                        Erro ao carregar quadros: ${error.message}
+                    </div>
+                `;
+            }
+        }
     </script>
 </body>
 

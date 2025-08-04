@@ -860,3 +860,227 @@ window.updateCardLabels = async function(cardId, selectedLabels) {
         throw error;
     }
 }
+
+// Modal para adicionar membros ao quadro
+window.showAddMemberModal = function(boardId) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-gray-800 rounded-lg p-6 w-[500px]">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-semibold">Adicionar Membro</h2>
+                <button class="text-gray-400 hover:text-white close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Email do usuário</label>
+                    <input type="email" class="w-full bg-gray-700 text-white rounded px-3 py-2" placeholder="Digite o email do usuário...">
+                </div>
+                <div class="text-sm text-gray-400">
+                    <p>• Apenas usuários cadastrados podem ser adicionados</p>
+                    <p>• O usuário receberá acesso ao quadro</p>
+                    <p>• Apenas o dono do quadro pode adicionar membros</p>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button class="px-4 py-2 text-gray-400 hover:text-white cancel">Cancelar</button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 add-member">Adicionar Membro</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    const closeBtn = modal.querySelector('.close-modal');
+    const cancelBtn = modal.querySelector('.cancel');
+    const addMemberBtn = modal.querySelector('.add-member');
+    const emailInput = modal.querySelector('input[type="email"]');
+
+    const closeModal = () => modal.remove();
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    addMemberBtn.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+            emailInput.classList.add('border', 'border-red-500');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/board-members', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    boardId: boardId,
+                    email: email
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao adicionar membro.');
+            }
+
+            const result = await response.json();
+            alert('Membro adicionado com sucesso!');
+            closeModal();
+            
+            // Recarregar a lista de membros se necessário
+            if (typeof loadBoardMembers === 'function') {
+                loadBoardMembers(boardId);
+            }
+        } catch (error) {
+            console.error('Erro ao adicionar membro:', error);
+            alert('Erro ao adicionar membro: ' + error.message);
+        }
+    });
+};
+
+// Modal para gerenciar membros do quadro
+window.showManageMembersModal = function(boardId) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-gray-800 rounded-lg p-6 w-[600px] max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-semibold">Gerenciar Membros</h2>
+                <button class="text-gray-400 hover:text-white close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-md font-medium">Membros do Quadro</h3>
+                    <button class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 add-new-member">
+                        <i class="fas fa-plus mr-1"></i>Adicionar
+                    </button>
+                </div>
+                <div class="members-list space-y-2">
+                    <div class="text-center text-gray-400 py-4">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        Carregando membros...
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    const closeBtn = modal.querySelector('.close-modal');
+    const addNewMemberBtn = modal.querySelector('.add-new-member');
+
+    const closeModal = () => modal.remove();
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    addNewMemberBtn.addEventListener('click', () => {
+        closeModal();
+        window.showAddMemberModal(boardId);
+    });
+
+    // Carregar membros
+    loadBoardMembers(boardId, modal);
+};
+
+// Função para carregar membros do quadro
+async function loadBoardMembers(boardId, modal = null) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/board-members/board/${boardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao carregar membros.');
+        }
+
+        const members = await response.json();
+        
+        if (modal) {
+            const membersList = modal.querySelector('.members-list');
+            if (members.length === 0) {
+                membersList.innerHTML = `
+                    <div class="text-center text-gray-400 py-4">
+                        Nenhum membro adicionado ainda.
+                    </div>
+                `;
+            } else {
+                membersList.innerHTML = members.map(member => `
+                    <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-medium">
+                                ${member.userId.nome.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <div class="font-medium">${member.userId.nome}</div>
+                                <div class="text-sm text-gray-400">${member.userId.email}</div>
+                            </div>
+                        </div>
+                        <button class="text-red-400 hover:text-red-300 p-2 remove-member" data-member-id="${member._id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                // Adicionar eventos para remover membros
+                membersList.querySelectorAll('.remove-member').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const memberId = btn.dataset.memberId;
+                        if (confirm('Tem certeza que deseja remover este membro?')) {
+                            try {
+                                const deleteResponse = await fetch(`http://localhost:5000/api/board-members/${memberId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    }
+                                });
+
+                                if (!deleteResponse.ok) {
+                                    throw new Error('Erro ao remover membro.');
+                                }
+
+                                alert('Membro removido com sucesso!');
+                                loadBoardMembers(boardId, modal);
+                            } catch (error) {
+                                console.error('Erro ao remover membro:', error);
+                                alert('Erro ao remover membro: ' + error.message);
+                            }
+                        }
+                    });
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao carregar membros:', error);
+        if (modal) {
+            const membersList = modal.querySelector('.members-list');
+            membersList.innerHTML = `
+                <div class="text-center text-red-400 py-4">
+                    Erro ao carregar membros: ${error.message}
+                </div>
+            `;
+        }
+    }
+}

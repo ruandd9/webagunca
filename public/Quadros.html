@@ -93,8 +93,8 @@
                             <div class="flex -space-x-2">
                                 <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
                                 <img src="https://ui-avatars.com/api/?name=Jane+Smith" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
-                                <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800">
-                                    <i class="fas fa-plus text-sm"></i>
+                                <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800 manage-members-btn" title="Gerenciar Membros">
+                                    <i class="fas fa-user-plus text-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -675,6 +675,18 @@
                 addListButton.addEventListener('click', () => {
                     if (typeof window.showAddListModal === 'function') {
                         window.showAddListModal();
+                    }
+                });
+            }
+
+            // Inicializar botão de gerenciar membros
+            const manageMembersBtn = document.querySelector('.manage-members-btn');
+            if (manageMembersBtn) {
+                manageMembersBtn.addEventListener('click', () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const boardId = urlParams.get('board');
+                    if (boardId && typeof window.showManageMembersModal === 'function') {
+                        window.showManageMembersModal(boardId);
                     }
                 });
             }
