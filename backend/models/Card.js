@@ -6,7 +6,7 @@ const cardSchema = new mongoose.Schema({
   // Referência ao quadro
   boardId: { type: mongoose.Schema.Types.ObjectId, ref: 'Board', required: true },
   // Referência à lista
-  listId: { type: mongoose.Schema.Types.ObjectId, ref: 'List', required: true },
+  listId: { type: String, required: true }, // Alterado de ObjectId para String
   // Título do cartão
   title: { type: String, required: true },
   // Descrição do cartão

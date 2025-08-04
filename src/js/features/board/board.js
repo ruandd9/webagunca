@@ -8,7 +8,7 @@ window.draggedCard = null;
 window.originalList = null;
 
 // Verificar se há um cartão para editar quando a página carrega
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Carregar tema
     const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settings.theme) {
             document.documentElement.setAttribute('data-theme', settings.theme);
         }
+    }
+
+    // Verificar se o usuário está logado
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '../index.html';
+        return;
     }
 
     // Obter o ID do quadro da URL
@@ -45,21 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         boardTitle.textContent = board.title;
     }
 
-    // Carregar estado do quadro
-    const savedState = localStorage.getItem(`board_${boardId}`);
-    if (savedState) {
-        window.boardState = JSON.parse(savedState);
-    } else {
-        // Estado inicial do quadro
-        window.boardState = {
-            lists: {
-                'para-fazer': [],
-                'fazendo': [],
-                'concluido': []
-            }
-        };
-        localStorage.setItem(`board_${boardId}`, JSON.stringify(window.boardState));
-    }
+    // Carregar cards do banco de dados
+    await loadCardsFromDatabase(boardId);
 
     // Inicializar filtros
     const filterDropdown = document.getElementById('filter-dropdown');
@@ -146,15 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Move o cartão para a nova lista
                 const cardId = window.draggedCard.dataset.cardId;
-                const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-                
-                if (cardIndex !== -1) {
-                    const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
-                    window.boardState.lists[targetListId].push(movedCard);
-                    
-                    window.saveBoardState();
-                    window.renderBoard();
-                }
+                moveCardToNewList(cardId, sourceListId, targetListId);
             }
         });
     });
@@ -178,26 +164,145 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.draggedCard && window.originalList) {
                 const sourceListId = window.originalList.id;
                 const cardId = window.draggedCard.dataset.cardId;
-                const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-
-                if (cardIndex !== -1) {
-                    // Remove o cartão da lista
-                    window.boardState.lists[sourceListId].splice(cardIndex, 1);
-                    window.saveBoardState();
-                    window.renderBoard();
-                }
+                deleteCardFromDatabase(cardId);
             }
         });
     }
 });
 
-// Função para salvar o estado do quadro
-window.saveBoardState = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const boardId = urlParams.get('board');
-    if (boardId) {
-        localStorage.setItem(`board_${boardId}`, JSON.stringify(window.boardState));
+// Função para carregar cards do banco de dados
+async function loadCardsFromDatabase(boardId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/cards/board/${boardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao buscar cards da API.');
+        }
+
+        const cards = await response.json();
+        
+        // Organizar cards por lista
+        window.boardState = {
+            lists: {
+                'para-fazer': [],
+                'fazendo': [],
+                'concluido': []
+            }
+        };
+
+        // Mapear cards para as listas apropriadas
+        cards.forEach(card => {
+            const listId = card.listId || 'para-fazer'; // Default para 'para-fazer' se não especificado
+            if (window.boardState.lists[listId]) {
+                window.boardState.lists[listId].push({
+                    id: card._id,
+                    title: card.title,
+                    description: card.description,
+                    deadline: card.dueDate,
+                    completed: card.completed,
+                    createdBy: card.createdBy,
+                    createdAt: card.createdAt,
+                    updatedAt: card.updatedAt,
+                    comments: 0, // Placeholder - pode ser expandido depois
+                    attachments: 0, // Placeholder - pode ser expandido depois
+                    labels: [], // Placeholder - pode ser expandido depois
+                    assignees: [] // Placeholder - pode ser expandido depois
+                });
+            }
+        });
+
+        console.log('Cards carregados do banco:', window.boardState);
+    } catch (error) {
+        console.error('Erro ao carregar cards:', error);
+        // Fallback para estado vazio se houver erro
+        window.boardState = {
+            lists: {
+                'para-fazer': [],
+                'fazendo': [],
+                'concluido': []
+            }
+        };
     }
+}
+
+// Função para mover card entre listas no banco de dados
+async function moveCardToNewList(cardId, sourceListId, targetListId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                listId: targetListId
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao mover card.');
+        }
+
+        // Atualizar estado local
+        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+        
+        if (cardIndex !== -1) {
+            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
+            window.boardState.lists[targetListId].push(movedCard);
+            window.renderBoard();
+        }
+    } catch (error) {
+        console.error('Erro ao mover card:', error);
+        alert('Erro ao mover card: ' + error.message);
+    }
+}
+
+// Função para deletar card do banco de dados
+async function deleteCardFromDatabase(cardId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao deletar card.');
+        }
+
+        // Remover do estado local
+        Object.keys(window.boardState.lists).forEach(listId => {
+            const cardIndex = window.boardState.lists[listId].findIndex(card => card.id === cardId);
+            if (cardIndex !== -1) {
+                window.boardState.lists[listId].splice(cardIndex, 1);
+            }
+        });
+        
+        window.renderBoard();
+    } catch (error) {
+        console.error('Erro ao deletar card:', error);
+        alert('Erro ao deletar card: ' + error.message);
+    }
+}
+
+// Função para salvar o estado do quadro (mantida para compatibilidade)
+window.saveBoardState = function() {
+    // Esta função agora é principalmente para compatibilidade
+    // Os dados são salvos diretamente no banco quando há mudanças
+    console.log('Estado do quadro atualizado:', window.boardState);
 };
 
 // Variáveis globais para suporte touch
@@ -409,15 +514,7 @@ window.renderBoard = function() {
                         
                         // Move o cartão para a nova lista
                         const cardId = window.draggedCard.dataset.cardId;
-                        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-                        
-                        if (cardIndex !== -1) {
-                            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
-                            window.boardState.lists[targetListId].push(movedCard);
-                            
-                            window.saveBoardState();
-                            window.renderBoard();
-                        }
+                        moveCardToNewList(cardId, sourceListId, targetListId);
                     }
                 });
                 
@@ -776,15 +873,8 @@ function handleTouchEnd(e) {
         const sourceListId = window.originalList.id;
         const cardId = window.draggedCard.dataset.cardId;
         
-        // Move o cartão para a nova lista
-        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-        
-        if (cardIndex !== -1) {
-            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
-            window.boardState.lists[targetListId].push(movedCard);
-            window.saveBoardState();
-            window.renderBoard();
-        }
+        // Move o cartão para a nova lista usando o banco de dados
+        moveCardToNewList(cardId, sourceListId, targetListId);
     }
     
     window.draggedCard.classList.remove('opacity-50');

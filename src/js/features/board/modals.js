@@ -72,7 +72,7 @@ window.showAddCardModal = function(listId) {
         if (e.target === modal) closeModal();
     });
 
-    createBtn.addEventListener('click', () => {
+    createBtn.addEventListener('click', async () => {
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
@@ -83,31 +83,73 @@ window.showAddCardModal = function(listId) {
             .filter(cb => cb.checked)
             .map(cb => cb.value);
 
-        const card = {
-            id: Date.now().toString(),
-            title,
-            description: descriptionInput.value.trim(),
-            deadline: deadlineInput.value,
-            labels: selectedLabels,
-            comments: 0,
-            attachments: 0,
-            assignees: [],
-            createdAt: new Date().toISOString()
-        };
+        try {
+            // Obter boardId da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const boardId = urlParams.get('board');
+            
+            if (!boardId) {
+                throw new Error('ID do quadro não encontrado');
+            }
 
-        // Garante que a lista existe
-        if (!window.boardState.lists[listId]) {
-            window.boardState.lists[listId] = [];
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token de autenticação não encontrado');
+            }
+
+            // Criar card no banco de dados
+            const response = await fetch('http://localhost:5000/api/cards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    boardId,
+                    listId,
+                    title,
+                    description: descriptionInput.value.trim(),
+                    dueDate: deadlineInput.value || null
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao criar card.');
+            }
+
+            const newCard = await response.json();
+            
+            // Adicionar ao estado local
+            const card = {
+                id: newCard.card._id,
+                title: newCard.card.title,
+                description: newCard.card.description,
+                deadline: newCard.card.dueDate,
+                labels: selectedLabels,
+                comments: 0,
+                attachments: 0,
+                assignees: [],
+                createdAt: newCard.card.createdAt,
+                completed: newCard.card.completed
+            };
+
+            // Garante que a lista existe
+            if (!window.boardState.lists[listId]) {
+                window.boardState.lists[listId] = [];
+            }
+
+            // Adiciona o cartão
+            window.boardState.lists[listId].push(card);
+            
+            // Renderiza
+            window.renderBoard();
+            
+            closeModal();
+        } catch (error) {
+            console.error('Erro ao criar card:', error);
+            alert('Erro ao criar card: ' + error.message);
         }
-
-        // Adiciona o cartão
-        window.boardState.lists[listId].push(card);
-        
-        // Salva e renderiza
-        window.saveBoardState();
-        window.renderBoard();
-        
-        closeModal();
     });
 }
 
@@ -530,60 +572,141 @@ window.showCardModal = function(card) {
     });
 
     // Salvar alterações
-    saveBtn.addEventListener('click', () => {
+    saveBtn.addEventListener('click', async () => {
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
             return;
         }
 
-        card.title = title;
-        card.description = descriptionInput.value.trim();
-        card.deadline = deadlineInput.value;
-        card.labels = [...labelCheckboxes]
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token de autenticação não encontrado');
+            }
 
-        window.saveBoardState();
-        window.renderBoard();
-        closeModal();
+            // Atualizar card no banco de dados
+            const response = await fetch(`http://localhost:5000/api/cards/${card.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title,
+                    description: descriptionInput.value.trim(),
+                    dueDate: deadlineInput.value || null
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao atualizar card.');
+            }
+
+            // Atualizar estado local
+            card.title = title;
+            card.description = descriptionInput.value.trim();
+            card.deadline = deadlineInput.value;
+            card.labels = [...labelCheckboxes]
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            window.renderBoard();
+            closeModal();
+        } catch (error) {
+            console.error('Erro ao atualizar card:', error);
+            alert('Erro ao atualizar card: ' + error.message);
+        }
     });
 
     deleteBtn.addEventListener('click', () => {
-        window.showConfirmModal('Tem certeza que deseja excluir este cartão?', () => {
-            // Encontrar o cartão no estado e remover
-            for (const listId in window.boardState.lists) {
-                const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
-                if (idx !== -1) {
-                    window.boardState.lists[listId].splice(idx, 1);
-                    window.saveBoardState();
-                    window.renderBoard();
-                    break;
+        window.showConfirmModal('Tem certeza que deseja excluir este cartão?', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('Token de autenticação não encontrado');
                 }
+
+                // Deletar card do banco de dados
+                const response = await fetch(`http://localhost:5000/api/cards/${card.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.mensagem || 'Erro ao deletar card.');
+                }
+
+                // Remover do estado local
+                for (const listId in window.boardState.lists) {
+                    const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
+                    if (idx !== -1) {
+                        window.boardState.lists[listId].splice(idx, 1);
+                        break;
+                    }
+                }
+                
+                window.renderBoard();
+                closeModal();
+            } catch (error) {
+                console.error('Erro ao deletar card:', error);
+                alert('Erro ao deletar card: ' + error.message);
             }
-            closeModal();
         });
     });
 
     // Adicionar evento para marcar como concluído
-    completeBtn.addEventListener('click', () => {
-        // Verifica se a lista "concluido" existe, se não, cria
-        if (!window.boardState.lists['concluido']) {
-            window.boardState.lists['concluido'] = [];
-        }
-
-        // Encontra o cartão na lista atual e remove
-        for (const listId in window.boardState.lists) {
-            const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
-            if (idx !== -1) {
-                const [movedCard] = window.boardState.lists[listId].splice(idx, 1);
-                // Adiciona o cartão à lista "concluido"
-                window.boardState.lists['concluido'].push(movedCard);
-                window.saveBoardState();
-                window.renderBoard();
-                break;
+    completeBtn.addEventListener('click', async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token de autenticação não encontrado');
             }
+
+            // Atualizar card no banco de dados para marcar como concluído
+            const response = await fetch(`http://localhost:5000/api/cards/${card.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    listId: 'concluido',
+                    completed: true
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao marcar card como concluído.');
+            }
+
+            // Verifica se a lista "concluido" existe, se não, cria
+            if (!window.boardState.lists['concluido']) {
+                window.boardState.lists['concluido'] = [];
+            }
+
+            // Encontra o cartão na lista atual e remove
+            for (const listId in window.boardState.lists) {
+                const idx = window.boardState.lists[listId].findIndex(c => c.id === card.id);
+                if (idx !== -1) {
+                    const [movedCard] = window.boardState.lists[listId].splice(idx, 1);
+                    movedCard.completed = true;
+                    // Adiciona o cartão à lista "concluido"
+                    window.boardState.lists['concluido'].push(movedCard);
+                    break;
+                }
+            }
+            
+            window.renderBoard();
+            closeModal();
+        } catch (error) {
+            console.error('Erro ao marcar card como concluído:', error);
+            alert('Erro ao marcar card como concluído: ' + error.message);
         }
-        closeModal();
     });
 }
