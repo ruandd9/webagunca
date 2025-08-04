@@ -27,4 +27,32 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Rota para buscar listas de um quadro específico
+router.get('/board/:boardId', async (req, res) => {
+  try {
+    const { boardId } = req.params;
+    const listas = await List.find({ boardId: boardId }).sort({ position: 1 });
+    res.json(listas);
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao buscar listas do quadro.', erro: err.message });
+  }
+});
+
+// Rota para deletar uma lista
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lista = await List.findById(id);
+    
+    if (!lista) {
+      return res.status(404).json({ mensagem: 'Lista não encontrada.' });
+    }
+    
+    await List.findByIdAndDelete(id);
+    res.json({ mensagem: 'Lista deletada com sucesso!' });
+  } catch (err) {
+    res.status(500).json({ mensagem: 'Erro ao deletar lista.', erro: err.message });
+  }
+});
+
 module.exports = router;

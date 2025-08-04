@@ -227,7 +227,7 @@ window.showAddListModal = function() {
         if (e.target === modal) closeModal();
     });
 
-    createBtn.addEventListener('click', () => {
+    createBtn.addEventListener('click', async () => {
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
@@ -241,93 +241,129 @@ window.showAddListModal = function() {
             return;
         }
 
-        // Cria a nova lista no DOM
-        const board = document.querySelector('.flex.space-x-6');
-        const addListBtn = document.querySelector('.add-list-btn');
-        
-        const newList = document.createElement('div');
-        newList.id = listId;
-        newList.className = 'list w-80 bg-gray-800 rounded-lg p-4 flex flex-col';
-        newList.innerHTML = `
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">${title}</h2>
-                <button class="text-gray-400 hover:text-white delete-list-btn">
-                    <i class="fas fa-trash"></i>
+        try {
+            // Obter o ID do quadro da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const boardId = urlParams.get('board');
+            
+            if (!boardId) {
+                window.showErrorModal('ID do quadro não encontrado');
+                return;
+            }
+
+            // Salvar a lista no banco de dados
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/lists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    boardId: boardId,
+                    name: title,
+                    position: Object.keys(window.boardState.lists).length // Posição baseada no número de listas existentes
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao criar lista.');
+            }
+
+            const newListData = await response.json();
+
+            // Cria a nova lista no DOM
+            const board = document.querySelector('.flex.space-x-6');
+            const addListBtn = document.querySelector('.add-list-btn');
+            
+            const newList = document.createElement('div');
+            newList.id = listId;
+            newList.className = 'list w-80 bg-gray-800 rounded-lg p-4 flex flex-col';
+            newList.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">${title}</h2>
+                    <button class="text-gray-400 hover:text-white delete-list-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="list-content space-y-4 flex-1">
+                </div>
+                <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Adicionar cartão
                 </button>
-            </div>
-            <div class="list-content space-y-4 flex-1">
-            </div>
-            <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
-                <i class="fas fa-plus mr-2"></i>
-                Adicionar cartão
-            </button>
-        `;
+            `;
 
-        // Insere a nova lista antes do botão de adicionar
-        board.insertBefore(newList, addListBtn);
+            // Insere a nova lista antes do botão de adicionar
+            board.insertBefore(newList, addListBtn);
 
-        // Atualiza o estado
-        if (!window.boardState) {
-            window.boardState = { lists: {} };
-        }
-        if (!window.boardState.lists) {
-            window.boardState.lists = {};
-        }
-        window.boardState.lists[listId] = [];
-        window.saveBoardState();
+            // Atualiza o estado
+            if (!window.boardState) {
+                window.boardState = { lists: {} };
+            }
+            if (!window.boardState.lists) {
+                window.boardState.lists = {};
+            }
+            window.boardState.lists[listId] = [];
+            window.saveBoardState();
 
-        // Adiciona eventos
-        const addCardBtn = newList.querySelector('.add-card-btn');
-        addCardBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.showAddCardModal(listId);
-        });
-
-        const deleteListBtn = newList.querySelector('.delete-list-btn');
-        deleteListBtn.addEventListener('click', () => window.deleteList(listId));
-
-        // Adiciona eventos de drag & drop
-        const listContent = newList.querySelector('.list-content');
-        if (listContent) {
-            listContent.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                const draggingOver = listContent.querySelector('.dragging-over');
-                if (!draggingOver) {
-                    listContent.classList.add('dragging-over');
-                }
+            // Adiciona eventos
+            const addCardBtn = newList.querySelector('.add-card-btn');
+            addCardBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.showAddCardModal(listId);
             });
-            
-            listContent.addEventListener('dragleave', (e) => {
-                if (!e.relatedTarget || !listContent.contains(e.relatedTarget)) {
-                    listContent.classList.remove('dragging-over');
-                }
-            });
-            
-            listContent.addEventListener('drop', (e) => {
-                e.preventDefault();
-                listContent.classList.remove('dragging-over');
-                
-                if (window.draggedCard && window.originalList) {
-                    const targetList = listContent.closest('.list');
-                    const targetListId = targetList.id;
-                    const sourceListId = window.originalList.id;
-                    
-                    // Move o cartão para a nova lista
-                    const cardId = window.draggedCard.dataset.cardId;
-                    const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-                    
-                    if (cardIndex !== -1) {
-                        const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
-                        window.boardState.lists[targetListId].push(movedCard);
-                        
-                        window.saveBoardState();
-                        window.renderBoard();
+
+            const deleteListBtn = newList.querySelector('.delete-list-btn');
+            deleteListBtn.addEventListener('click', () => window.deleteList(listId));
+
+            // Adiciona eventos de drag & drop
+            const listContent = newList.querySelector('.list-content');
+            if (listContent) {
+                listContent.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const draggingOver = listContent.querySelector('.dragging-over');
+                    if (!draggingOver) {
+                        listContent.classList.add('dragging-over');
                     }
-                }
-            });
+                });
+                
+                listContent.addEventListener('dragleave', (e) => {
+                    if (!e.relatedTarget || !listContent.contains(e.relatedTarget)) {
+                        listContent.classList.remove('dragging-over');
+                    }
+                });
+                
+                listContent.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    listContent.classList.remove('dragging-over');
+                    
+                    if (window.draggedCard && window.originalList) {
+                        const targetList = listContent.closest('.list');
+                        const targetListId = targetList.id;
+                        const sourceListId = window.originalList.id;
+                        
+                        // Move o cartão para a nova lista
+                        const cardId = window.draggedCard.dataset.cardId;
+                        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
+                        
+                        if (cardIndex !== -1) {
+                            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
+                            window.boardState.lists[targetListId].push(movedCard);
+                            
+                            window.saveBoardState();
+                            window.renderBoard();
+                        }
+                    }
+                });
+            }
+            
+            closeModal();
+        } catch (error) {
+            console.error('Erro ao criar lista:', error);
+            window.showErrorModal('Erro ao criar lista: ' + error.message);
         }
-        
-        closeModal();
     });
 }
 

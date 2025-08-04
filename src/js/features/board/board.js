@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Carregar cards do banco de dados
         await loadCardsFromDatabase(boardId);
+        await loadListsFromDatabase(boardId); // Carregar listas
 
     } catch (error) {
         console.error('Erro ao carregar quadro:', error);
@@ -262,6 +263,84 @@ async function loadCardsFromDatabase(boardId) {
     }
 }
 
+// Função para carregar listas do banco de dados
+async function loadListsFromDatabase(boardId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/lists/board/${boardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao buscar listas da API.');
+        }
+
+        const lists = await response.json();
+        
+        // Criar listas dinamicamente no DOM
+        const boardContainer = document.querySelector('.flex.space-x-6');
+        const addListBtn = document.querySelector('.add-list-btn');
+        
+        lists.forEach(list => {
+            const listId = list.name.toLowerCase().replace(/\s+/g, '-');
+            
+            // Verificar se a lista já existe no DOM
+            if (!document.getElementById(listId)) {
+                const newList = document.createElement('div');
+                newList.id = listId;
+                newList.className = 'list w-80 bg-gray-800 rounded-lg p-4 flex flex-col';
+                newList.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">${list.name}</h2>
+                        <button class="text-gray-400 hover:text-white delete-list-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="list-content space-y-4 flex-1">
+                    </div>
+                    <button class="add-card-btn w-full text-gray-400 hover:text-white text-sm py-2 flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Adicionar cartão
+                    </button>
+                `;
+
+                // Inserir a lista antes do botão de adicionar
+                if (addListBtn) {
+                    boardContainer.insertBefore(newList, addListBtn);
+                } else {
+                    boardContainer.appendChild(newList);
+                }
+
+                // Adicionar eventos
+                const addCardBtn = newList.querySelector('.add-card-btn');
+                addCardBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.showAddCardModal(listId);
+                });
+
+                const deleteListBtn = newList.querySelector('.delete-list-btn');
+                deleteListBtn.addEventListener('click', () => window.deleteList(listId));
+            }
+
+            // Adicionar a lista ao estado se não existir
+            if (!window.boardState.lists[listId]) {
+                window.boardState.lists[listId] = [];
+            }
+        });
+
+        console.log('Listas carregadas do banco:', lists);
+    } catch (error) {
+        console.error('Erro ao carregar listas:', error);
+        // Não mostrar erro se não houver listas (pode ser um quadro novo)
+        console.log('Nenhuma lista encontrada ou erro ao carregar listas');
+    }
+}
+
 // Função para mover card entre listas no banco de dados
 async function moveCardToNewList(cardId, sourceListId, targetListId) {
     try {
@@ -384,16 +463,61 @@ window.showConfirmModal = function(message, onConfirm) {
     });
 };
 
-window.deleteList = function(listId) {
-    window.showConfirmModal('Tem certeza que deseja excluir esta lista e todos os seus cartões?', () => {
-        // Remove do estado
-        delete window.boardState.lists[listId];
-        window.saveBoardState();
+window.deleteList = async function(listId) {
+    window.showConfirmModal('Tem certeza que deseja excluir esta lista e todos os seus cartões?', async () => {
+        try {
+            // Obter o ID do quadro da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const boardId = urlParams.get('board');
+            
+            if (!boardId) {
+                window.showErrorModal('ID do quadro não encontrado');
+                return;
+            }
 
-        // Remove do DOM
-        const listElement = document.getElementById(listId);
-        if (listElement) {
-            listElement.remove();
+            // Buscar a lista no banco de dados para obter o ID
+            const token = localStorage.getItem('token');
+            const listsResponse = await fetch(`http://localhost:5000/api/lists/board/${boardId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (listsResponse.ok) {
+                const lists = await listsResponse.json();
+                const listToDelete = lists.find(list => list.name.toLowerCase().replace(/\s+/g, '-') === listId);
+                
+                if (listToDelete) {
+                    // Deletar a lista do banco de dados
+                    const deleteResponse = await fetch(`http://localhost:5000/api/lists/${listToDelete._id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!deleteResponse.ok) {
+                        const errorData = await deleteResponse.json();
+                        throw new Error(errorData.mensagem || 'Erro ao deletar lista.');
+                    }
+                }
+            }
+
+            // Remove do estado
+            delete window.boardState.lists[listId];
+            window.saveBoardState();
+
+            // Remove do DOM
+            const listElement = document.getElementById(listId);
+            if (listElement) {
+                listElement.remove();
+            }
+        } catch (error) {
+            console.error('Erro ao deletar lista:', error);
+            window.showErrorModal('Erro ao deletar lista: ' + error.message);
         }
     });
 };
