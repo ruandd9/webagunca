@@ -51,9 +51,15 @@ router.get('/:id', protect, async (req, res) => {
             return res.status(404).json({ mensagem: 'Quadro não encontrado.' });
         }
 
+
         // Verifica se o usuário logado é o dono do quadro
         if (board.owner.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ mensagem: 'Não autorizado para acessar este quadro.' });
+            // Se não for dono, verifica se é membro
+            const BoardMember = require('../models/BoardMember');
+            const isMember = await BoardMember.findOne({ boardId: board._id, userId: req.user._id });
+            if (!isMember) {
+                return res.status(403).json({ mensagem: 'Não autorizado para acessar este quadro.' });
+            }
         }
 
         res.json(board);
