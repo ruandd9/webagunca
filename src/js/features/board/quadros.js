@@ -59,8 +59,12 @@ async function loadBoards() {
         const memberBoards = await responseMember.json();
 
         // Remover duplicados (caso o usuário seja dono e membro)
+        // memberBoards é uma lista de BoardMember, cada um tem boardId (populado)
         const ownedIds = new Set(ownedBoards.map(b => b._id));
-        const onlyMemberBoards = memberBoards.filter(b => !ownedIds.has(b._id));
+        // Filtra apenas os quadros onde o usuário não é dono
+        const onlyMemberBoards = memberBoards
+            .filter(bm => bm.boardId && !ownedIds.has(bm.boardId._id))
+            .map(bm => bm.boardId); // Extrai o objeto Board
 
         boardsContainer.innerHTML = '';
 
