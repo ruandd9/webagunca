@@ -218,9 +218,12 @@ async function loadCardsFromDatabase(boardId) {
         };
 
         // Mapear cards para as listas apropriadas
-        cards.forEach(card => {
+        for (const card of cards) {
             const listId = card.listId || 'para-fazer'; // Default para 'para-fazer' se não especificado
             if (window.boardState.lists[listId]) {
+                // Carregar etiquetas do card
+                const cardLabels = await loadCardLabels(card._id);
+                
                 window.boardState.lists[listId].push({
                     id: card._id,
                     title: card.title,
@@ -232,11 +235,11 @@ async function loadCardsFromDatabase(boardId) {
                     updatedAt: card.updatedAt,
                     comments: 0, // Placeholder - pode ser expandido depois
                     attachments: 0, // Placeholder - pode ser expandido depois
-                    labels: [], // Placeholder - pode ser expandido depois
+                    labels: cardLabels, // Etiquetas carregadas do banco
                     assignees: [] // Placeholder - pode ser expandido depois
                 });
             }
-        });
+        }
 
         console.log('Cards carregados do banco:', window.boardState);
         
@@ -260,6 +263,52 @@ async function loadCardsFromDatabase(boardId) {
         if (typeof window.renderBoard === 'function') {
             window.renderBoard();
         }
+    }
+}
+
+// Função para carregar etiquetas de um card específico
+async function loadCardLabels(cardId) {
+    try {
+        console.log('Carregando etiquetas para card:', cardId);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/card-labels/card/${cardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        console.log('Resposta da API de etiquetas:', response.status);
+        
+        if (!response.ok) {
+            console.log('Erro ao buscar etiquetas, status:', response.status);
+            return []; // Retorna array vazio se não houver etiquetas
+        }
+
+        const labels = await response.json();
+        console.log('Etiquetas encontradas no banco:', labels);
+        
+        // Converter etiquetas do banco para o formato do frontend
+        const convertedLabels = labels.map(label => {
+            console.log('Processando etiqueta:', label);
+            // Encontrar a chave correspondente no window.labels
+            for (const [key, labelInfo] of Object.entries(window.labels)) {
+                console.log('Comparando com:', key, labelInfo);
+                if (labelInfo.text === label.name && labelInfo.color === label.color) {
+                    console.log('Match encontrado:', key);
+                    return key;
+                }
+            }
+            console.log('Nenhum match encontrado para:', label);
+            return null; // Se não encontrar correspondência
+        }).filter(key => key !== null);
+        
+        console.log('Etiquetas convertidas:', convertedLabels);
+        return convertedLabels;
+    } catch (error) {
+        console.error('Erro ao carregar etiquetas do card:', error);
+        return [];
     }
 }
 
@@ -379,9 +428,35 @@ async function moveCardToNewList(cardId, sourceListId, targetListId) {
 async function deleteCardFromDatabase(cardId) {
     try {
         const token = localStorage.getItem('token');
+        
+        // Primeiro, deletar todas as etiquetas do card
+        const labelsResponse = await fetch(`http://localhost:5000/api/card-labels/card/${cardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (labelsResponse.ok) {
+            const labels = await labelsResponse.json();
+            // Deletar cada etiqueta
+            for (const label of labels) {
+                await fetch(`http://localhost:5000/api/card-labels/${label._id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            }
+        }
+
+        // Depois, deletar o card
         const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -398,7 +473,7 @@ async function deleteCardFromDatabase(cardId) {
                 window.boardState.lists[listId].splice(cardIndex, 1);
             }
         });
-        
+
         window.renderBoard();
     } catch (error) {
         console.error('Erro ao deletar card:', error);
@@ -797,6 +872,9 @@ window.renderBoard = function() {
 function createCardElement(card, listId) {
     if (!card || !card.id || !card.title) return null;
 
+    console.log('Criando elemento de card:', card);
+    console.log('Etiquetas do card:', card.labels);
+
     const div = document.createElement('div');
     div.className = 'card bg-gray-700 rounded p-3 cursor-pointer hover:bg-gray-600 transition-colors';
     div.draggable = true;
@@ -831,14 +909,30 @@ function createCardElement(card, listId) {
         }
     }
 
+    // Gerar HTML das etiquetas
+    let labelsHtml = '';
+    if (card.labels && Array.isArray(card.labels) && card.labels.length > 0) {
+        console.log('Renderizando etiquetas:', card.labels);
+        labelsHtml = card.labels.map(label => {
+            console.log('Processando etiqueta:', label);
+            if (window.labels[label]) {
+                console.log('Etiqueta encontrada:', window.labels[label]);
+                return `<span class="px-2 py-1 text-xs rounded ${window.labels[label].color} text-white">
+                    ${window.labels[label].text}
+                </span>`;
+            } else {
+                console.log('Etiqueta não encontrada:', label);
+                return '';
+            }
+        }).join('');
+    } else {
+        console.log('Nenhuma etiqueta para renderizar');
+    }
+
     div.innerHTML = `
         <div class="flex justify-between items-start mb-3">
             <div class="flex space-x-2">
-                ${card.labels && Array.isArray(card.labels) ? card.labels.map(label => `
-                    <span class="px-2 py-1 text-xs rounded ${window.labels[label].color} text-white">
-                        ${window.labels[label].text}
-                    </span>
-                `).join('') : ''}
+                ${labelsHtml}
             </div>
             <button class="text-gray-400 hover:text-white card-menu-btn rounded-sm p-0.5">
                 <i class="fas fa-ellipsis-h"></i>
@@ -874,22 +968,35 @@ function createCardElement(card, listId) {
                     </span>
                 ` : ''}
                 <div class="flex -space-x-2">
-                    ${card.assignees && Array.isArray(card.assignees) ? card.assignees.map(assignee => `
-                        <img src="https://ui-avatars.com/api/?name=${assignee}" 
-                             alt="${assignee}" 
-                             class="w-6 h-6 rounded-full border-2 border-gray-700">
+                    ${card.assignees && card.assignees.length > 0 ? card.assignees.map(assignee => `
+                        <img src="${assignee.avatar || 'https://ui-avatars.com/api/?name=' + assignee.name}" 
+                             alt="${assignee.name}" 
+                             class="w-6 h-6 rounded-full border-2 border-gray-800">
                     `).join('') : ''}
                 </div>
             </div>
         </div>
     `;
 
-    // Adiciona evento de clique para abrir o modal de edição
+    // Adicionar evento de clique para abrir modal de edição
     div.addEventListener('click', (e) => {
         if (!e.target.closest('.card-menu-btn')) {
-            window.showCardModal(card);
+            // Abrir modal de edição do card
+            if (typeof window.showCardModal === 'function') {
+                window.showCardModal(card);
+            }
         }
     });
+
+    // Adicionar menu de contexto para o card
+    const menuBtn = div.querySelector('.card-menu-btn');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Aqui você pode adicionar um menu dropdown com opções como editar, duplicar, etc.
+            console.log('Menu do card clicado');
+        });
+    }
 
     return div;
 }

@@ -352,7 +352,7 @@
         }
 
         // Função para salvar as alterações do card
-        function saveCardChanges() {
+        async function saveCardChanges() {
             if (!currentEditingCard) return;
 
             const titleInput = document.getElementById('edit-card-title');
@@ -360,57 +360,131 @@
             const selectedLabels = Array.from(document.querySelectorAll('.edit-label-checkbox:checked')).map(checkbox => checkbox.value);
             const newComment = document.getElementById('new-comment').value;
 
-            // Atualizar o card
-            currentEditingCard.querySelector('h3').textContent = titleInput.value;
-            const descriptionElement = currentEditingCard.querySelector('p');
-            if (descriptionElement) {
-                descriptionElement.textContent = descriptionInput.value;
-            } else if (descriptionInput.value) {
-                const p = document.createElement('p');
-                p.className = 'text-sm text-gray-400 mt-2';
-                p.textContent = descriptionInput.value;
-                currentEditingCard.appendChild(p);
-            }
+            try {
+                const cardId = currentEditingCard.dataset.cardId;
+                const token = localStorage.getItem('token');
 
-            // Atualizar etiquetas
-            currentEditingCard.setAttribute('data-labels', selectedLabels.join(','));
-            const labelsContainer = currentEditingCard.querySelector('.flex.gap-2');
-            if (labelsContainer) {
-                labelsContainer.innerHTML = selectedLabels.map(label => `
-                    <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
-                        ${window.labels[label].text}
-                    </span>
-                `).join('');
-            }
+                // Atualizar o card no banco de dados
+                const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title: titleInput.value,
+                        description: descriptionInput.value
+                    })
+                });
 
-            // Adicionar novo comentário se houver
-            if (newComment) {
-                const currentComments = currentEditingCard.getAttribute('data-comments')?.split('|') || [];
-                currentComments.push(newComment);
-                currentEditingCard.setAttribute('data-comments', currentComments.join('|'));
-                document.getElementById('new-comment').value = '';
-            }
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.mensagem || 'Erro ao atualizar card.');
+                }
 
-            // Salvar estado
-            saveBoardState();
-            closeEditCardModal();
+                // Atualizar etiquetas no banco de dados
+                if (typeof updateCardLabels === 'function') {
+                    await updateCardLabels(cardId, selectedLabels);
+                }
+
+                // Atualizar o card na interface
+                currentEditingCard.querySelector('h3').textContent = titleInput.value;
+                const descriptionElement = currentEditingCard.querySelector('p');
+                if (descriptionElement) {
+                    descriptionElement.textContent = descriptionInput.value;
+                } else if (descriptionInput.value) {
+                    const p = document.createElement('p');
+                    p.className = 'text-sm text-gray-400 mt-2';
+                    p.textContent = descriptionInput.value;
+                    currentEditingCard.appendChild(p);
+                }
+
+                // Atualizar etiquetas na interface
+                currentEditingCard.setAttribute('data-labels', selectedLabels.join(','));
+                const labelsContainer = currentEditingCard.querySelector('.flex.gap-2');
+                if (labelsContainer) {
+                    labelsContainer.innerHTML = selectedLabels.map(label => `
+                        <span class="px-2 py-1 ${window.labels[label].color} rounded text-xs">
+                            ${window.labels[label].text}
+                        </span>
+                    `).join('');
+                }
+
+                // Adicionar novo comentário se houver
+                if (newComment) {
+                    const currentComments = currentEditingCard.getAttribute('data-comments')?.split('|') || [];
+                    currentComments.push(newComment);
+                    currentEditingCard.setAttribute('data-comments', currentComments.join('|'));
+                    document.getElementById('new-comment').value = '';
+                }
+
+                // Atualizar estado local
+                if (window.boardState && window.boardState.lists) {
+                    // Encontrar o card no estado e atualizar
+                    Object.keys(window.boardState.lists).forEach(listId => {
+                        const cardIndex = window.boardState.lists[listId].findIndex(card => card.id === cardId);
+                        if (cardIndex !== -1) {
+                            window.boardState.lists[listId][cardIndex].title = titleInput.value;
+                            window.boardState.lists[listId][cardIndex].description = descriptionInput.value;
+                            window.boardState.lists[listId][cardIndex].labels = selectedLabels;
+                        }
+                    });
+                }
+
+                closeEditCardModal();
+            } catch (error) {
+                console.error('Erro ao salvar alterações do card:', error);
+                alert('Erro ao salvar alterações: ' + error.message);
+            }
         }
 
         // Função para excluir o card
-        function deleteCard() {
+        async function deleteCard() {
             if (!currentEditingCard) return;
         
             if (confirm('Tem certeza que deseja excluir este cartão?')) {
-                const listContent = currentEditingCard.closest('.list-content');
-                currentEditingCard.remove();
-                
-                // Verifica se agora tem menos de 6 cartões
-                if (listContent.querySelectorAll('.card').length < 6) {
-                    listContent.classList.remove('has-many-cards');
+                try {
+                    const cardId = currentEditingCard.dataset.cardId;
+                    const token = localStorage.getItem('token');
+
+                    // Deletar o card do banco de dados
+                    const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.mensagem || 'Erro ao deletar card.');
+                    }
+
+                    // Remover do DOM
+                    const listContent = currentEditingCard.closest('.list-content');
+                    currentEditingCard.remove();
+                    
+                    // Verifica se agora tem menos de 6 cartões
+                    if (listContent.querySelectorAll('.card').length < 6) {
+                        listContent.classList.remove('has-many-cards');
+                    }
+                    
+                    // Remover do estado local
+                    if (window.boardState && window.boardState.lists) {
+                        Object.keys(window.boardState.lists).forEach(listId => {
+                            const cardIndex = window.boardState.lists[listId].findIndex(card => card.id === cardId);
+                            if (cardIndex !== -1) {
+                                window.boardState.lists[listId].splice(cardIndex, 1);
+                            }
+                        });
+                    }
+                    
+                    closeEditCardModal();
+                } catch (error) {
+                    console.error('Erro ao deletar card:', error);
+                    alert('Erro ao deletar card: ' + error.message);
                 }
-                
-                saveBoardState();
-                closeEditCardModal();
             }
         }
 

@@ -120,6 +120,52 @@ window.showAddCardModal = function(listId) {
 
             const newCard = await response.json();
             
+            // Salvar etiquetas no banco de dados
+            if (selectedLabels.length > 0) {
+                console.log('Etiquetas selecionadas:', selectedLabels);
+                for (const labelKey of selectedLabels) {
+                    const label = window.labels[labelKey];
+                    console.log('Processando etiqueta:', labelKey, label);
+                    if (label) {
+                        try {
+                            console.log('Salvando etiqueta no banco:', {
+                                cardId: newCard.card._id,
+                                name: label.text,
+                                color: label.color
+                            });
+                            
+                            const labelResponse = await fetch('http://localhost:5000/api/card-labels', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    cardId: newCard.card._id,
+                                    name: label.text,
+                                    color: label.color
+                                })
+                            });
+                            
+                            console.log('Resposta da criação de etiqueta:', labelResponse.status);
+                            
+                            if (!labelResponse.ok) {
+                                const errorData = await labelResponse.json();
+                                console.error('Erro ao salvar etiqueta:', errorData);
+                            } else {
+                                const savedLabel = await labelResponse.json();
+                                console.log('Etiqueta salva com sucesso:', savedLabel);
+                            }
+                        } catch (labelError) {
+                            console.error('Erro ao salvar etiqueta:', labelError);
+                            // Não falhar o card se a etiqueta não salvar
+                        }
+                    }
+                }
+            } else {
+                console.log('Nenhuma etiqueta selecionada');
+            }
+            
             // Adicionar ao estado local
             const card = {
                 id: newCard.card._id,
@@ -745,4 +791,72 @@ window.showCardModal = function(card) {
             alert('Erro ao marcar card como concluído: ' + error.message);
         }
     });
+}
+
+// Função para atualizar etiquetas de um card
+window.updateCardLabels = async function(cardId, selectedLabels) {
+    try {
+        const token = localStorage.getItem('token');
+        
+        // Primeiro, buscar etiquetas existentes
+        const existingLabelsResponse = await fetch(`http://localhost:5000/api/card-labels/card/${cardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (existingLabelsResponse.ok) {
+            const existingLabels = await existingLabelsResponse.json();
+            
+            // Deletar etiquetas que não estão mais selecionadas
+            for (const existingLabel of existingLabels) {
+                const labelKey = Object.keys(window.labels).find(key => 
+                    window.labels[key].text === existingLabel.name && 
+                    window.labels[key].color === existingLabel.color
+                );
+                
+                if (!selectedLabels.includes(labelKey)) {
+                    await fetch(`http://localhost:5000/api/card-labels/${existingLabel._id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                }
+            }
+        }
+
+        // Adicionar novas etiquetas selecionadas
+        for (const labelKey of selectedLabels) {
+            const label = window.labels[labelKey];
+            if (label) {
+                // Verificar se a etiqueta já existe
+                const labelExists = existingLabelsResponse.ok && 
+                    (await existingLabelsResponse.json()).some(existingLabel => 
+                        existingLabel.name === label.text && existingLabel.color === label.color
+                    );
+                
+                if (!labelExists) {
+                    await fetch('http://localhost:5000/api/card-labels', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            cardId: cardId,
+                            name: label.text,
+                            color: label.color
+                        })
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar etiquetas:', error);
+        throw error;
+    }
 }
