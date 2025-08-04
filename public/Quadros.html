@@ -584,20 +584,7 @@
             }
 
             // Carregar estado do quadro
-            const savedState = localStorage.getItem('boardState');
-            if (savedState) {
-                window.boardState = JSON.parse(savedState);
-            } else {
-                // Inicializar com estado vazio se não houver dados salvos
-                window.boardState = {
-                    lists: {
-                        'para-fazer': [],
-                        'fazendo': [],
-                        'concluido': []
-                    }
-                };
-            }
-
+            // Removido carregamento do localStorage - agora os dados vêm da API
             // Aguardar um pouco para garantir que todos os scripts foram carregados
             setTimeout(() => {
                 // Renderizar o quadro inicial

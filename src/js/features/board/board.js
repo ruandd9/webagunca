@@ -34,26 +34,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Carregar informações do quadro
-    const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
-    const board = savedBoards.find(b => b.id === boardId);
+    // Carregar informações do quadro da API
+    try {
+        const response = await fetch(`http://localhost:5000/api/boards/${boardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-    if (!board) {
-        window.showErrorModal('Quadro não encontrado');
+        if (!response.ok) {
+            if (response.status === 404) {
+                window.showErrorModal('Quadro não encontrado');
+                return;
+            }
+            const errorData = await response.json();
+            throw new Error(errorData.mensagem || 'Erro ao buscar quadro.');
+        }
+
+        const board = await response.json();
+
+        // Atualizar o título da página
+        document.title = `${board.title} - Bagunça`;
+        
+        // Atualizar o título no header
+        const boardTitle = document.querySelector('.nav-dropdown a span');
+        if (boardTitle) {
+            boardTitle.textContent = board.title;
+        }
+
+        // Carregar cards do banco de dados
+        await loadCardsFromDatabase(boardId);
+
+    } catch (error) {
+        console.error('Erro ao carregar quadro:', error);
+        window.showErrorModal('Erro ao carregar quadro: ' + error.message);
         return;
     }
-
-    // Atualizar o título da página
-    document.title = `${board.title} - Bagunça`;
-    
-    // Atualizar o título no header
-    const boardTitle = document.querySelector('.nav-dropdown a span');
-    if (boardTitle) {
-        boardTitle.textContent = board.title;
-    }
-
-    // Carregar cards do banco de dados
-    await loadCardsFromDatabase(boardId);
 
     // Inicializar filtros
     const filterDropdown = document.getElementById('filter-dropdown');
@@ -220,9 +238,16 @@ async function loadCardsFromDatabase(boardId) {
         });
 
         console.log('Cards carregados do banco:', window.boardState);
+        
+        // Renderizar o quadro após carregar os cards
+        if (typeof window.renderBoard === 'function') {
+            window.renderBoard();
+        }
     } catch (error) {
         console.error('Erro ao carregar cards:', error);
-        // Fallback para estado vazio se houver erro
+        // Não carregar dados de exemplo, apenas mostrar erro
+        window.showErrorModal('Erro ao carregar cards: ' + error.message);
+        // Inicializar com estado vazio
         window.boardState = {
             lists: {
                 'para-fazer': [],
@@ -230,6 +255,10 @@ async function loadCardsFromDatabase(boardId) {
                 'concluido': []
             }
         };
+        // Renderizar quadro vazio
+        if (typeof window.renderBoard === 'function') {
+            window.renderBoard();
+        }
     }
 }
 

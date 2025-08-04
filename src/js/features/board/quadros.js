@@ -1,5 +1,12 @@
-// Inicializa a página quando carregada
+// Verificar se há um cartão para editar quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
+    // Só executar se estivermos na página de listagem de quadros
+    const boardsContainer = document.querySelector('.grid');
+    if (!boardsContainer) {
+        // Se não estamos na página de quadros, não executar
+        return;
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '../index.html';

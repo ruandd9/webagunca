@@ -41,6 +41,28 @@ router.get('/', protect, async (req, res) => {
     }
 });
 
+// Rota para buscar um board específico por ID (protegida)
+router.get('/:id', protect, async (req, res) => {
+    try {
+        const boardId = req.params.id;
+        const board = await Board.findById(boardId);
+
+        if (!board) {
+            return res.status(404).json({ mensagem: 'Quadro não encontrado.' });
+        }
+
+        // Verifica se o usuário logado é o dono do quadro
+        if (board.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ mensagem: 'Não autorizado para acessar este quadro.' });
+        }
+
+        res.json(board);
+    } catch (err) {
+        console.error('Erro ao buscar board:', err);
+        res.status(500).json({ mensagem: 'Erro ao buscar board.', erro: err.message });
+    }
+});
+
 // Rota para atualizar um board (protegida)
 router.put('/:id', protect, async (req, res) => {
     try {
