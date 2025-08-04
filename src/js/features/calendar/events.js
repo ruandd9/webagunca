@@ -12,7 +12,7 @@ async function loadBoardEvents() {
             return;
         }
 
-        // Buscar todos os quadros do usuário
+        // Buscar quadros próprios
         const boardsResponse = await fetch('http://localhost:5000/api/boards', {
             method: 'GET',
             headers: {
@@ -20,17 +20,37 @@ async function loadBoardEvents() {
                 'Authorization': `Bearer ${token}`
             }
         });
-
-        if (!boardsResponse.ok) {
-            console.error('Erro ao buscar quadros');
-            return;
+        let boards = [];
+        if (boardsResponse.ok) {
+            boards = await boardsResponse.json();
         }
 
-        const boards = await boardsResponse.json();
+        // Buscar quadros compartilhados (onde o usuário é membro)
+        const memberBoardsResponse = await fetch('http://localhost:5000/api/board-members/user/boards', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        let memberBoards = [];
+        if (memberBoardsResponse.ok) {
+            // memberBoards é uma lista de BoardMember, cada um tem boardId (populado)
+            memberBoards = await memberBoardsResponse.json();
+            // Extrai o objeto Board
+            memberBoards = memberBoards.map(bm => bm.boardId).filter(b => b && b._id);
+        }
+
+        // Remover duplicados (caso o usuário seja dono e membro)
+        const ownedIds = new Set(boards.map(b => b._id));
+        const onlyMemberBoards = memberBoards.filter(b => !ownedIds.has(b._id));
+
+        // Junta todos os quadros
+        const allBoards = [...boards, ...onlyMemberBoards];
         const events = [];
 
         // Percorre todos os quadros
-        for (const board of boards) {
+        for (const board of allBoards) {
             // Buscar cards do quadro
             const cardsResponse = await fetch(`http://localhost:5000/api/cards/board/${board._id}`, {
                 method: 'GET',
@@ -42,19 +62,17 @@ async function loadBoardEvents() {
 
             if (cardsResponse.ok) {
                 const cards = await cardsResponse.json();
-                
                 // Filtrar cards que têm prazo
                 for (const card of cards) {
                     if (card.dueDate) {
                         // Carregar etiquetas do card
                         const labels = await loadCardLabels(card._id);
-                        
                         events.push({
                             id: card._id,
                             title: card.title,
                             description: card.description,
                             start: card.dueDate,
-                            end: card.dueDate, // Usando o mesmo horário para início e fim
+                            end: card.dueDate,
                             type: 'card',
                             listId: card.listId,
                             boardId: board._id,
