@@ -90,13 +90,10 @@
                             <button class="text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 p-2 rounded-lg transition-colors">
                                 <i class="fas fa-star"></i>
                             </button>
-                            <div class="flex -space-x-2">
-                                <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
-                                <img src="https://ui-avatars.com/api/?name=Jane+Smith" alt="Member" class="w-8 h-8 rounded-full border-2 border-gray-800">
-                                <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800 manage-members-btn" title="Gerenciar Membros">
-                                    <i class="fas fa-user-plus text-sm"></i>
-                                </button>
-                            </div>
+                            <div class="flex -space-x-2 board-members-header"></div>
+                            <button class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center border-2 border-gray-800 manage-members-btn" title="Gerenciar Membros">
+                                <i class="fas fa-user-plus text-sm"></i>
+                            </button>
                         </div>
                         
                         <div class="flex items-center gap-2">
@@ -257,6 +254,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="../src/js/features/board/boardMembersHeader.js"></script>
     <script>
         // Estado global do quadro
         window.boardState = {

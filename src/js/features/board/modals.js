@@ -1030,11 +1030,17 @@ async function loadBoardMembers(boardId, modal = null) {
                     <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-medium">
-                                ${member.userId.nome.charAt(0).toUpperCase()}
+                                ${
+                                    member?.userId?.nome
+                                        ? member.userId.nome.charAt(0).toUpperCase()
+                                        : (member?.userId?.email
+                                            ? member.userId.email.charAt(0).toUpperCase()
+                                            : '?')
+                                }
                             </div>
                             <div>
-                                <div class="font-medium">${member.userId.nome}</div>
-                                <div class="text-sm text-gray-400">${member.userId.email}</div>
+                                <div class="font-medium">${member?.userId?.nome || member?.userId?.email || 'Usuário'}</div>
+                                <div class="text-sm text-gray-400">${member?.userId?.email || ''}</div>
                             </div>
                         </div>
                         <button class="text-red-400 hover:text-red-300 p-2 remove-member" data-member-id="${member._id}">

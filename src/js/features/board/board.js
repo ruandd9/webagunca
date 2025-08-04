@@ -57,6 +57,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Atualizar o título da página
         document.title = `${board.title} - Bagunça`;
+        // Carregar membros do quadro no header
+        if (window.loadBoardMembersForHeader) {
+            window.loadBoardMembersForHeader(boardId);
+        }
         
         // Atualizar o título no header
         const boardTitle = document.querySelector('.nav-dropdown a span');
