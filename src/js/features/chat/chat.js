@@ -331,10 +331,15 @@ class ContactManager {
 const contactManager = new ContactManager();
 
 // Menu mobile principal
-document.getElementById('mobile-menu-button').addEventListener('click', function() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('-translate-x-full');
-});
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+if (mobileMenuButton) {
+    mobileMenuButton.addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('-translate-x-full');
+        }
+    });
+}
 
 // Menu do usuário
 const userAvatar = document.querySelector('.dropdown');

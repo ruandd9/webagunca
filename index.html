@@ -33,6 +33,19 @@
     #privacidadeModal.modal {
       background-color: rgba(0, 0, 0, 0.5);
     }
+
+    /* Estilos para o menu mobile */
+    #mobileMenu {
+      z-index: 50 !important;
+    }
+
+    #mobileMenu.hidden {
+      display: none !important;
+    }
+
+    #mobileMenu:not(.hidden) {
+      display: block !important;
+    }
   </style>
 </head>
 
@@ -68,7 +81,7 @@
       </div>
 
       <div id="mobileMenu"
-        class="md:hidden hidden absolute top-20 left-0 right-0 bg-purple-900/80 backdrop-blur-md py-6 px-4 shadow-lg">
+        class="md:hidden hidden absolute top-20 left-0 right-0 bg-purple-900/80 backdrop-blur-md py-6 px-4 shadow-lg z-50">
         <div class="flex flex-col space-y-6">
           <a href="#inicio" class="text-white hover:text-purple-200 transition-colors text-lg">Início</a>
           <a href="#recursos" class="text-white hover:text-purple-200 transition-colors text-lg">Recursos</a>
@@ -627,9 +640,9 @@
     </div>
   </div>
 
-  <script src="./src/js/ui/index.js"></script>
   <script src="./src/js/ui/particles.js"></script>
   <script src="./src/js/features/auth/auth.js"></script>
+  <script src="./src/js/ui/index.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
         const API_URL = 'http://localhost:5000/api';
@@ -637,20 +650,44 @@
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
 
+
+
         if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function () {
+            // Função para alternar o menu
+            function toggleMobileMenu() {
                 mobileMenu.classList.toggle('hidden');
+                
+                // Verificar se o menu está visível
+                const isVisible = !mobileMenu.classList.contains('hidden');
+                
+                // Forçar a exibição se necessário
+                if (isVisible) {
+                    mobileMenu.style.display = 'block';
+                } else {
+                    mobileMenu.style.display = 'none';
+                }
+            }
+            
+            // Adicionar event listener ao botão
+            mobileMenuButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleMobileMenu();
             });
 
+            // Fechar o menu quando clicar fora
             document.addEventListener('click', function (event) {
                 if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
                     mobileMenu.classList.add('hidden');
+                    mobileMenu.style.display = 'none';
                 }
             });
 
+            // Fechar o menu quando clicar em um link
             mobileMenu.addEventListener('click', function (event) {
                 if (event.target.tagName === 'A') {
                     mobileMenu.classList.add('hidden');
+                    mobileMenu.style.display = 'none';
                 }
             });
         }
