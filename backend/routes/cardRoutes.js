@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Card = require('../models/Card');
 const { protect } = require('../middleware/authMiddleware');
+const { createCardMovedNotification } = require('../services/notificationService');
 
 // Rota de teste GET
 router.get('/teste', (req, res) => {
@@ -64,6 +65,12 @@ router.put('/:id', protect, async (req, res) => {
     const { id } = req.params;
     const { title, description, dueDate, listId, completed } = req.body;
     
+    // Buscar o card atual para comparar mudanças
+    const cardAtual = await Card.findById(id);
+    if (!cardAtual) {
+      return res.status(404).json({ mensagem: 'Card não encontrado.' });
+    }
+    
     const card = await Card.findByIdAndUpdate(
       id,
       { 
@@ -77,8 +84,16 @@ router.put('/:id', protect, async (req, res) => {
       { new: true }
     );
     
-    if (!card) {
-      return res.status(404).json({ mensagem: 'Card não encontrado.' });
+    // Se a lista mudou, criar notificação
+    if (listId && cardAtual.listId !== listId) {
+      await createCardMovedNotification(
+        req.user,
+        card._id,
+        card.boardId,
+        card.title,
+        cardAtual.listId,
+        listId
+      );
     }
     
     res.json({ mensagem: 'Card atualizado com sucesso!', card });

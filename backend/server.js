@@ -9,6 +9,8 @@ const boardMemberRoutes = require('./routes/boardMemberRoutes');
 const listRoutes = require('./routes/listRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const cardLabelRoutes = require('./routes/cardLabelRoutes');
+const { router: notificationRoutes } = require('./routes/notificationRoutes');
+const { checkDueDateNotifications } = require('./services/notificationService');
 
 // Configura variáveis de ambiente
 dotenv.config();
@@ -37,7 +39,14 @@ app.use('/api/board-members', boardMemberRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/card-labels', cardLabelRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+  
+  // Agendar verificação de notificações de prazo a cada 6 horas
+  setInterval(checkDueDateNotifications, 6 * 60 * 60 * 1000);
+  
+  // Executar verificação inicial após 1 minuto
+  setTimeout(checkDueDateNotifications, 60 * 1000);
 });

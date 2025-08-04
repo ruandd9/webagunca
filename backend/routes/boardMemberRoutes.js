@@ -4,6 +4,7 @@ const BoardMember = require('../models/BoardMember');
 const Board = require('../models/Board');
 const User = require('../models/User');
 const { protect } = require('../middleware/authMiddleware');
+const { createNotification } = require('./notificationRoutes');
 
 // Rota para adicionar um membro a um board
 router.post('/', protect, async (req, res) => {
@@ -48,8 +49,17 @@ router.post('/', protect, async (req, res) => {
     });
     await novoMembro.save();
 
+    // Criar notificação para o usuário adicionado
+    await createNotification(
+      user._id,
+      'board_added',
+      'Você foi adicionado a um quadro',
+      `${req.user.nomeCompleto} adicionou você ao quadro "${board.title}"`,
+      { boardId: board._id }
+    );
+
     // Retornar informações do membro adicionado
-    const memberInfo = await BoardMember.findById(novoMembro._id).populate('userId', 'nome email');
+    const memberInfo = await BoardMember.findById(novoMembro._id).populate('userId', 'nomeCompleto email');
     
     res.status(201).json({ 
       mensagem: 'Membro adicionado com sucesso!', 
