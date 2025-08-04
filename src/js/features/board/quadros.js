@@ -26,7 +26,8 @@ async function loadBoards() {
     const token = localStorage.getItem('token');
     
     try {
-        const response = await fetch('http://localhost:5000/api/boards', {
+        // Buscar quadros que o usuário é dono
+        const responseOwned = await fetch('http://localhost:5000/api/boards', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,22 +35,66 @@ async function loadBoards() {
             }
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if (!responseOwned.ok) {
+            const errorData = await responseOwned.json();
             throw new Error(errorData.mensagem || 'Erro ao buscar quadros da API.');
         }
 
-        const boards = await response.json();
+        const ownedBoards = await responseOwned.json();
 
-        if (boards.length === 0) {
+        // Buscar quadros que o usuário é membro
+        const responseMember = await fetch('http://localhost:5000/api/board-members/user/boards', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!responseMember.ok) {
+            const errorData = await responseMember.json();
+            throw new Error(errorData.mensagem || 'Erro ao buscar quadros como membro.');
+        }
+
+        const memberBoards = await responseMember.json();
+
+        // Remover duplicados (caso o usuário seja dono e membro)
+        const ownedIds = new Set(ownedBoards.map(b => b._id));
+        const onlyMemberBoards = memberBoards.filter(b => !ownedIds.has(b._id));
+
+        boardsContainer.innerHTML = '';
+
+        // Se não houver nenhum quadro
+        if (ownedBoards.length === 0 && onlyMemberBoards.length === 0) {
             boardsContainer.innerHTML = `
                 <div class="col-span-full text-center text-gray-500 py-10">
                     <p>Você ainda não tem nenhum quadro. Crie um novo para começar!</p>
                 </div>
             `;
-        } else {
-            boards.forEach(board => {
+            return;
+        }
+
+        // Se houver quadros próprios
+        if (ownedBoards.length > 0) {
+            boardsContainer.innerHTML += `
+                <div class="col-span-full text-left text-lg font-bold text-white mb-2 mt-4">Seus quadros</div>
+            `;
+            ownedBoards.forEach(board => {
                 const boardElement = createBoardElement(board);
+                boardsContainer.appendChild(boardElement);
+            });
+        }
+
+        // Se houver quadros como membro
+        if (onlyMemberBoards.length > 0) {
+            boardsContainer.innerHTML += `
+                <div class="col-span-full text-left text-lg font-bold text-blue-400 mb-2 mt-8">Quadros que você participa</div>
+            `;
+            onlyMemberBoards.forEach(board => {
+                const boardElement = createBoardElement(board);
+                // Adiciona uma borda azul para diferenciar
+                boardElement.style.borderColor = '#3B82F6';
+                boardElement.style.borderWidth = '2px';
                 boardsContainer.appendChild(boardElement);
             });
         }
