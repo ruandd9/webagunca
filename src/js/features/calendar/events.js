@@ -4,41 +4,106 @@ window.calendarEvents = {
 };
 
 // Função para carregar eventos do quadro
-function loadBoardEvents() {
-    const savedBoards = JSON.parse(localStorage.getItem('boards')) || [];
-    const events = [];
+async function loadBoardEvents() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token não encontrado');
+            return;
+        }
 
-    // Percorre todos os quadros
-    savedBoards.forEach(board => {
-        const boardState = localStorage.getItem(`board_${board.id}`);
-        if (boardState) {
-            const state = JSON.parse(boardState);
-            
-            // Percorre todas as listas do quadro
-            Object.entries(state.lists).forEach(([listId, cards]) => {
-                cards.forEach(card => {
-                    if (card.deadline) {
+        // Buscar todos os quadros do usuário
+        const boardsResponse = await fetch('http://localhost:5000/api/boards', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!boardsResponse.ok) {
+            console.error('Erro ao buscar quadros');
+            return;
+        }
+
+        const boards = await boardsResponse.json();
+        const events = [];
+
+        // Percorre todos os quadros
+        for (const board of boards) {
+            // Buscar cards do quadro
+            const cardsResponse = await fetch(`http://localhost:5000/api/cards/board/${board._id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (cardsResponse.ok) {
+                const cards = await cardsResponse.json();
+                
+                // Filtrar cards que têm prazo
+                for (const card of cards) {
+                    if (card.dueDate) {
+                        // Carregar etiquetas do card
+                        const labels = await loadCardLabels(card._id);
+                        
                         events.push({
-                            id: card.id,
+                            id: card._id,
                             title: card.title,
                             description: card.description,
-                            start: card.deadline,
-                            end: card.deadline, // Usando o mesmo horário para início e fim
+                            start: card.dueDate,
+                            end: card.dueDate, // Usando o mesmo horário para início e fim
                             type: 'card',
-                            listId: listId,
-                            boardId: board.id,
+                            listId: card.listId,
+                            boardId: board._id,
                             boardTitle: board.title,
-                            labels: card.labels || [],
-                            color: getLabelColor(card.labels)
+                            labels: labels,
+                            color: getLabelColor(labels)
                         });
                     }
-                });
-            });
+                }
+            }
         }
-    });
 
-    window.calendarEvents.events = events;
-    renderEvents();
+        window.calendarEvents.events = events;
+        renderEvents();
+        
+        // Se há um dia selecionado, renderizar os eventos desse dia
+        const selectedDay = document.querySelector('.calendar-day.selected-day');
+        if (selectedDay) {
+            const day = parseInt(selectedDay.querySelector('span').textContent);
+            const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            renderDayEvents(selectedDate);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar eventos:', error);
+    }
+}
+
+// Função para carregar etiquetas de um card
+async function loadCardLabels(cardId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/card-labels/card/${cardId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const labels = await response.json();
+        return labels.map(label => label.name);
+    } catch (error) {
+        console.error('Erro ao carregar etiquetas:', error);
+        return [];
+    }
 }
 
 // Função para obter a cor baseada nas etiquetas do cartão
@@ -46,12 +111,12 @@ function getLabelColor(labels) {
     if (!labels || labels.length === 0) return 'bg-blue-500';
     
     const labelColors = {
-        'urgent': 'bg-red-500',
-        'feature': 'bg-green-500',
-        'design': 'bg-blue-500',
-        'frontend': 'bg-purple-500',
-        'backend': 'bg-yellow-500',
-        'uiux': 'bg-indigo-500'
+        'Urgente': 'bg-red-500',
+        'Feature': 'bg-green-500',
+        'Design': 'bg-blue-500',
+        'Frontend': 'bg-purple-500',
+        'Backend': 'bg-yellow-500',
+        'UI/UX': 'bg-indigo-500'
     };
 
     // Retorna a cor da primeira etiqueta encontrada
@@ -242,6 +307,15 @@ function renderDayEvents(date) {
                     ${event.description ? `
                         <p class="text-sm text-gray-400 mt-1">${event.description}</p>
                     ` : ''}
+                    ${event.labels && event.labels.length > 0 ? `
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${event.labels.map(label => `
+                                <span class="px-2 py-1 text-xs rounded ${getLabelColor([label])} text-white">
+                                    ${label}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
             <div class="event-actions flex space-x-2">
@@ -269,20 +343,35 @@ function editCard(cardId, boardId) {
 }
 
 // Função para excluir um cartão
-function deleteCard(cardId, boardId) {
+async function deleteCard(cardId, boardId) {
     if (confirm('Tem certeza que deseja excluir este cartão?')) {
-        const boardState = JSON.parse(localStorage.getItem(`board_${boardId}`));
-        
-        for (const listId in boardState.lists) {
-            const cardIndex = boardState.lists[listId].findIndex(c => c.id === cardId);
-            if (cardIndex !== -1) {
-                boardState.lists[listId].splice(cardIndex, 1);
-                break;
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('Token não encontrado');
+                return;
             }
-        }
 
-        localStorage.setItem(`board_${boardId}`, JSON.stringify(boardState));
-        loadBoardEvents();
+            // Deletar o card do banco de dados
+            const response = await fetch(`http://localhost:5000/api/cards/${cardId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao deletar card.');
+            }
+
+            // Recarregar os eventos
+            await loadBoardEvents();
+        } catch (error) {
+            console.error('Erro ao deletar card:', error);
+            alert('Erro ao deletar card: ' + error.message);
+        }
     }
 }
 
