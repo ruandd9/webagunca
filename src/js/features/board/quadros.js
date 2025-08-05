@@ -88,7 +88,7 @@ async function loadBoards() {
                 boardsContainer.appendChild(boardElement);
             });
         }
-
+        // TRECHO RESPONSÁVEL POR NÃO CONSEGUIRMOS EDITAR OS QUADROS DO PRÓPRIO USUÁRIO (CONSERTAR HOJEEEEEEEE)
         // Se houver quadros como membro
         if (onlyMemberBoards.length > 0) {
             boardsContainer.innerHTML += `
