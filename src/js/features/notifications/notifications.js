@@ -1,5 +1,5 @@
 class NotificationManager {
-  constructor() {
+  constructor() { 
     this.currentPage = 1;
     this.currentFilter = 'all';
     this.hasMore = true;
@@ -8,7 +8,7 @@ class NotificationManager {
   }
 
   async init() {
-    await this.loadNotifications();
+    await this.loadNotifications(); 
     this.setupEventListeners();
     this.updateUnreadCount();
   }

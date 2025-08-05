@@ -134,4 +134,4 @@ if (require.main === module) {
   testNotifications();
 }
 
-module.exports = { testNotifications }; 
+module.exports = { testNotifications };

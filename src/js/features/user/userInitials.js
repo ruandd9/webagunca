@@ -1,5 +1,3 @@
-// src/js/features/user/userInitials.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -8,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Função para buscar os dados do usuário e atualizar as iniciais
+// Função para buscar os dados do usuário e atualizar as iniciais/imagem
 async function loadUserInitials() {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -23,9 +21,9 @@ async function loadUserInitials() {
 
         if (response.ok) {
             const user = await response.json();
-            updateUserInitials(user.nomeCompleto);
+            updateUserDisplay(user); // Chama uma nova função para lidar com imagem ou iniciais
         } else {
-            console.error('Erro ao buscar dados do usuário para as iniciais.');
+            console.error('Erro ao buscar dados do usuário para as iniciais/imagem.');
         }
     } catch (error) {
         console.error('Erro de conexão ao buscar dados do usuário:', error);
@@ -43,10 +41,21 @@ function getInitials(name) {
     return initials;
 }
 
-// Função para atualizar as iniciais no dropdown
-function updateUserInitials(nomeCompleto) {
+// Nova função para atualizar a exibição do usuário (imagem ou iniciais)
+function updateUserDisplay(user) {
     const userInitialsDiv = document.getElementById('userInitials');
-    if (userInitialsDiv) {
-        userInitialsDiv.textContent = getInitials(nomeCompleto);
+    if (!userInitialsDiv) return;
+
+    if (user.profileImage) {
+        // Se houver imagem, define como background e limpa o texto
+        userInitialsDiv.style.backgroundImage = `url('${user.profileImage}')`;
+        userInitialsDiv.style.backgroundSize = 'cover';
+        userInitialsDiv.style.backgroundPosition = 'center';
+        userInitialsDiv.textContent = ''; // Limpa o texto das iniciais
+    } else {
+        // Se não houver imagem, exibe as iniciais e limpa o background
+        userInitialsDiv.textContent = getInitials(user.nomeCompleto);
+        userInitialsDiv.style.backgroundImage = 'none'; // Remove qualquer imagem de fundo
+        userInitialsDiv.style.backgroundColor = '#3B82F6'; // Cor de fundo padrão para iniciais
     }
 }

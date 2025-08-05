@@ -7,7 +7,7 @@ class NotificationBadge {
   async init() {
     await this.updateUnreadCount();
     this.setupPolling();
-  }
+  } 
 
   async updateUnreadCount() {
     try {
