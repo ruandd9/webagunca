@@ -271,11 +271,11 @@ function showCreateBoardModal() {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
-        <div class="bg-gray-800 rounded-lg p-6 w-[500px]">
+        <div class="bg-gray-800 rounded-xl p-6 w-[500px] shadow-2xl border border-gray-700">
             <div class="flex justify-between items-start mb-4">
                 <h2 class="text-lg font-semibold">Criar novo quadro</h2>
-                <button class="text-gray-400 hover:text-white close-modal">
-                    <i class="fas fa-times"></i>
+                <button class="text-gray-400 close-modal transition-colors duration-200 p-2 rounded-lg hover:bg-gray-700">
+                    <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
             <div class="space-y-4">
@@ -480,11 +480,11 @@ function showEditBoardModal(board) {
 
     // Configura o modal com os dados do quadro
     modal.innerHTML = `
-        <div class="bg-gray-800 rounded-lg p-6 w-[500px] max-h-[90vh] overflow-y-auto">
+        <div class="bg-gray-800 rounded-xl p-6 w-[500px] max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-700">
             <div class="flex justify-between items-start mb-4">
                 <h2 class="text-lg font-semibold">Editar quadro</h2>
-                <button class="text-gray-400 hover:text-white close-modal">
-                    <i class="fas fa-times"></i>
+                <button class="text-gray-400 close-modal transition-colors duration-200 p-2 rounded-lg hover:bg-gray-700">
+                    <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
             <div class="space-y-4">
