@@ -121,11 +121,14 @@ class NotificationManager {
       loadingElement.style.display = 'none';
     }
 
-    // Mostrar estado vazio se não há notificações
-    if (this.notifications.length === 0) {
+    // Filtrar apenas notificações de adição ao quadro e vencimento de cartão
+    const filtered = this.notifications.filter(n => n.type === 'board_member_added' || n.type === 'board_added' || n.type === 'card_due_soon');
+    if (filtered.length === 0) {
       if (emptyElement) {
         emptyElement.classList.remove('hidden');
       }
+      container.innerHTML = '';
+      this.updateNotificationBadge(0);
       return;
     }
 
@@ -134,9 +137,11 @@ class NotificationManager {
       emptyElement.classList.add('hidden');
     }
 
-    container.innerHTML = this.notifications.map(notification => 
+    container.innerHTML = filtered.map(notification => 
       this.createNotificationHTML(notification)
     ).join('');
+    // Atualiza badge para quantidade filtrada
+    this.updateNotificationBadge(filtered.length);
   }
 
   appendNotifications(newNotifications) {
@@ -285,14 +290,14 @@ class NotificationManager {
     const notificationLink = document.querySelector('a[href="./notifications.html"]');
     if (notificationLink) {
       let badge = notificationLink.querySelector('.notification-badge');
-      
       if (count > 0) {
         if (!badge) {
           badge = document.createElement('span');
-          badge.className = 'notification-badge bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2';
+          badge.className = 'notification-badge bg-red-500 rounded-full w-3 h-3 inline-block ml-2';
           notificationLink.appendChild(badge);
         }
-        badge.textContent = count;
+        // Remove número, exibe só o círculo
+        badge.textContent = '';
       } else if (badge) {
         badge.remove();
       }
@@ -325,4 +330,4 @@ document.addEventListener('DOMContentLoaded', () => {
 function filterNotifications(type) {
   // Esta função será chamada pelo HTML existente
   // O evento será capturado pelo NotificationManager
-} 
+}

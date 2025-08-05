@@ -40,10 +40,10 @@ class NotificationBadge {
       if (this.unreadCount > 0) {
         if (!badge) {
           badge = document.createElement('span');
-          badge.className = 'notification-badge bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2';
+          badge.className = 'notification-badge bg-red-500 rounded-full w-3 h-3 inline-block ml-2';
           notificationLink.appendChild(badge);
         }
-        badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
+        badge.textContent = '';
       } else if (badge) {
         badge.remove();
       }
@@ -95,4 +95,44 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Exportar para uso em outros módulos
-window.NotificationBadge = NotificationBadge; 
+window.NotificationBadge = NotificationBadge;
+
+function updateNotificationBadge(count) {
+  const notificationLink = document.querySelector('a[href="./notifications.html"]');
+  if (notificationLink) {
+    let badge = notificationLink.querySelector('.notification-badge');
+    if (count > 0) {
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'notification-badge bg-red-500 rounded-full w-3 h-3 inline-block ml-2';
+        notificationLink.appendChild(badge);
+      }
+      badge.textContent = '';
+    } else if (badge) {
+      badge.remove();
+    }
+  }
+}
+
+// Exemplo de uso: buscar notificações não lidas e atualizar badge
+async function fetchUnreadCountAndUpdateBadge() {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    const response = await fetch('http://localhost:5000/api/notifications/unread-count', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      updateNotificationBadge(data.unreadCount);
+    }
+  } catch (err) {
+    console.error('Erro ao buscar contagem de notificações:', err);
+  }
+}
+
+// Atualiza badge ao carregar qualquer página
+window.addEventListener('DOMContentLoaded', fetchUnreadCountAndUpdateBadge);
