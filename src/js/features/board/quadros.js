@@ -24,7 +24,7 @@ async function loadBoards() {
     boardsContainer.innerHTML = ''; // Limpa o container
 
     const token = localStorage.getItem('token');
-    
+
     try {
         // Buscar quadros que o usuário é dono
         const responseOwned = await fetch('http://localhost:5000/api/boards', {
@@ -80,9 +80,11 @@ async function loadBoards() {
 
         // Se houver quadros próprios
         if (ownedBoards.length > 0) {
-            boardsContainer.innerHTML += `
-                <div class="col-span-full text-left text-lg font-bold text-white mb-2 mt-4">Seus quadros</div>
-            `;
+            const ownedTitle = document.createElement('div');
+            ownedTitle.className = 'col-span-full text-left text-lg font-bold text-white mb-2 mt-4';
+            ownedTitle.textContent = 'Seus quadros';
+            boardsContainer.appendChild(ownedTitle);
+
             ownedBoards.forEach(board => {
                 const boardElement = createBoardElement(board);
                 boardsContainer.appendChild(boardElement);
@@ -91,9 +93,11 @@ async function loadBoards() {
 
         // Se houver quadros como membro
         if (onlyMemberBoards.length > 0) {
-            boardsContainer.innerHTML += `
-                <div class="col-span-full text-left text-lg font-bold text-blue-400 mb-2 mt-8">Quadros que você participa</div>
-            `;
+            const memberTitle = document.createElement('div');
+            memberTitle.className = 'col-span-full text-left text-lg font-bold text-blue-400 mb-2 mt-8';
+            memberTitle.textContent = 'Quadros que você participa';
+            boardsContainer.appendChild(memberTitle);
+
             onlyMemberBoards.forEach(board => {
                 const boardElement = createBoardElement(board);
                 // Adiciona uma borda azul para diferenciar
@@ -112,7 +116,7 @@ async function loadBoards() {
 function createBoardElement(board) {
     const div = document.createElement('div');
     div.className = 'board bg-gray-800 p-4 md:p-6 rounded-lg border border-gray-700 hover:border-white cursor-pointer transition-all relative group';
-    
+
     let coverHtml = '';
     const coverType = board.cover_type || 'color';
     if (coverType === 'image' && board.cover_value) {
@@ -121,7 +125,7 @@ function createBoardElement(board) {
         const bgColor = board.cover_value || '#3B82F6'; // Azul padrão
         coverHtml = `<div class="h-24 md:h-32 rounded-lg mb-4" style="background-color: ${bgColor}"></div>`;
     }
-    
+
     div.innerHTML = `
         ${coverHtml}
         <div class="mb-2">
@@ -143,17 +147,17 @@ function createBoardElement(board) {
             </button>
         </div>
     `;
-    
+
     // Adiciona o link para o quadro
     const link = document.createElement('a');
     link.href = `./Quadros.html?board=${encodeURIComponent(board._id)}`;
     link.className = 'absolute inset-0 z-0';
     div.appendChild(link);
-    
+
     // Adiciona eventos para os botões de ação
     const deleteBtn = div.querySelector('.delete-board');
     const editBtn = div.querySelector('.edit-board');
-    
+
     // Corrigido: Event listeners que chamam as funções com o objeto do quadro
     deleteBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -161,21 +165,21 @@ function createBoardElement(board) {
         e.stopImmediatePropagation();
         showDeleteBoardConfirmation(board);
     });
-    
+
     editBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         showEditBoardModal(board);
     });
-    
+
     // Previne a navegação quando clicar nos botões de ação
     link.addEventListener('click', (e) => {
         if (e.target.closest('.delete-board') || e.target.closest('.edit-board')) {
             e.preventDefault();
         }
     });
-    
+
     return div;
 }
 
@@ -247,7 +251,7 @@ function initializeCreateBoardButton() {
     if (createBoardBtn) {
         createBoardBtn.disabled = false;
         createBoardBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        
+
         createBoardBtn.addEventListener('click', () => {
             showCreateBoardModal();
         });
@@ -434,7 +438,7 @@ function showCreateBoardModal() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` 
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
                 title,
@@ -444,36 +448,36 @@ function showCreateBoardModal() {
                 cover_value
             })
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            if (response.status === 401) {
-                throw new Error('Sessão expirada. Por favor, faça login novamente.');
-            }
-            return response.json().then(errorData => {
-                throw new Error(errorData.mensagem || 'Erro desconhecido ao criar quadro.');
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                if (response.status === 401) {
+                    throw new Error('Sessão expirada. Por favor, faça login novamente.');
+                }
+                return response.json().then(errorData => {
+                    throw new Error(errorData.mensagem || 'Erro desconhecido ao criar quadro.');
+                });
+            })
+            .then(data => {
+                alert(data.mensagem);
+                loadBoards(); // Recarrega os quadros da API
+                closeModal();
+            })
+            .catch(error => {
+                alert("Erro na requisição: " + error.message);
+                console.error(error);
+                if (error.message.includes('Sessão expirada')) {
+                    window.location.href = '../index.html';
+                }
             });
-        })
-        .then(data => {
-            alert(data.mensagem);
-            loadBoards(); // Recarrega os quadros da API
-            closeModal();
-        })
-        .catch(error => {
-            alert("Erro na requisição: " + error.message);
-            console.error(error);
-            if (error.message.includes('Sessão expirada')) {
-                 window.location.href = '../index.html';
-            }
-        });
     });
 }
 // Função para mostrar modal de edição completa do quadro
 function showEditBoardModal(board) {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-    
+
     // Configura o modal com os dados do quadro
     modal.innerHTML = `
         <div class="bg-gray-800 rounded-lg p-6 w-[500px] max-h-[90vh] overflow-y-auto">
@@ -687,14 +691,14 @@ function showSuccessMessage(message) {
             <span>${message}</span>
         </div>
     `;
-    
+
     document.body.appendChild(toast);
-    
+
     // Anima a entrada
     setTimeout(() => {
         toast.classList.remove('translate-x-full');
     }, 100);
-    
+
     // Remove após 3 segundos
     setTimeout(() => {
         toast.classList.add('translate-x-full');
@@ -710,11 +714,11 @@ function initializeSearch() {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const boards = document.querySelectorAll('.board');
-            
+
             boards.forEach(board => {
                 const title = board.querySelector('h3').textContent.toLowerCase();
                 const description = board.querySelector('.text-gray-400').textContent.toLowerCase();
-                
+
                 if (title.includes(query) || description.includes(query)) {
                     board.style.display = '';
                 } else {
