@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // Garantir que o toast manager esteja inicializado
+    if (window.toastManager && !window.toastManager.container) {
+        window.toastManager.init();
+    }
+    
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '../index.html';
@@ -24,7 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             displayUserData(user);
         } catch (error) {
             console.error('Erro ao buscar dados do usuário:', error);
-            alert('Erro ao carregar perfil: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao carregar perfil: ' + error.message);
+            } else {
+                alert('Erro ao carregar perfil: ' + error.message);
+            }
         }
     }
 
@@ -95,10 +104,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error(data.mensagem || 'Erro ao atualizar perfil.');
             }
 
-            alert('Perfil atualizado com sucesso!');
+            if (window.toastManager) {
+                window.toastManager.success('Perfil atualizado com sucesso!');
+            } else {
+                alert('Perfil atualizado com sucesso!');
+            }
         } catch (error) {
             console.error('Erro ao atualizar perfil:', error);
-            alert('Erro ao atualizar perfil: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao atualizar perfil: ' + error.message);
+            } else {
+                alert('Erro ao atualizar perfil: ' + error.message);
+            }
         }
     });
 
@@ -111,7 +128,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const confirmarSenha = document.getElementById('confirmPassword').value;
 
         if (novaSenha !== confirmarSenha) {
-            alert('A nova senha e a confirmação de senha não coincidem.');
+            if (window.toastManager) {
+                window.toastManager.warning('A nova senha e a confirmação de senha não coincidem.');
+            } else {
+                alert('A nova senha e a confirmação de senha não coincidem.');
+            }
             return;
         }
 
@@ -131,13 +152,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error(data.mensagem || 'Erro ao mudar senha.');
             }
 
-            alert('Senha alterada com sucesso!');
+            if (window.toastManager) {
+                window.toastManager.success('Senha alterada com sucesso!');
+            } else {
+                alert('Senha alterada com sucesso!');
+            }
             document.getElementById('currentPassword').value = '';
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
         } catch (error) {
             console.error('Erro ao mudar senha:', error);
-            alert('Erro ao mudar senha: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao mudar senha: ' + error.message);
+            } else {
+                alert('Erro ao mudar senha: ' + error.message);
+            }
         }
     });
 
@@ -164,11 +193,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!response.ok) {
                         throw new Error(data.mensagem || 'Erro ao atualizar imagem de perfil.');
                     }
-                    alert('Imagem de perfil atualizada com sucesso!');
+                    if (window.toastManager) {
+                        window.toastManager.success('Imagem de perfil atualizada com sucesso!');
+                    } else {
+                        alert('Imagem de perfil atualizada com sucesso!');
+                    }
                     fetchUserData(); 
                 } catch (error) {
                     console.error('Erro no upload da imagem:', error);
-                    alert('Erro ao salvar imagem de perfil: ' + error.message);
+                    if (window.toastManager) {
+                        window.toastManager.error('Erro ao salvar imagem de perfil: ' + error.message);
+                    } else {
+                        alert('Erro ao salvar imagem de perfil: ' + error.message);
+                    }
                 }
             };
             reader.readAsDataURL(file);

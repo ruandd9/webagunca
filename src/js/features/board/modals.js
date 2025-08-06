@@ -194,7 +194,11 @@ window.showAddCardModal = function(listId) {
             closeModal();
         } catch (error) {
             console.error('Erro ao criar card:', error);
-            alert('Erro ao criar card: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao criar card: ' + error.message);
+            } else {
+                alert('Erro ao criar card: ' + error.message);
+            }
         }
     });
 }
@@ -698,7 +702,11 @@ window.showCardModal = function(card) {
             closeModal();
         } catch (error) {
             console.error('Erro ao atualizar card:', error);
-            alert('Erro ao atualizar card: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao atualizar card: ' + error.message);
+            } else {
+                alert('Erro ao atualizar card: ' + error.message);
+            }
         }
     });
 
@@ -736,7 +744,11 @@ window.showCardModal = function(card) {
                 closeModal();
             } catch (error) {
                 console.error('Erro ao deletar card:', error);
-                alert('Erro ao deletar card: ' + error.message);
+                if (window.toastManager) {
+                    window.toastManager.error('Erro ao deletar card: ' + error.message);
+                } else {
+                    alert('Erro ao deletar card: ' + error.message);
+                }
             }
         });
     });
@@ -788,7 +800,11 @@ window.showCardModal = function(card) {
             closeModal();
         } catch (error) {
             console.error('Erro ao marcar card como concluído:', error);
-            alert('Erro ao marcar card como concluído: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao marcar card como concluído: ' + error.message);
+            } else {
+                alert('Erro ao marcar card como concluído: ' + error.message);
+            }
         }
     });
 }
@@ -934,7 +950,11 @@ window.showAddMemberModal = function(boardId) {
             }
 
             const result = await response.json();
-            alert('Membro adicionado com sucesso!');
+            if (window.toastManager) {
+                window.toastManager.success('Membro adicionado com sucesso!');
+            } else {
+                alert('Membro adicionado com sucesso!');
+            }
             closeModal();
             
             // Recarregar a lista de membros se necessário
@@ -943,7 +963,11 @@ window.showAddMemberModal = function(boardId) {
             }
         } catch (error) {
             console.error('Erro ao adicionar membro:', error);
-            alert('Erro ao adicionar membro: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao adicionar membro: ' + error.message);
+            } else {
+                alert('Erro ao adicionar membro: ' + error.message);
+            }
         }
     });
 };
@@ -1067,11 +1091,19 @@ async function loadBoardMembers(boardId, modal = null) {
                                     throw new Error('Erro ao remover membro.');
                                 }
 
-                                alert('Membro removido com sucesso!');
+                                if (window.toastManager) {
+                                    window.toastManager.success('Membro removido com sucesso!');
+                                } else {
+                                    alert('Membro removido com sucesso!');
+                                }
                                 loadBoardMembers(boardId, modal);
                             } catch (error) {
                                 console.error('Erro ao remover membro:', error);
-                                alert('Erro ao remover membro: ' + error.message);
+                                if (window.toastManager) {
+                                    window.toastManager.error('Erro ao remover membro: ' + error.message);
+                                } else {
+                                    alert('Erro ao remover membro: ' + error.message);
+                                }
                             }
                         }
                     });

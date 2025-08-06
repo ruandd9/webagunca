@@ -388,7 +388,11 @@ async function deleteCard(cardId, boardId) {
             await loadBoardEvents();
         } catch (error) {
             console.error('Erro ao deletar card:', error);
-            alert('Erro ao deletar card: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao deletar card: ' + error.message);
+            } else {
+                alert('Erro ao deletar card: ' + error.message);
+            }
         }
     }
 }

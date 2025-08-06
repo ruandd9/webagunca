@@ -1,0 +1,216 @@
+/* Container das notificações toast */
+.toast-notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+/* Notificação individual */
+.toast-notification {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+    max-width: 100%;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-notification.hiding {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Conteúdo da notificação */
+.toast-content {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 12px;
+    position: relative;
+}
+
+/* Ícone */
+.toast-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Texto */
+.toast-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.toast-message {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    word-wrap: break-word;
+}
+
+/* Botão fechar */
+.toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Barra de progresso */
+.toast-progress {
+    height: 3px;
+    background: var(--accent);
+    width: 100%;
+    transform: scaleX(1);
+    transform-origin: left;
+    animation: toast-progress 5s linear forwards;
+}
+
+@keyframes toast-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Tipos de notificação */
+.toast-success .toast-icon {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.toast-success .toast-progress {
+    background: #22c55e;
+}
+
+.toast-error .toast-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.toast-error .toast-progress {
+    background: #ef4444;
+}
+
+.toast-warning .toast-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.toast-warning .toast-progress {
+    background: #f59e0b;
+}
+
+.toast-info .toast-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.toast-info .toast-progress {
+    background: #3b82f6;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .toast-notifications-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .toast-notification {
+        max-width: none;
+    }
+}
+
+/* Animações específicas para cada tipo */
+.toast-success {
+    border-left: 4px solid #22c55e;
+}
+
+.toast-error {
+    border-left: 4px solid #ef4444;
+}
+
+.toast-warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.toast-info {
+    border-left: 4px solid #3b82f6;
+}
+
+/* Efeito de hover */
+.toast-notification:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.toast-notification:hover .toast-progress {
+    animation-play-state: paused;
+}
+
+/* Tema específico para alto contraste */
+[data-theme="high-contrast-dark"] .toast-notification,
+[data-theme="high-contrast-light"] .toast-notification {
+    border-width: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="high-contrast-dark"] .toast-success,
+[data-theme="high-contrast-light"] .toast-success {
+    border-left-color: #00ff00;
+}
+
+[data-theme="high-contrast-dark"] .toast-error,
+[data-theme="high-contrast-light"] .toast-error {
+    border-left-color: #ff0000;
+}
+
+[data-theme="high-contrast-dark"] .toast-warning,
+[data-theme="high-contrast-light"] .toast-warning {
+    border-left-color: #ffff00;
+}
+
+[data-theme="high-contrast-dark"] .toast-info,
+[data-theme="high-contrast-light"] .toast-info {
+    border-left-color: #0000ff;
+} 

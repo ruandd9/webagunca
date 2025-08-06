@@ -88,10 +88,18 @@ async function loginUserApi(email, password) {
             // Redireciona para a página correta após o login
             window.location.href = './public/board-page.html';
         } else {
-            alert(data.mensagem || 'Erro ao fazer login');
+            if (window.toastManager) {
+                window.toastManager.error(data.mensagem || 'Erro ao fazer login');
+            } else {
+                alert(data.mensagem || 'Erro ao fazer login');
+            }
         }
     } catch (error) {
-        alert('Erro na conexão com o servidor.');
+        if (window.toastManager) {
+            window.toastManager.error('Erro na conexão com o servidor.');
+        } else {
+            alert('Erro na conexão com o servidor.');
+        }
         console.error(error);
     }
 }

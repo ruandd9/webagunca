@@ -432,7 +432,11 @@
                 closeEditCardModal();
             } catch (error) {
                 console.error('Erro ao salvar alterações do card:', error);
-                alert('Erro ao salvar alterações: ' + error.message);
+                if (window.toastManager) {
+                    window.toastManager.error('Erro ao salvar alterações: ' + error.message);
+                } else {
+                    alert('Erro ao salvar alterações: ' + error.message);
+                }
             }
         }
 
@@ -481,7 +485,11 @@
                     closeEditCardModal();
                 } catch (error) {
                     console.error('Erro ao deletar card:', error);
-                    alert('Erro ao deletar card: ' + error.message);
+                    if (window.toastManager) {
+                        window.toastManager.error('Erro ao deletar card: ' + error.message);
+                    } else {
+                        alert('Erro ao deletar card: ' + error.message);
+                    }
                 }
             }
         }

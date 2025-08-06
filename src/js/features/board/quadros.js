@@ -1,5 +1,10 @@
 // Verificar se há um cartão para editar quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
+    // Garantir que o toast manager esteja inicializado
+    if (window.toastManager && !window.toastManager.container) {
+        window.toastManager.init();
+    }
+    
     // Só executar se estivermos na página de listagem de quadros
     const boardsContainer = document.querySelector('.grid');
     if (!boardsContainer) {
@@ -108,7 +113,11 @@ async function loadBoards() {
         }
     } catch (error) {
         console.error('Erro ao carregar quadros:', error);
-        alert('Erro ao carregar quadros: ' + error.message);
+        if (window.toastManager) {
+            window.toastManager.error('Erro ao carregar quadros: ' + error.message);
+        } else {
+            alert('Erro ao carregar quadros: ' + error.message);
+        }
     }
 }
 
@@ -229,12 +238,20 @@ function showDeleteBoardConfirmation(board) {
                 throw new Error(errorData.mensagem || 'Erro ao excluir quadro.');
             }
 
-            alert('Quadro excluído com sucesso!');
+            if (window.toastManager) {
+                window.toastManager.success('Quadro excluído com sucesso!');
+            } else {
+                alert('Quadro excluído com sucesso!');
+            }
             loadBoards();
             closeModal();
         } catch (error) {
             console.error('Erro na exclusão:', error);
-            alert('Erro ao excluir quadro: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao excluir quadro: ' + error.message);
+            } else {
+                alert('Erro ao excluir quadro: ' + error.message);
+            }
             closeModal();
         }
     });
@@ -263,7 +280,11 @@ function showCreateBoardModal() {
     // Verifica se o token existe antes de exibir o modal
     const token = localStorage.getItem('token');
     if (!token) {
-        alert('Você precisa estar logado para criar um quadro. Por favor, faça login novamente.');
+        if (window.toastManager) {
+            window.toastManager.warning('Você precisa estar logado para criar um quadro. Por favor, faça login novamente.');
+        } else {
+            alert('Você precisa estar logado para criar um quadro. Por favor, faça login novamente.');
+        }
         window.location.href = '../index.html';
         return;
     }
@@ -460,12 +481,20 @@ function showCreateBoardModal() {
                 });
             })
             .then(data => {
-                alert(data.mensagem);
+                if (window.toastManager) {
+                    window.toastManager.success(data.mensagem);
+                } else {
+                    alert(data.mensagem);
+                }
                 loadBoards(); // Recarrega os quadros da API
                 closeModal();
             })
             .catch(error => {
-                alert("Erro na requisição: " + error.message);
+                if (window.toastManager) {
+                    window.toastManager.error("Erro na requisição: " + error.message);
+                } else {
+                    alert("Erro na requisição: " + error.message);
+                }
                 console.error(error);
                 if (error.message.includes('Sessão expirada')) {
                     window.location.href = '../index.html';
@@ -672,40 +701,22 @@ function showEditBoardModal(board) {
                 throw new Error(errorData.mensagem || 'Erro ao atualizar quadro.');
             }
 
-            alert('Quadro atualizado com sucesso!');
+            if (window.toastManager) {
+                window.toastManager.success('Quadro atualizado com sucesso!');
+            } else {
+                alert('Quadro atualizado com sucesso!');
+            }
             loadBoards();
             closeModal();
         } catch (error) {
             console.error('Erro na atualização:', error);
-            alert('Erro ao atualizar quadro: ' + error.message);
+            if (window.toastManager) {
+                window.toastManager.error('Erro ao atualizar quadro: ' + error.message);
+            } else {
+                alert('Erro ao atualizar quadro: ' + error.message);
+            }
         }
     });
-}
-// Função para mostrar mensagem de sucesso
-function showSuccessMessage(message) {
-    const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
-    toast.innerHTML = `
-        <div class="flex items-center space-x-2">
-            <i class="fas fa-check-circle"></i>
-            <span>${message}</span>
-        </div>
-    `;
-
-    document.body.appendChild(toast);
-
-    // Anima a entrada
-    setTimeout(() => {
-        toast.classList.remove('translate-x-full');
-    }, 100);
-
-    // Remove após 3 segundos
-    setTimeout(() => {
-        toast.classList.add('translate-x-full');
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
 }
 // Inicializa a busca de quadros
 function initializeSearch() {

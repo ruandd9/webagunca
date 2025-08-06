@@ -720,7 +720,11 @@
                 window.location.href = './public/board-page.html';
 
             } catch (error) {
-                alert(error.message);
+                if (window.toastManager) {
+                    window.toastManager.error(error.message);
+                } else {
+                    alert(error.message);
+                }
             }
         });
 
@@ -754,7 +758,11 @@
                     throw new Error(data.mensagem || 'Erro ao cadastrar');
                 }
 
-                alert('Usuário cadastrado com sucesso!');
+                if (window.toastManager) {
+                    window.toastManager.success('Usuário cadastrado com sucesso!');
+                } else {
+                    alert('Usuário cadastrado com sucesso!');
+                }
                 const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
                 if (registerModal) registerModal.hide();
 
@@ -774,7 +782,11 @@
                     throw new Error(loginData.mensagem || 'Erro ao fazer login após cadastro');
                 }
             } catch (error) {
-                alert(error.message);
+                if (window.toastManager) {
+                    window.toastManager.error(error.message);
+                } else {
+                    alert(error.message);
+                }
             }
         });
 

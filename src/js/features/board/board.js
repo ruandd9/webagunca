@@ -424,7 +424,11 @@ async function moveCardToNewList(cardId, sourceListId, targetListId) {
         }
     } catch (error) {
         console.error('Erro ao mover card:', error);
-        alert('Erro ao mover card: ' + error.message);
+        if (window.toastManager) {
+            window.toastManager.error('Erro ao mover card: ' + error.message);
+        } else {
+            alert('Erro ao mover card: ' + error.message);
+        }
     }
 }
 
@@ -481,7 +485,11 @@ async function deleteCardFromDatabase(cardId) {
         window.renderBoard();
     } catch (error) {
         console.error('Erro ao deletar card:', error);
-        alert('Erro ao deletar card: ' + error.message);
+        if (window.toastManager) {
+            window.toastManager.error('Erro ao deletar card: ' + error.message);
+        } else {
+            alert('Erro ao deletar card: ' + error.message);
+        }
     }
 }
 

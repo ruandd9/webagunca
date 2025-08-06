@@ -423,8 +423,12 @@ class GroupChatManager {
     // Mostrar erro
     showError(message) {
         console.error(message);
-        // Aqui você pode implementar um sistema de notificações
-        alert(message);
+        // Usar sistema de notificações toast se disponível
+        if (window.toastManager) {
+            window.toastManager.error(message);
+        } else {
+            alert(message);
+        }
     }
 
     // Limpar dados do chat (útil para logout)
