@@ -57,15 +57,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Atualizar o título da página
         document.title = `${board.title} - Bagunça`;
+        // Atualizar o título no header
+        const boardTitleHeader = document.querySelector('h1.text-2xl.font-bold');
+        if (boardTitleHeader) {
+            boardTitleHeader.textContent = board.title;
+        }
         // Carregar membros do quadro no header
         if (window.loadBoardMembersForHeader) {
             window.loadBoardMembersForHeader(boardId);
-        }
-        
-        // Atualizar o título no header
-        const boardTitle = document.querySelector('.nav-dropdown a span');
-        if (boardTitle) {
-            boardTitle.textContent = board.title;
         }
 
         // Carregar cards do banco de dados

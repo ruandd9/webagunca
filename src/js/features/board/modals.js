@@ -468,7 +468,7 @@ window.showCardModal = function(card) {
                         ${card.comments && Array.isArray(card.comments) ? card.comments.map(comment => `
                             <div class="bg-gray-700 rounded p-3" data-comment-id="${comment.id}">
                                 <div class="flex items-center mb-2">
-                                    <img src="https://ui-avatars.com/api/?name=${comment.author}" 
+                                    <img src="${comment.authorImage ? comment.authorImage : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(comment.author)}" 
                                          alt="${comment.author}" 
                                          class="w-6 h-6 rounded-full mr-2">
                                     <span class="font-medium">${comment.author}</span>
@@ -495,7 +495,7 @@ window.showCardModal = function(card) {
                         
                         <!-- Adicionar comentário -->
                         <div class="flex items-start space-x-2">
-                            <img src="https://ui-avatars.com/api/?name=User" 
+                            <img id="userCommentProfileImg" src="https://ui-avatars.com/api/?name=User" 
                                  alt="User" 
                                  class="w-8 h-8 rounded-full">
                             <div class="flex-1">
