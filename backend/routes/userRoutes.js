@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { protect } = require('../middleware/authMiddleware');
+const { jwtConfig } = require('../config/jwtConfig');
 
 dotenv.config();
 
@@ -43,7 +44,7 @@ router.post('/login', async (req, res) => {
         }
         const payload = { id: usuario._id };
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: '7d'
+            expiresIn: jwtConfig.expiresIn
         });
         res.json({
             mensagem: 'Login realizado com sucesso!',
