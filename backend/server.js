@@ -10,6 +10,7 @@ const listRoutes = require('./routes/listRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const cardLabelRoutes = require('./routes/cardLabelRoutes');
 const { router: notificationRoutes } = require('./routes/notificationRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const { checkDueDateNotifications } = require('./services/notificationService');
 
 // Configura variáveis de ambiente
@@ -40,6 +41,7 @@ app.use('/api/lists', listRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/card-labels', cardLabelRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);

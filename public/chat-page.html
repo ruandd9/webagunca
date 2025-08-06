@@ -109,19 +109,19 @@
                         </div>
 
                         <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Pesquisar ou começar uma nova conversa">
+                            <input type="text" class="search-input" placeholder="Pesquisar boards">
                         </div>
 
                         <div class="contacts-list">
                             <!-- Os contatos serão inseridos aqui via JavaScript -->
                         </div>
 
-                        <!-- Botão Adicionar Contato -->
+                        <!-- Info sobre boards -->
                         <div class="add-contact-button">
-                            <button class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-accent hover:bg-accent-hover text-white rounded-lg transition-colors duration-200">
-                                <i class="fas fa-user-plus"></i>
-                                <span>Adicionar Contato</span>
-                            </button>
+                            <div class="text-center text-gray-400 text-sm py-3">
+                                <i class="fas fa-info-circle mb-2"></i>
+                                <p>Chats dos seus boards aparecerão aqui</p>
+                            </div>
                         </div>
                     </aside>
 
@@ -178,38 +178,7 @@
 
                         <!-- Container de mensagens -->
                         <div class="messages-container">
-                            <!-- Mensagem de saída (sua) -->
-                            <div class="message-wrapper outgoing">
-                                <div class="message-avatar">YF</div>
-                                <div class="message outgoing">
-                                    <div class="message-content">
-                                        Olá! Como está o desenvolvimento do projeto?
-                                    </div>
-                                    <span class="message-time">14:30</span>
-                                </div>
-                            </div>
-
-                            <!-- Mensagem de entrada (outra pessoa) -->
-                            <div class="message-wrapper incoming">
-                                <div class="message-avatar">RM</div>
-                                <div class="message incoming">
-                                    <div class="message-content">
-                                        Tudo bem! Estou finalizando as últimas alterações.
-                                    </div>
-                                    <span class="message-time">14:31</span>
-                                </div>
-                            </div>
-
-                            <!-- Mensagem de saída (sua) -->
-                            <div class="message-wrapper outgoing">
-                                <div class="message-avatar">YF</div>
-                                <div class="message outgoing">
-                                    <div class="message-content">
-                                        Ótimo! Podemos revisar amanhã?
-                                    </div>
-                                    <span class="message-time">14:32</span>
-                                </div>
-                            </div>
+                            <!-- As mensagens serão carregadas dinamicamente -->
                         </div>
 
                         <div class="chat-input-area">
@@ -230,71 +199,11 @@
         </div>
     </div>
 
-    <!-- Modal Adicionar/Editar Contato -->
-    <div id="contactModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modalTitle" class="text-xl font-semibold">Adicionar Novo Contato</h2>
-                <button id="closeModal" class="text-gray-400 hover:text-white">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="contactForm" class="space-y-4">
-                <input type="hidden" id="contactId">
-                <div>
-                    <label for="firstName" class="block text-sm font-medium text-gray-300 mb-1">Nome</label>
-                    <input type="text" id="firstName" name="firstName" required
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-accent">
-                </div>
-                <div>
-                    <label for="lastName" class="block text-sm font-medium text-gray-300 mb-1">Sobrenome</label>
-                    <input type="text" id="lastName" name="lastName" required
-                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-accent">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-1">Cor do Perfil</label>
-                    <div class="grid grid-cols-5 gap-2 mt-2">
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-blue-500 hover:ring-2 hover:ring-white" data-color="blue-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-green-500 hover:ring-2 hover:ring-white" data-color="green-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-purple-500 hover:ring-2 hover:ring-white" data-color="purple-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-red-500 hover:ring-2 hover:ring-white" data-color="red-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-yellow-500 hover:ring-2 hover:ring-white" data-color="yellow-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-pink-500 hover:ring-2 hover:ring-white" data-color="pink-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-indigo-500 hover:ring-2 hover:ring-white" data-color="indigo-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-orange-500 hover:ring-2 hover:ring-white" data-color="orange-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-teal-500 hover:ring-2 hover:ring-white" data-color="teal-500"></button>
-                        <button type="button" class="color-option w-8 h-8 rounded-full bg-gray-500 hover:ring-2 hover:ring-white" data-color="gray-500"></button>
-                    </div>
-                    <input type="hidden" id="profileColor" value="blue-500">
-                </div>
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" id="deleteContact" class="px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 bg-gray-700 rounded-md hover:bg-gray-600 hidden">
-                        Excluir Contato
-                    </button>
-                    <button type="button" id="cancelContact"
-                        class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 rounded-md hover:bg-gray-600">
-                        Cancelar
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent-hover">
-                        Salvar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Menu de Contexto para Contatos -->
-    <div id="contactContextMenu" class="fixed hidden bg-gray-800 rounded-lg shadow-lg py-2 z-50 min-w-[200px]">
-        <button class="edit-contact w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white">
-            <i class="fas fa-edit mr-2"></i> Editar Contato
-        </button>
-        <button class="delete-contact w-full px-4 py-2 text-left text-red-400 hover:bg-gray-700 hover:text-red-300">
-            <i class="fas fa-trash-alt mr-2"></i> Excluir Contato
-        </button>
-    </div>
 
-    <script src="../src/js/features/chat/chat.js"></script>
+    <script src="../src/js/features/chat/chatService.js"></script>
+    <script src="../src/js/features/chat/chatUI.js"></script>
+    <script src="../src/js/features/chat/groupChat.js"></script>
     <script src="../src/js/features/board/modals.js"></script>
     <script src="../src/js/features/user/userInitials.js"></script>
     <script src="../src/js/features/themes/themeManager.js"></script>
@@ -380,6 +289,112 @@
             z-index: 10;
         }
 
+        /* Estilos específicos para boards */
+        .board-item {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .board-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .board-item.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+        }
+
+        .no-boards-message {
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .loading-messages {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .loading-messages i {
+            margin-right: 0.5rem;
+        }
+
+        .edited-indicator {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-left: 0.5rem;
+        }
+
+        /* Notificações */
+        .notification-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .notification-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .notification-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .notification-warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .notification-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 1rem;
+        }
+
+        .notification-close:hover {
+            color: var(--text-primary);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsividade para chat */
         @media (max-width: 768px) {
             #sidebar {
                 position: fixed;
@@ -397,6 +412,36 @@
 
             #mobile-menu-button {
                 display: block;
+            }
+
+            .chat-container {
+                position: relative;
+            }
+
+            .chat-sidebar {
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 10;
+                transition: transform 0.3s ease;
+            }
+
+            .chat-messages-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+
+            body.show-chat-conversation .chat-sidebar {
+                transform: translateX(-100%);
+            }
+
+            body.show-chat-conversation .chat-messages-area {
+                transform: translateX(0);
             }
         }
     </style>

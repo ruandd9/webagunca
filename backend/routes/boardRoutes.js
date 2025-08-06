@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Board = require('../models/Board');
+const Chat = require('../models/Chat');
 const { protect } = require('../middleware/authMiddleware');
 
 // Rota para criar um novo board (protegida)
@@ -23,6 +24,14 @@ router.post('/', protect, async (req, res) => {
         });
 
         await novoBoard.save();
+
+        // Criar chat automaticamente para o board
+        const novoChat = new Chat({
+            boardId: novoBoard._id,
+            name: `Chat - ${title}`
+        });
+        await novoChat.save();
+
         res.status(201).json({ mensagem: 'Board criado com sucesso!', board: novoBoard });
     } catch (err) {
         console.error('Erro ao criar board:', err);

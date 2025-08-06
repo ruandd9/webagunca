@@ -20,9 +20,25 @@ const protect = async (req, res, next) => {
             req.user = await User.findById(decoded.id).select('-senha');
             next();
         } catch (error) {
-            // Este catch irá pegar o erro "jwt malformed"
             console.error('Erro de autenticação:', error.message);
-            res.status(401).json({ mensagem: 'Não autorizado, token inválido.' });
+            
+            if (error.name === 'TokenExpiredError') {
+                return res.status(401).json({ 
+                    mensagem: 'Token expirado. Faça login novamente.',
+                    expired: true 
+                });
+            }
+            
+            if (error.name === 'JsonWebTokenError') {
+                return res.status(401).json({ 
+                    mensagem: 'Token inválido.' 
+                });
+            }
+            
+            // Outros erros JWT
+            res.status(401).json({ 
+                mensagem: 'Erro de autenticação. Faça login novamente.' 
+            });
         }
     } else {
         res.status(401).json({ mensagem: 'Não autorizado, nenhum token encontrado.' });
