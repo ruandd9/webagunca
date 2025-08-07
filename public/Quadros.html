@@ -667,22 +667,36 @@
             // Removido carregamento do localStorage - agora os dados vêm da API
             // Aguardar um pouco para garantir que todos os scripts foram carregados
             setTimeout(() => {
+                // Verificar se todas as funções necessárias estão disponíveis
+                console.log('Verificando funções disponíveis...');
+                console.log('showAddListModal:', typeof window.showAddListModal);
+                console.log('showAddCardModal:', typeof window.showAddCardModal);
+                console.log('renderBoard:', typeof window.renderBoard);
+                console.log('boardState:', window.boardState);
+                
                 // Renderizar o quadro inicial
                 if (typeof window.renderBoard === 'function') {
                     window.renderBoard();
                 } else {
                     console.warn('window.renderBoard não está disponível');
                 }
-            }, 100);
+            }, 500); // Aumentar o tempo de espera para 500ms
 
             // Inicializar botões
             const addListButton = document.querySelector('.add-list-btn');
+            console.log('Botão de adicionar lista encontrado:', addListButton);
             if (addListButton) {
                 addListButton.addEventListener('click', () => {
+                    console.log('Botão de adicionar lista clicado');
                     if (typeof window.showAddListModal === 'function') {
+                        console.log('Função showAddListModal encontrada, executando...');
                         window.showAddListModal();
+                    } else {
+                        console.error('Função showAddListModal não encontrada');
                     }
                 });
+            } else {
+                console.error('Botão de adicionar lista não encontrado');
             }
 
             // Inicializar botão de gerenciar membros
@@ -698,12 +712,16 @@
             }
 
             const addCardButtons = document.querySelectorAll('.add-card-btn');
+            console.log('Botões de adicionar cartão encontrados:', addCardButtons.length);
             addCardButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const listId = button.closest('.list').id;
+                    console.log('Botão de adicionar cartão clicado para lista:', listId);
                     if (typeof window.showAddCardModal === 'function') {
                         window.showAddCardModal(listId);
+                    } else {
+                        console.error('Função showAddCardModal não encontrada');
                     }
                 });
             });

@@ -10,6 +10,7 @@ window.labels = {
 
 // Modal de adicionar cartão
 window.showAddCardModal = function(listId) {
+    console.log('Função showAddCardModal executada para lista:', listId);
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
@@ -54,6 +55,7 @@ window.showAddCardModal = function(listId) {
     `;
 
     document.body.appendChild(modal);
+    console.log('Modal de adicionar cartão criado e adicionado ao DOM');
 
     // Event listeners
     const closeBtn = modal.querySelector('.close-modal');
@@ -73,6 +75,7 @@ window.showAddCardModal = function(listId) {
     });
 
     createBtn.addEventListener('click', async () => {
+        console.log('Botão criar cartão clicado');
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
@@ -96,6 +99,8 @@ window.showAddCardModal = function(listId) {
             if (!token) {
                 throw new Error('Token de autenticação não encontrado');
             }
+
+            console.log('Criando cartão no banco de dados:', { boardId, listId, title });
 
             // Criar card no banco de dados
             const response = await fetch('http://localhost:5000/api/cards', {
@@ -238,6 +243,7 @@ window.showErrorModal = function(message) {
 
 // Modal de adicionar lista
 window.showAddListModal = function() {
+    console.log('Função showAddListModal executada');
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     modal.innerHTML = `
@@ -262,6 +268,7 @@ window.showAddListModal = function() {
     `;
 
     document.body.appendChild(modal);
+    console.log('Modal de adicionar lista criado e adicionado ao DOM');
 
     // Event listeners
     const closeBtn = modal.querySelector('.close-modal');
@@ -278,18 +285,14 @@ window.showAddListModal = function() {
     });
 
     createBtn.addEventListener('click', async () => {
+        console.log('Botão criar lista clicado');
         const title = titleInput.value.trim();
         if (!title) {
             titleInput.classList.add('border', 'border-red-500');
             return;
         }
 
-        const listId = title.toLowerCase().replace(/\s+/g, '-');
-        if (window.boardState.lists[listId]) {
-            titleInput.classList.add('border', 'border-red-500');
-            window.showErrorModal('Já existe uma lista com este nome. Por favor, escolha um nome diferente.');
-            return;
-        }
+        // Verificação de lista existente será feita pelo backend
 
         try {
             // Obter o ID do quadro da URL
@@ -300,6 +303,8 @@ window.showAddListModal = function() {
                 window.showErrorModal('ID do quadro não encontrado');
                 return;
             }
+
+            console.log('Criando lista no banco de dados:', { boardId, title });
 
             // Salvar a lista no banco de dados
             const token = localStorage.getItem('token');
@@ -322,6 +327,11 @@ window.showAddListModal = function() {
             }
 
             const newListData = await response.json();
+            console.log('Lista criada com sucesso:', newListData);
+
+            // Usar o listId retornado pelo backend
+            const listId = newListData.list.listId || title.toLowerCase().replace(/\s+/g, '-');
+            console.log('Usando listId do backend:', listId);
 
             // Cria a nova lista no DOM
             const board = document.querySelector('.flex.space-x-6');
@@ -396,26 +406,20 @@ window.showAddListModal = function() {
                         
                         // Move o cartão para a nova lista
                         const cardId = window.draggedCard.dataset.cardId;
-                        const cardIndex = window.boardState.lists[sourceListId].findIndex(card => card.id === cardId);
-                        
-                        if (cardIndex !== -1) {
-                            const [movedCard] = window.boardState.lists[sourceListId].splice(cardIndex, 1);
-                            window.boardState.lists[targetListId].push(movedCard);
-                            
-                            window.saveBoardState();
-                            window.renderBoard();
-                        }
+                        moveCardToNewList(cardId, sourceListId, targetListId);
                     }
                 });
             }
-            
+
             closeModal();
+            console.log('Lista criada com sucesso no DOM');
+
         } catch (error) {
             console.error('Erro ao criar lista:', error);
             window.showErrorModal('Erro ao criar lista: ' + error.message);
         }
     });
-}
+};
 
 // Modal de visualizar/editar cartão
 window.showCardModal = function(card) {

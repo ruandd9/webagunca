@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const List = require('../models/List');
+const { protect } = require('../middleware/authMiddleware');
 
 // Rota para criar uma nova lista
-router.post('/', async (req, res) => {
+router.post('/', protect, async (req, res) => {
   try {
     const { boardId, name, position } = req.body;
     if (!boardId || !name || position === undefined) {
       return res.status(400).json({ mensagem: 'boardId, name e position são obrigatórios.' });
     }
-    const novaLista = new List({ boardId, name, position });
+    
+    // Gerar listId a partir do nome (mesmo algoritmo do frontend)
+    const listId = name.toLowerCase().replace(/\s+/g, '-');
+    
+    const novaLista = new List({ boardId, name, listId, position });
     await novaLista.save();
     res.status(201).json({ mensagem: 'Lista criada com sucesso!', list: novaLista });
   } catch (err) {
@@ -18,7 +23,7 @@ router.post('/', async (req, res) => {
 });
 
 // Rota para listar todas as listas
-router.get('/', async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const listas = await List.find();
     res.json(listas);
@@ -28,7 +33,7 @@ router.get('/', async (req, res) => {
 });
 
 // Rota para buscar listas de um quadro específico
-router.get('/board/:boardId', async (req, res) => {
+router.get('/board/:boardId', protect, async (req, res) => {
   try {
     const { boardId } = req.params;
     const listas = await List.find({ boardId: boardId }).sort({ position: 1 });
@@ -39,7 +44,7 @@ router.get('/board/:boardId', async (req, res) => {
 });
 
 // Rota para deletar uma lista
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', protect, async (req, res) => {
   try {
     const { id } = req.params;
     const lista = await List.findById(id);

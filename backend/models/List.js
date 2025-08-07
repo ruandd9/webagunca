@@ -7,6 +7,8 @@ const listSchema = new mongoose.Schema({
   boardId: { type: mongoose.Schema.Types.ObjectId, ref: 'Board', required: true },
   // Nome da lista
   name: { type: String, required: true },
+  // ID único da lista (gerado a partir do nome)
+  listId: { type: String, required: true, unique: true },
   // Posição da lista dentro do quadro (para ordenação)
   position: { type: Number, required: true }
 });
