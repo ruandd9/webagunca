@@ -79,56 +79,58 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Inicializar filtros
     const filterDropdown = document.getElementById('filter-dropdown');
-    const filterMenu = filterDropdown.querySelector('div');
-    const filterButton = filterDropdown.querySelector('button');
     const clearFiltersBtn = document.getElementById('clear-filters');
     const searchInput = document.getElementById('search-input');
+    if (filterDropdown) {
+        const filterMenu = filterDropdown.querySelector('div');
+        const filterButton = filterDropdown.querySelector('button');
 
-    // Toggle do menu de filtros
-    filterButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        filterMenu.classList.toggle('hidden');
-    });
+        // Toggle do menu de filtros
+        filterButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterMenu.classList.toggle('hidden');
+        });
 
-    // Fechar menu ao clicar fora
-    document.addEventListener('click', (e) => {
-        if (!filterDropdown.contains(e.target)) {
-            filterMenu.classList.add('hidden');
-        }
-    });
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!filterDropdown.contains(e.target)) {
+                filterMenu.classList.add('hidden');
+            }
+        });
 
-    // Aplicar filtros em tempo real quando uma etiqueta é selecionada
-    document.addEventListener('change', (e) => {
-        if (e.target.classList.contains('filter-label')) {
-            const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
-                .map(checkbox => checkbox.value);
+        // Aplicar filtros em tempo real quando uma etiqueta é selecionada
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('filter-label')) {
+                const selectedLabels = Array.from(document.querySelectorAll('.filter-label:checked'))
+                    .map(checkbox => checkbox.value);
+                
+                window.filters.labels = selectedLabels;
+                window.filters.search = searchInput.value.trim();
+                
+                window.renderBoard();
+            }
+        });
+
+        // Limpar filtros
+        clearFiltersBtn.addEventListener('click', () => {
+            window.filters.labels = [];
+            window.filters.search = '';
+            searchInput.value = '';
             
-            window.filters.labels = selectedLabels;
-            window.filters.search = searchInput.value.trim();
+            // Desmarca todos os checkboxes
+            document.querySelectorAll('.filter-label').forEach(checkbox => {
+                checkbox.checked = false;
+            });
             
             window.renderBoard();
-        }
-    });
-
-    // Limpar filtros
-    clearFiltersBtn.addEventListener('click', () => {
-        window.filters.labels = [];
-        window.filters.search = '';
-        searchInput.value = '';
-        
-        // Desmarca todos os checkboxes
-        document.querySelectorAll('.filter-label').forEach(checkbox => {
-            checkbox.checked = false;
         });
-        
-        window.renderBoard();
-    });
 
-    // Pesquisa em tempo real
-    searchInput.addEventListener('input', () => {
-        window.filters.search = searchInput.value.trim();
-        window.renderBoard();
-    });
+        // Pesquisa em tempo real
+        searchInput.addEventListener('input', () => {
+            window.filters.search = searchInput.value.trim();
+            window.renderBoard();
+        });
+    }
 
     // Renderizar o quadro inicial
     if (typeof window.renderBoard === 'function') {
@@ -219,18 +221,7 @@ async function loadCardsFromDatabase(boardId) {
         
         // Preservar listas existentes e inicializar apenas as padrão se não existirem
         if (!window.boardState || !window.boardState.lists) {
-            window.boardState = {
-                lists: {
-                    'para-fazer': [],
-                    'fazendo': [],
-                    'concluido': []
-                }
-            };
-        } else {
-            // Garantir que as listas padrão existam
-            if (!window.boardState.lists['para-fazer']) window.boardState.lists['para-fazer'] = [];
-            if (!window.boardState.lists['fazendo']) window.boardState.lists['fazendo'] = [];
-            if (!window.boardState.lists['concluido']) window.boardState.lists['concluido'] = [];
+            window.boardState = { lists: {} };
         }
 
         // Mapear cards para as listas apropriadas
@@ -421,9 +412,16 @@ async function loadListsFromDatabase(boardId) {
             }
 
             // Adicionar a lista ao estado se não existir
-            if (!window.boardState.lists[listId]) {
-                window.boardState.lists[listId] = [];
-                console.log('Lista adicionada ao estado:', listId);
+            // Não criar listas no estado se não vierem do backend
+        });
+
+        // Remover listas órfãs do estado e do DOM
+        const backendListIds = lists.map(list => list.listId);
+        Object.keys(window.boardState.lists).forEach(listId => {
+            if (!backendListIds.includes(listId)) {
+                delete window.boardState.lists[listId];
+                const el = document.getElementById(listId);
+                if (el) el.remove();
             }
         });
 
@@ -629,7 +627,10 @@ window.deleteList = async function(listId) {
 
             if (listsResponse.ok) {
                 const lists = await listsResponse.json();
-                const listToDelete = lists.find(list => list.name.toLowerCase().replace(/\s+/g, '-') === listId);
+                const listToDelete = lists.find(list => list.listId === listId);
+                if (!listToDelete) {
+                    throw new Error('Lista não encontrada no banco de dados.');
+                }
                 
                 if (listToDelete) {
                     // Deletar a lista do banco de dados
@@ -666,6 +667,7 @@ window.deleteList = async function(listId) {
 
 // Função para recriar uma lista que existe no estado mas não no DOM
 function recreateListElement(listId) {
+    if (!window.boardState.lists[listId]) return null;
     const boardContainer = document.getElementById('board-container');
     if (!boardContainer) return null;
 
